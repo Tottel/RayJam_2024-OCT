@@ -24,6 +24,10 @@
 
 #include "game/game.h"
 
+#if defined(PLATFORM_WEB)
+void emscripten_loop();
+#endif
+
 //----------------------------------------------------------------------------------
 // Defines and Macros
 //----------------------------------------------------------------------------------
@@ -79,7 +83,7 @@ int main(void)
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
 
 #if defined(PLATFORM_WEB)
-    emscripten_set_main_loop(UpdateDrawFrame, 60, 1);
+    emscripten_set_main_loop(emscripten_loop, 60, 1);
 #else
     SetTargetFPS(60);     // Set our game frames-per-second
     //--------------------------------------------------------------------------------------
@@ -104,3 +108,11 @@ int main(void)
 
     return 0;
 }
+
+#if defined(PLATFORM_WEB)
+void emscripten_loop() {
+    game_update();
+
+    game_draw(target, screenWidth, screenHeight);
+}
+#endif
