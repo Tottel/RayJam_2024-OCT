@@ -60,6 +60,8 @@ static const int screenHeight = 720;
 
 static RenderTexture2D target = { 0 };  // Render texture to render our game
 
+static GameData* gameData = NULL;
+
 // TODO: Define global variables here, recommended to make them static
 
 //------------------------------------------------------------------------------------
@@ -82,6 +84,9 @@ int main(void)
     target = LoadRenderTexture(screenWidth, screenHeight);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
 
+    GameData* gameData = (GameData*)RL_MALLOC(sizeof(GameData));
+    game_init(gameData);
+
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(emscripten_loop, 60, 1);
 #else
@@ -91,11 +96,13 @@ int main(void)
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button
     {
-        game_update();
+        game_update(gameData);
 
-        game_draw(target, screenWidth, screenHeight);
+        game_draw(target, gameData, screenWidth, screenHeight);
     }
 #endif
+
+    game_clean(gameData);
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
@@ -111,8 +118,8 @@ int main(void)
 
 #if defined(PLATFORM_WEB)
 void emscripten_loop() {
-    game_update();
+    game_update(gameData);
 
-    game_draw(target, screenWidth, screenHeight);
+    game_draw(target, gameData, screenWidth, screenHeight);
 }
 #endif

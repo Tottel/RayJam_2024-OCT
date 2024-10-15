@@ -1,10 +1,30 @@
 #include "game.h"
 
-void game_update(void) {
+#include <assert.h>
+
+void game_init(GameData* game) {
+    
+    // Palette
+    {
+        Image temp = LoadImage("resources/palettes/custodian.png");
+        if (temp.data != NULL) {
+            int count = 0;
+            game->Palette_1 = LoadImagePalette(temp, 8, &count);
+            assert(count == 8);
+            UnloadImage(temp);
+        }
+    }
+}
+
+void game_clean(GameData* game) {
+    UnloadImagePalette(game->Palette_1);
+}
+
+void game_update(GameData* gameData) {
 
 }
 
-void game_draw(RenderTexture2D renderTarget, int screenWidth, int screenHeight) {
+void game_draw(RenderTexture2D renderTarget, GameData* gameData, int screenWidth, int screenHeight) {
     BeginTextureMode(renderTarget);
     ClearBackground(RAYWHITE);
 

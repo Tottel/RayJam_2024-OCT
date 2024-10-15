@@ -10,4 +10,23 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\src\game.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Filter Include="resources">
+      <UniqueIdentifier>{c524ff55-d00b-4ad6-b4a6-7e58d4dec205}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\palettes">
+      <UniqueIdentifier>{5b58b22b-947c-4eff-aade-212a3bd59601}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\src\resources\palettes\custodian.png">
+      <Filter>resources\palettes</Filter>
+    </Image>
+    <Image Include="..\..\..\src\resources\palettes\night-rain.png">
+      <Filter>resources\palettes</Filter>
+    </Image>
+    <Image Include="..\..\..\src\resources\palettes\rust-gold.png">
+      <Filter>resources\palettes</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

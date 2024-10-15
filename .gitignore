@@ -62,3 +62,4 @@ dkms.conf
 
 # Build folder
 [Bb]uild
+projects/VS2022/raylib_game/resources/palettes/*
