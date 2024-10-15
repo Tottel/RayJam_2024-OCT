@@ -7,6 +7,7 @@ void game_init(GameData* game) {
     // Palette
     {
         Image temp = LoadImage("resources/palettes/custodian.png");
+        assert(temp.data != NULL);
         if (temp.data != NULL) {
             int count = 0;
             game->Palette_1 = LoadImagePalette(temp, 8, &count);
@@ -29,7 +30,7 @@ void game_draw(RenderTexture2D renderTarget, GameData* gameData, int screenWidth
     ClearBackground(RAYWHITE);
 
     // TODO: Draw your game screen here
-    DrawRectangle(10, 10, screenWidth - 20, screenHeight - 20, SKYBLUE);
+    DrawRectangle(10, 10, screenWidth - 20, screenHeight - 20, gameData->Palette_1[0]);
 
     EndTextureMode();
 
