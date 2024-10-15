@@ -22,6 +22,8 @@
 #include <stdlib.h>                         // Required for: 
 #include <string.h>                         // Required for: 
 
+#include "game/game.h"
+
 //----------------------------------------------------------------------------------
 // Defines and Macros
 //----------------------------------------------------------------------------------
@@ -56,11 +58,6 @@ static RenderTexture2D target = { 0 };  // Render texture to render our game
 
 // TODO: Define global variables here, recommended to make them static
 
-//----------------------------------------------------------------------------------
-// Module Functions Declaration
-//----------------------------------------------------------------------------------
-static void UpdateDrawFrame(void);      // Update and Draw one frame
-
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
@@ -90,7 +87,9 @@ int main(void)
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button
     {
-        UpdateDrawFrame();
+        game_update();
+
+        game_draw(target, screenWidth, screenHeight);
     }
 #endif
 
@@ -104,40 +103,4 @@ int main(void)
     //--------------------------------------------------------------------------------------
 
     return 0;
-}
-
-//--------------------------------------------------------------------------------------------
-// Module functions definition
-//--------------------------------------------------------------------------------------------
-// Update and draw frame
-void UpdateDrawFrame(void)
-{
-    // Update
-    //----------------------------------------------------------------------------------
-    // TODO: Update variables / Implement example logic at this point
-    //----------------------------------------------------------------------------------
-
-    // Draw
-    //----------------------------------------------------------------------------------
-    // Render game screen to a texture, 
-    // it could be useful for scaling or further shader postprocessing
-    BeginTextureMode(target);
-        ClearBackground(RAYWHITE);
-        
-        // TODO: Draw your game screen here
-        DrawRectangle(10, 10, screenWidth - 20, screenHeight - 20, SKYBLUE);
-        
-    EndTextureMode();
-    
-    // Render to screen (main framebuffer)
-    BeginDrawing();
-        ClearBackground(RAYWHITE);
-        
-        // Draw render texture to screen, scaled if required
-        DrawTexturePro(target.texture, (Rectangle){ 0, 0, (float)target.texture.width, -(float)target.texture.height }, (Rectangle){ 0, 0, (float)target.texture.width, (float)target.texture.height }, (Vector2){ 0, 0 }, 0.0f, WHITE);
-
-        // TODO: Draw everything that requires to be drawn at this point, maybe UI?
-
-    EndDrawing();
-    //----------------------------------------------------------------------------------  
 }
