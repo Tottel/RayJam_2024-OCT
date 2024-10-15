@@ -4,26 +4,39 @@
 #include <stddef.h>
 
 void game_init(GameData* game) {
-    
     // Palette
     {
         Image temp = LoadImage("resources/palettes/custodian.png");
         assert(temp.data != NULL);
         if (temp.data != NULL) {
             int count = 0;
-            game->Palette_1 = LoadImagePalette(temp, 8, &count);
+            Color* colorsTemp = NULL;
+
+            colorsTemp = LoadImagePalette(temp, 8, &count); // TODO write a new Load function that does not allocate internally..
             assert(count == 8);
+
+            for (int i = 0; i < count; ++i) {
+                game->Palette_1[i] = colorsTemp[i];
+            }
+
+            UnloadImagePalette(colorsTemp);         
             UnloadImage(temp);
         }
     }
 }
 
-void game_clean(GameData* game) {
-    UnloadImagePalette(game->Palette_1);
-}
+void game_update(GameData* gameData, float dt) {
+    gameData->Timer += dt;
 
-void game_update(GameData* gameData) {
+    if (gameData->Timer >= 1.0f) {
+        gameData->Timer = 0.0f;
 
+        gameData->ActiveColor += 1;
+
+        if (gameData->ActiveColor > 7) {
+            gameData->ActiveColor = 0;
+        }
+    }
 }
 
 void game_draw(RenderTexture2D renderTarget, GameData* gameData, int screenWidth, int screenHeight) {
@@ -31,7 +44,7 @@ void game_draw(RenderTexture2D renderTarget, GameData* gameData, int screenWidth
     ClearBackground(RAYWHITE);
 
     // TODO: Draw your game screen here
-    DrawRectangle(10, 10, screenWidth - 20, screenHeight - 20, gameData->Palette_1[0]);
+    DrawRectangle(10, 10, screenWidth - 20, screenHeight - 20, gameData->Palette_1[gameData->ActiveColor]);
 
     EndTextureMode();
 

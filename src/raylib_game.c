@@ -59,6 +59,8 @@ typedef enum {
 static const int screenWidth = 1280;
 static const int screenHeight = 720;
 
+static const int TargetFPS = 60;
+
 static RenderTexture2D target = { 0 };  // Render texture to render our game
 
 static GameData* gameData = NULL;
@@ -84,26 +86,28 @@ int main(void)
     // NOTE: If screen is scaled, mouse input should be scaled proportionally
     target = LoadRenderTexture(screenWidth, screenHeight);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
-
-    GameData* gameData = (GameData*)RL_MALLOC(sizeof(GameData));
+    
+    GameData* gameData = RL_CALLOC(1, sizeof(GameData));
     game_init(gameData);
 
 #if defined(PLATFORM_WEB)
-    emscripten_set_main_loop(emscripten_loop, 60, 1);
+    emscripten_set_main_loop(emscripten_loop, TargetFPS, 1);
 #else
-    SetTargetFPS(60);     // Set our game frames-per-second
+    SetTargetFPS(TargetFPS);     // Set our game frames-per-second
     //--------------------------------------------------------------------------------------
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button
     {
-        game_update(gameData);
+        const float dt = GetFrameTime();
+
+        game_update(gameData, dt);
 
         game_draw(target, gameData, screenWidth, screenHeight);
     }
 #endif
 
-    game_clean(gameData);
+    RL_FREE(gameData);
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
@@ -119,7 +123,9 @@ int main(void)
 
 #if defined(PLATFORM_WEB)
 void emscripten_loop() {
-    game_update(gameData);
+    const float dt = GetFrameTime();
+
+    game_update(gameData, dt);
 
     game_draw(target, gameData, screenWidth, screenHeight);
 }
