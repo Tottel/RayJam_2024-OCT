@@ -1,6 +1,7 @@
 #include "game.h"
 
 #include <assert.h>
+#include <stddef.h>
 
 void game_init(GameData* game) {
     

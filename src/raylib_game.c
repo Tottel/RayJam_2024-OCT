@@ -21,6 +21,7 @@
 #include <stdio.h>                          // Required for: printf()
 #include <stdlib.h>                         // Required for: 
 #include <string.h>                         // Required for: 
+#include <stddef.h>
 
 #include "game.h"
 
