@@ -22,7 +22,7 @@
 #include <stdlib.h>                         // Required for: 
 #include <string.h>                         // Required for: 
 
-#include "game/game.h"
+#include "game.h"
 
 #if defined(PLATFORM_WEB)
 void emscripten_loop();
