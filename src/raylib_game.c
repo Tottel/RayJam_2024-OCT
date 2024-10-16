@@ -26,7 +26,7 @@
 #include "game.h"
 
 #if defined(PLATFORM_WEB)
-void emscripten_loop();
+static void emscripten_loop();
 #endif
 
 //----------------------------------------------------------------------------------
