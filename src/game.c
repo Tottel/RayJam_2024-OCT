@@ -6,7 +6,7 @@
 void game_init(GameData* game) {
     // Palette
     {
-        Image temp = LoadImage("resources/palettes/custodian.png");
+        Image temp = LoadImage("resources/palettes/custodianTest.png");
         assert(temp.data != NULL);
         if (temp.data != NULL) {
             int count = 0;
