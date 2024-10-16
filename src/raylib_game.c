@@ -91,7 +91,7 @@ int main(void)
     game_init(gameData);
 
 #if defined(PLATFORM_WEB)
-    emscripten_set_main_loop(emscripten_loop, TargetFPS, 1);
+    emscripten_set_main_loop(emscripten_loop, 60, 1);
 #else
     SetTargetFPS(TargetFPS);     // Set our game frames-per-second
     //--------------------------------------------------------------------------------------
@@ -123,7 +123,7 @@ int main(void)
 
 #if defined(PLATFORM_WEB)
 void emscripten_loop() {
-    const float dt = GetFrameTime();
+    const float dt = 1 / 60.0f;
 
     game_update(gameData, dt);
 
