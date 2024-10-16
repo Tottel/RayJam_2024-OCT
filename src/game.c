@@ -6,7 +6,7 @@
 void game_init(GameData* game) {
     // Palette
     {
-        Image temp = LoadImage("resources/palettes/custodianTest.png");
+        Image temp = LoadImage("resources/palettes/custodian.png");
         assert(temp.data != NULL);
         if (temp.data != NULL) {
             int count = 0;
@@ -51,7 +51,9 @@ void game_draw(RenderTexture2D renderTarget, GameData* gameData, int screenWidth
 
     // Render to screen (main framebuffer)
     BeginDrawing();
-    ClearBackground(gameData->Palette_1[gameData->ActiveColor]);
+    ClearBackground(RAYWHITE);
+
+    DrawCircle(200, 200, 200, gameData->Palette_1[gameData->ActiveColor]);
 
     // Draw render texture to screen, scaled if required
     //DrawTexturePro(renderTarget.texture, (Rectangle) { 0, 0, (float)renderTarget.texture.width, -(float)renderTarget.texture.height }, (Rectangle) { 0, 0, (float)renderTarget.texture.width, (float)renderTarget.texture.height }, (Vector2) { 0, 0 }, 0.0f, WHITE);
