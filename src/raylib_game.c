@@ -12,6 +12,7 @@
 ********************************************************************************************/
 
 #include "raylib.h"
+#include "utils.h"
 
 #if defined(PLATFORM_WEB)
     #define CUSTOM_MODAL_DIALOGS            // Force custom modal dialogs usage
@@ -74,6 +75,8 @@ int main(void)
 {
 #if !defined(_DEBUG)
     SetTraceLogLevel(LOG_NONE);         // Disable raylib trace log messages
+#else
+    SetTraceLogLevel(LOG_ALL);         
 #endif
 
     // Initialization
@@ -100,6 +103,7 @@ int main(void)
     while (!WindowShouldClose())    // Detect window close button
     {
         const float dt = GetFrameTime();
+        TraceLog(LOG_DEBUG, "dt is: %f", dt);
 
         game_update(gameData, dt);
 
@@ -124,6 +128,8 @@ int main(void)
 #if defined(PLATFORM_WEB)
 void emscripten_loop(void) {
     const float dt = GetFrameTime();
+
+    TRACELOG(LOG_DEBUG, "dt is: %f", dt);
 
     game_update(gameData, dt);
 
