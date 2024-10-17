@@ -123,10 +123,17 @@ int main(void)
 
 #if defined(PLATFORM_WEB)
 void emscripten_loop(void) {
-    const float dt = GetFrameTime();
+    //const float dt = GetFrameTime();
 
-    game_update(gameData, dt);
+    //game_update(gameData, dt);
 
-    game_draw(target, gameData, screenWidth, screenHeight);
+    //game_draw(target, gameData, screenWidth, screenHeight);
+
+    BeginDrawing();
+    ClearBackground(RED);
+
+    DrawText("YAYAYAYAYAYAYA", 100, 100, 20, GREEN);
+
+    EndDrawing();
 }
 #endif
