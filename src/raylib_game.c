@@ -127,13 +127,6 @@ void emscripten_loop(void) {
 
     //game_update(gameData, dt);
 
-    //game_draw(target, gameData, screenWidth, screenHeight);
-
-    BeginDrawing();
-    ClearBackground(RED);
-
-    DrawText("YAYAYAYAYAYAYA", 100, 100, 20, GREEN);
-
-    EndDrawing();
+    game_draw(target, gameData, screenWidth, screenHeight);
 }
 #endif
