@@ -50,7 +50,7 @@ void game_draw(RenderTexture2D renderTarget, GameData* gameData, int screenWidth
 
     // Render to screen (main framebuffer)
     BeginDrawing();
-    ClearBackground(RAYWHITE);
+    ClearBackground(gameData->Palette_1[gameData->ActiveColor]);
 
     //DrawCircle(200, 200, 200, gameData->Palette_1[gameData->ActiveColor]);
 
