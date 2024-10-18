@@ -127,9 +127,13 @@ int main(void)
 
 #if defined(PLATFORM_WEB)
 void emscripten_loop(void) {
+    Tracelog(LOG_INFO, "test");
+    Tracelog(LOG_DEBUG, "test");
+    Tracelog(LOG_ERROR, "test");
+
     const float dt = GetFrameTime();
 
-    TRACELOG(LOG_DEBUG, "dt is: %f", dt);
+    Tracelog(LOG_DEBUG, "dt is: %f", dt);
 
     game_update(gameData, dt);
 
