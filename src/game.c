@@ -18,6 +18,7 @@ void game_init(GameData* game) {
             for (int i = 0; i < count; ++i) {
                 TraceLog(LOG_DEBUG, "Loading color: %u %u %u", palette[i].r, palette[i].g, palette[i].b);
                 game->Palette_1[i] = palette[i];
+                TraceLog(LOG_DEBUG, "Assigning color: %u %u %u", game->Palette_1[i].r, game->Palette_1[i].g, game->Palette_1[i].b);
             }
     
             UnloadImageColors(palette);
@@ -33,7 +34,8 @@ void game_update(GameData* gameData, float dt) {
         gameData->Timer = 0.0f;
 
         gameData->ActiveColor += 1;
-        TraceLog(LOG_DEBUG, "color is: %i", gameData->ActiveColor);
+        TraceLog(LOG_DEBUG, "using color index: %i", gameData->ActiveColor);
+        TraceLog(LOG_DEBUG, "Using color: %u %u %u", gameData->Palette_1[gameData->ActiveColor].r, gameData->Palette_1[gameData->ActiveColor].g, gameData->Palette_1[gameData->ActiveColor].b);
 
         if (gameData->ActiveColor > 7) {
             gameData->ActiveColor = 0;
@@ -42,6 +44,8 @@ void game_update(GameData* gameData, float dt) {
 }
 
 void game_draw(RenderTexture2D renderTarget, GameData* gameData, int screenWidth, int screenHeight) {
+    TraceLog(LOG_DEBUG, "Using color in draw: %u %u %u", gameData->Palette_1[gameData->ActiveColor].r, gameData->Palette_1[gameData->ActiveColor].g, gameData->Palette_1[gameData->ActiveColor].b);
+
     //BeginTextureMode(renderTarget);
     //ClearBackground(RAYWHITE);
     //

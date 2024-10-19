@@ -91,6 +91,7 @@ int main(void)
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
     
     GameData* gameData = RL_CALLOC(1, sizeof(GameData));
+    TraceLog(LOG_DEBUG, "sizeof data: %i", sizeof(GameData));
     game_init(gameData);
 
 #if defined(PLATFORM_WEB)
