@@ -29,8 +29,6 @@ void game_init(GameData* game) {
 void game_update(GameData* gameData, float dt) {
     gameData->Timer += dt;
 
-    TraceLog(LOG_DEBUG, "timer is: %f", gameData->Timer);
-
     if (gameData->Timer >= 1.0f) {
         gameData->Timer = 0.0f;
 
@@ -54,6 +52,9 @@ void game_draw(RenderTexture2D renderTarget, GameData* gameData, int screenWidth
 
     // Render to screen (main framebuffer)
     BeginDrawing();
+    TraceLog(LOG_DEBUG, "drawing with color index: %i", gameData->ActiveColor);
+    TraceLog(LOG_DEBUG, "That is color: %u %u %u", gameData->Palette_1[gameData->ActiveColor].r, gameData->Palette_1[gameData->ActiveColor].g, gameData->Palette_1[gameData->ActiveColor].b);
+
     ClearBackground(gameData->Palette_1[gameData->ActiveColor]);
 
     //DrawCircle(200, 200, 200, gameData->Palette_1[gameData->ActiveColor]);

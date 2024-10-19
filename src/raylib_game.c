@@ -103,7 +103,6 @@ int main(void)
     while (!WindowShouldClose())    // Detect window close button
     {
         const float dt = GetFrameTime();
-        TraceLog(LOG_DEBUG, "dt is: %f", dt);
 
         game_update(gameData, dt);
 
@@ -127,13 +126,7 @@ int main(void)
 
 #if defined(PLATFORM_WEB)
 void emscripten_loop(void) {
-    TraceLog(LOG_INFO, "test");
-    TraceLog(LOG_DEBUG, "test");
-    TraceLog(LOG_ERROR, "test");
-
     const float dt = GetFrameTime();
-
-    TraceLog(LOG_DEBUG, "dt is: %f", dt);
 
     game_update(gameData, dt);
 
