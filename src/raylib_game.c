@@ -74,7 +74,7 @@ static GameData* gameData = NULL;
 int main(void)
 {
 #if !defined(_DEBUG)
-    SetTraceLogLevel(LOG_NONE);         // Disable raylib trace log messages
+    SetTraceLogLevel(LOG_ALL);         // Disable raylib trace log messages
 #else
     SetTraceLogLevel(LOG_ALL);         
 #endif
