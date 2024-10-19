@@ -10,17 +10,16 @@ void game_init(GameData* game) {
         Image temp = LoadImage("resources/palettes/custodian.png");
         assert(temp.data != NULL);
         if (temp.data != NULL) {
-            int count = 0;
-            Color* colorsTemp = NULL;
-
-            colorsTemp = LoadImagePalette(temp, 8, &count); // TODO write a new Load function that does not allocate internally..
+            int count = temp.width;
             assert(count == 8);
 
-            for (int i = 0; i < count; ++i) {
-                game->Palette_1[i] = colorsTemp[i];
-            }
+            Color* palette = LoadImageColors(temp);
 
-            UnloadImagePalette(colorsTemp);         
+            for (int i = 0; i < count; ++i) {
+                game->Palette_1[i] = palette[i];
+            }
+    
+            UnloadImageColors(palette);
             UnloadImage(temp);
         }
     }
