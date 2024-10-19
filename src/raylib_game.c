@@ -111,6 +111,7 @@ int main(void)
     }
 #endif
 
+    game_exit(gameData);
     RL_FREE(gameData);
 
     // De-Initialization

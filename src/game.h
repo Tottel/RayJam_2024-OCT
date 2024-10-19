@@ -12,6 +12,7 @@ typedef struct GameData {
 } GameData;
 
 void game_init(GameData* game);
+void game_exit(GameData* game);
 void game_update(GameData* gameData, float dt);
 void game_draw(RenderTexture2D renderTarget, GameData* gameData, int screenWidth, int screenHeight);
 

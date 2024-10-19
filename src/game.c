@@ -13,18 +13,22 @@ void game_init(GameData* game) {
             int count = temp.width;
             assert(count == 8);
 
-            Color* palette = LoadImageColors(temp);
+            game->Palette_1 = LoadImageColors(temp);
 
-            for (int i = 0; i < count; ++i) {
-                TraceLog(LOG_DEBUG, "Loading color: %u %u %u", palette[i].r, palette[i].g, palette[i].b);
-                game->Palette_1[i] = palette[i];
-                TraceLog(LOG_DEBUG, "Assigning color: %u %u %u", game->Palette_1[i].r, game->Palette_1[i].g, game->Palette_1[i].b);
-            }
+            //for (int i = 0; i < count; ++i) {
+            //    TraceLog(LOG_DEBUG, "Loading color: %u %u %u", palette[i].r, palette[i].g, palette[i].b);
+            //    game->Palette_1[i] = palette[i];
+            //    TraceLog(LOG_DEBUG, "Assigning color: %u %u %u", game->Palette_1[i].r, game->Palette_1[i].g, game->Palette_1[i].b);
+            //}
     
-            UnloadImageColors(palette);
+            //UnloadImageColors(palette);
             UnloadImage(temp);
         }
     }
+}
+
+void game_exit(GameData* gameData) {
+    UnloadImageColors(gameData->Palette_1);
 }
 
 void game_update(GameData* gameData, float dt) {
