@@ -23,8 +23,10 @@
 #include <stdlib.h>                         // Required for: 
 #include <string.h>                         // Required for: 
 #include <stddef.h>
+#include <assert.h>
 
 #include "game.h"
+#include "UISystem.h"
 
 #if defined(PLATFORM_WEB)
 void emscripten_loop(void);
@@ -64,9 +66,10 @@ static const int TargetFPS = 60;
 
 static RenderTexture2D target = { 0 };  // Render texture to render our game
 
-static GameData* gameData = NULL;
+static Color gameColors[8];
 
-// TODO: Define global variables here, recommended to make them static
+static GameData* gameData = NULL;
+static UIData* uiData = NULL;
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -89,7 +92,26 @@ int main(void)
     // NOTE: If screen is scaled, mouse input should be scaled proportionally
     target = LoadRenderTexture(screenWidth, screenHeight);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
-    
+
+    // Load palette
+    {
+        Image temp = LoadImage("resources/palettes/custodian.png");
+        assert(temp.data != NULL);
+        if (temp.data != NULL) {
+            int count = temp.width;
+            assert(count == 8);
+
+            Color* colors = NULL;
+            colors = LoadImageColors(temp);
+
+            memcpy(gameColors, colors, 8 * sizeof(Color));
+
+            UnloadImageColors(colors);
+            UnloadImage(temp);
+        }
+    }
+
+    uiData = RL_CALLOC(1, sizeof(UIData));
     gameData = RL_CALLOC(1, sizeof(GameData));
 
     game_init(gameData);
@@ -107,12 +129,15 @@ int main(void)
 
         game_update(gameData, dt);
 
-        game_draw(target, gameData, screenWidth, screenHeight);
+        game_draw(target, gameData, gameColors, screenWidth, screenHeight);
     }
 #endif
 
     game_exit(gameData);
+    ui_exit(uiData);
+
     RL_FREE(gameData);
+    RL_FREE(uiData);
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
@@ -132,6 +157,6 @@ void emscripten_loop(void) {
 
     game_update(gameData, dt);
 
-    game_draw(target, gameData, screenWidth, screenHeight);
+    game_draw(target, gameData, gameColors, screenWidth, screenHeight);
 }
 #endif

@@ -3,12 +3,14 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\src\raylib_game.c" />
     <ClCompile Include="..\..\..\src\game.c" />
+    <ClCompile Include="..\..\..\src\UISystem.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\..\src\raylib_game.rc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\game.h" />
+    <ClInclude Include="..\..\..\src\UISystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="resources">

@@ -5,31 +5,11 @@
 #include <stddef.h>
 
 void game_init(GameData* game) {
-    // Palette
-    {
-        Image temp = LoadImage("resources/palettes/custodian.png");
-        assert(temp.data != NULL);
-        if (temp.data != NULL) {
-            int count = temp.width;
-            assert(count == 8);
-
-            Color* colors = NULL;
-            colors = LoadImageColors(temp);
-
-            for (int i = 0; i < count; ++i) {
-                game->Palette_1[i] = colors[i];
-            }
-    
-            UnloadImageColors(colors);
-            UnloadImage(temp);
-        }
-    }
-
     game->ActiveColor = 2;
 }
 
 void game_exit(GameData* gameData) {
-    UnloadImageColors(gameData->Palette_1);
+
 }
 
 void game_update(GameData* gameData, float dt) {
@@ -46,12 +26,12 @@ void game_update(GameData* gameData, float dt) {
     }
 }
 
-void game_draw(RenderTexture2D renderTarget, GameData* gameData, int screenWidth, int screenHeight) {
+void game_draw(RenderTexture2D renderTarget, GameData* gameData, Color* gameColors, int screenWidth, int screenHeight) {
     BeginTextureMode(renderTarget);
     ClearBackground(RAYWHITE);
     //
     ////// TODO: Draw your game screen here
-    DrawRectangle(10, 10, screenWidth - 20, screenHeight - 20, gameData->Palette_1[gameData->ActiveColor]);
+    DrawRectangle(10, 10, screenWidth - 20, screenHeight - 20, gameColors[gameData->ActiveColor]);
     //
     EndTextureMode();
 

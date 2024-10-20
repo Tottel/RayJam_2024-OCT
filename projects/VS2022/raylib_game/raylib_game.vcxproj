@@ -371,6 +371,10 @@ XCOPY "C:\dev\raylib\GameJam\2024_OCT\RayJam_2024-OCT\src\resources\" "C:\dev\ra
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\game.h" />
+    <ClCompile Include="..\..\..\src\UISystem.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\UISystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\src\resources\palettes\custodian.png" />
