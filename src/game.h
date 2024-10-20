@@ -9,7 +9,7 @@ typedef struct GameData {
 
 void game_init(GameData* game);
 void game_exit(GameData* game);
-void game_update(GameData* gameData, float dt);
+void game_tick(GameData* gameData, float dt);
 void game_draw(RenderTexture2D renderTarget, GameData* gameData, Color* gameColors, int screenWidth, int screenHeight);
 
 #endif

@@ -12,7 +12,7 @@ void game_exit(GameData* gameData) {
 
 }
 
-void game_update(GameData* gameData, float dt) {
+void game_tick(GameData* gameData, float dt) {
     gameData->Timer += dt;
 
     if (gameData->Timer >= 1.0f) {
@@ -27,18 +27,18 @@ void game_update(GameData* gameData, float dt) {
 }
 
 void game_draw(RenderTexture2D renderTarget, GameData* gameData, Color* gameColors, int screenWidth, int screenHeight) {
-    BeginTextureMode(renderTarget);
-    ClearBackground(RAYWHITE);
-    //
-    ////// TODO: Draw your game screen here
-    DrawRectangle(10, 10, screenWidth - 20, screenHeight - 20, gameColors[gameData->ActiveColor]);
-    //
-    EndTextureMode();
+    //BeginTextureMode(renderTarget);
+    //ClearBackground(RAYWHITE);
+    ////
+    //////// TODO: Draw your game screen here
+    //DrawRectangle(10, 10, screenWidth - 20, screenHeight - 20, gameColors[gameData->ActiveColor]);
+    ////
+    //EndTextureMode();
 
     // Render to screen (main framebuffer)
-    BeginDrawing();
+    
 
-    ClearBackground(BLACK);
+    ClearBackground(gameColors[gameData->ActiveColor]);
 
     //DrawCircle(200, 200, 200, gameData->Palette_1[gameData->ActiveColor]);
 
@@ -46,9 +46,9 @@ void game_draw(RenderTexture2D renderTarget, GameData* gameData, Color* gameColo
     //TraceLog(LOG_DEBUG, "drawing");
 
     // Draw render texture to screen, scaled if required
-    DrawTexturePro(renderTarget.texture, (Rectangle) { 0, 0, (float)renderTarget.texture.width, -(float)renderTarget.texture.height }, (Rectangle) { 0, 0, (float)renderTarget.texture.width, (float)renderTarget.texture.height }, (Vector2) { 0, 0 }, 0.0f, WHITE);
+    //DrawTexturePro(renderTarget.texture, (Rectangle) { 0, 0, (float)renderTarget.texture.width, -(float)renderTarget.texture.height }, (Rectangle) { 0, 0, (float)renderTarget.texture.width, (float)renderTarget.texture.height }, (Vector2) { 0, 0 }, 0.0f, WHITE);
 
     // TODO: Draw everything that requires to be drawn at this point, maybe UI?
 
-    EndDrawing();
+    //EndDrawing();
 }

@@ -28,9 +28,7 @@
 #include "game.h"
 #include "UISystem.h"
 
-#if defined(PLATFORM_WEB)
 void emscripten_loop(void);
-#endif
 
 //----------------------------------------------------------------------------------
 // Defines and Macros
@@ -71,13 +69,17 @@ static Color gameColors[8];
 static GameData* gameData = NULL;
 static UIData* uiData = NULL;
 
+void OnButtonClicked(void* context) {
+
+}
+
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
 int main(void)
 {
 #if !defined(_DEBUG)
-    SetTraceLogLevel(LOG_NONE);         // Disable raylib trace log messages
+    SetTraceLogLevel(LOG_ALL);         // Disable raylib trace log messages
 #else
     SetTraceLogLevel(LOG_ALL);         
 #endif
@@ -116,6 +118,10 @@ int main(void)
 
     game_init(gameData);
 
+    ui_add_button(uiData, 100, 100, 100, 100, "Hi", UIStyleButtonMainMenu, OnButtonClicked, NULL, true);
+
+
+
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(emscripten_loop, 0, 1);
 #else
@@ -125,13 +131,11 @@ int main(void)
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button
     {
-        const float dt = GetFrameTime();
-
-        game_update(gameData, dt);
-
-        game_draw(target, gameData, gameColors, screenWidth, screenHeight);
+        emscripten_loop();
     }
 #endif
+
+
 
     game_exit(gameData);
     ui_exit(uiData);
@@ -151,12 +155,14 @@ int main(void)
     return 0;
 }
 
-#if defined(PLATFORM_WEB)
 void emscripten_loop(void) {
     const float dt = GetFrameTime();
 
-    game_update(gameData, dt);
+    game_tick(gameData, dt);
+    ui_tick(uiData);
 
+    BeginDrawing();
     game_draw(target, gameData, gameColors, screenWidth, screenHeight);
+    ui_draw(uiData);
+    EndDrawing();
 }
-#endif
