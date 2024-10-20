@@ -74,14 +74,14 @@ static GameData* gameData = NULL;
 int main(void)
 {
 #if !defined(_DEBUG)
-    SetTraceLogLevel(LOG_ALL);         // Disable raylib trace log messages
+    SetTraceLogLevel(LOG_NONE);         // Disable raylib trace log messages
 #else
     SetTraceLogLevel(LOG_ALL);         
 #endif
 
     // Initialization
     //--------------------------------------------------------------------------------------
-    InitWindow(screenWidth, screenHeight, "raylib gamejam template");
+    InitWindow(screenWidth, screenHeight, "raylib gamejam - Korneel Guns");
     
     // TODO: Load resources / Initialize variables at this point
     
@@ -90,8 +90,8 @@ int main(void)
     target = LoadRenderTexture(screenWidth, screenHeight);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
     
-    GameData* gameData = RL_CALLOC(1, sizeof(GameData));
-    TraceLog(LOG_DEBUG, "sizeof data: %i", sizeof(GameData));
+    gameData = RL_CALLOC(1, sizeof(GameData));
+
     game_init(gameData);
 
 #if defined(PLATFORM_WEB)

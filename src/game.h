@@ -4,8 +4,8 @@
 
 typedef struct GameData {
 	// TODO this should not be a pointer, but an actual array in the game data
-	//Color Palette_1[8]; // We know there are 8 colors
-	Color* Palette_1;
+	Color Palette_1[8]; // We know there are 8 colors
+	//Color* Palette_1;
 
 	int ActiveColor;
 	float Timer;
