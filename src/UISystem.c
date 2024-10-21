@@ -23,7 +23,6 @@ void ui_tick(UIData* uiData) {
 		UIText* text = &uiData->RectanglesText[uiData->ButtonsEnabled[i].RectIndex];
 
 		if (IsPointInRectangle(mousePos, rect->PosX, rect->PosY, rect->Width, rect->Height)) {
-			TraceLog(LOG_DEBUG, "IN RECT");
 			bool isMouseDown = IsMouseButtonDown(0);
 
 			rect->ColorIndex = isMouseDown ? uiData->ButtonsEnabled[i].ColorRectClick : uiData->ButtonsEnabled[i].ColorRectHover;

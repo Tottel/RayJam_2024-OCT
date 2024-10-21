@@ -47,9 +47,10 @@ void emscripten_loop(void);
 //----------------------------------------------------------------------------------
 typedef enum { 
     SCREEN_LOGO = 0, 
-    SCREEN_TITLE, 
+    SCREEN_TITLE,
+    SCREEN_MENU,
+    SCREEN_MENU_INSTRUCTIONS,
     SCREEN_GAMEPLAY, 
-    SCREEN_ENDING
 } GameScreen;
 
 // TODO: Define your custom data types here
@@ -57,8 +58,8 @@ typedef enum {
 //----------------------------------------------------------------------------------
 // Global Variables Definition
 //----------------------------------------------------------------------------------
-static const int screenWidth = 1280;
-static const int screenHeight = 720;
+static const uint16_t screenWidth = 800;
+static const uint16_t screenHeight = 450;
 
 static const int TargetFPS = 60;
 
@@ -66,11 +67,27 @@ static RenderTexture2D target = { 0 };  // Render texture to render our game
 
 static Color gameColors[8];
 
+static GameScreen CurrentState = { SCREEN_MENU };
+static GameScreen NextState = { SCREEN_MENU };
+
+// menu state
+static UIData* UIDataMenu = NULL;
+static UIData* UIDataMenuInstructions = NULL;
+
+// game state
 static GameData* gameData = NULL;
-static UIData* uiData = NULL;
+static UIData* UIDataGame = NULL;
 
-void OnButtonClicked(void* context) {
+void OnPlayButtonClicked(void* context) {
+    NextState = SCREEN_GAMEPLAY;
+}
 
+void OnHelpButtonClicked(void* context) {
+    NextState = SCREEN_MENU_INSTRUCTIONS;
+}
+
+void OnInstructionBackButtonClicked(void* context) {
+    NextState = SCREEN_MENU;
 }
 
 //------------------------------------------------------------------------------------
@@ -113,13 +130,24 @@ int main(void)
         }
     }
 
-    uiData = RL_CALLOC(1, sizeof(UIData));
+    const uint16_t buttonWidth = 120;
+    const uint16_t buttonHeight = 50;
+
+    // menu state
+    UIDataMenu = RL_CALLOC(1, sizeof(UIData));
+    ui_add_button(UIDataMenu, screenWidth / 2 - buttonWidth / 2, screenHeight - 140, buttonWidth, buttonHeight, "play", UIStyleButtonMainMenu, OnPlayButtonClicked, NULL, true);
+    ui_add_button(UIDataMenu, screenWidth / 2 - buttonWidth / 2, screenHeight - 80, buttonWidth, buttonHeight, "help", UIStyleButtonMainMenu, OnHelpButtonClicked, NULL, true);
+
+    // menu instructions state
+    UIDataMenuInstructions = RL_CALLOC(1, sizeof(UIData));
+    ui_add_rectangle_with_text(UIDataMenuInstructions, screenWidth / 2 - 250, screenHeight / 2 - 100, 500, 200, 0, "This is an instruction", 20, ALIGN_HOR_LEFT, ALIGN_VER_CENTER, 4);
+    ui_add_button(UIDataMenuInstructions, screenWidth / 2 - buttonWidth / 2, screenHeight - 80, buttonWidth, buttonHeight, "back", UIStyleButtonMainMenu, OnInstructionBackButtonClicked, NULL, true);
+
+    // game state
     gameData = RL_CALLOC(1, sizeof(GameData));
+    UIDataGame = RL_CALLOC(1, sizeof(UIData));
 
     game_init(gameData);
-
-    ui_add_button(uiData, 100, 100, 100, 100, "Hi", UIStyleButtonMainMenu, OnButtonClicked, NULL, true);
-
 
     //--------------------------------------------------------------------------------------
 #if defined(PLATFORM_WEB)
@@ -137,10 +165,14 @@ int main(void)
 
 
     game_exit(gameData);
-    ui_exit(uiData);
+    ui_exit(UIDataGame);
+    ui_exit(UIDataMenu);
+    ui_exit(UIDataMenuInstructions);
 
     RL_FREE(gameData);
-    RL_FREE(uiData);
+    RL_FREE(UIDataGame);
+    RL_FREE(UIDataMenu);
+    RL_FREE(UIDataMenuInstructions);
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
@@ -155,13 +187,45 @@ int main(void)
 }
 
 void emscripten_loop(void) {
+    if (CurrentState != NextState) {
+        CurrentState = NextState;
+    }
+
     const float dt = GetFrameTime();
 
-    game_tick(gameData, dt);
-    ui_tick(uiData);
+    switch (CurrentState) {
+    case SCREEN_LOGO:
+        break;
+    case SCREEN_TITLE:
+        break;
+    case SCREEN_MENU: {
+        ui_tick(UIDataMenu);
 
-    BeginDrawing();
-    game_draw(target, gameData, gameColors, screenWidth, screenHeight);
-    ui_draw(uiData, gameColors);
-    EndDrawing();
+        BeginDrawing();
+        ClearBackground(gameColors[4]);
+        ui_draw(UIDataMenu, gameColors);
+        EndDrawing();
+    } break;
+    case SCREEN_MENU_INSTRUCTIONS:
+    {
+        ui_tick(UIDataMenuInstructions);
+
+        BeginDrawing();
+        ClearBackground(gameColors[4]);
+        ui_draw(UIDataMenuInstructions, gameColors);
+        EndDrawing();
+    } break;
+    case SCREEN_GAMEPLAY: {
+        game_tick(gameData, dt);
+        ui_tick(UIDataGame);
+
+        BeginDrawing();
+        ClearBackground(gameColors[4]);
+        game_draw(target, gameData, gameColors, screenWidth, screenHeight);
+        ui_draw(UIDataGame, gameColors);
+        EndDrawing();
+    } break;
+    default:
+        break;
+    }
 }

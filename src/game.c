@@ -36,9 +36,6 @@ void game_draw(RenderTexture2D renderTarget, GameData* gameData, Color* gameColo
     //EndTextureMode();
 
     // Render to screen (main framebuffer)
-    
-
-    ClearBackground(gameColors[gameData->ActiveColor]);
 
     //DrawCircle(200, 200, 200, gameData->Palette_1[gameData->ActiveColor]);
 
