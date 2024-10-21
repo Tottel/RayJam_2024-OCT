@@ -121,12 +121,11 @@ int main(void)
     ui_add_button(uiData, 100, 100, 100, 100, "Hi", UIStyleButtonMainMenu, OnButtonClicked, NULL, true);
 
 
-
+    //--------------------------------------------------------------------------------------
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(emscripten_loop, 0, 1);
 #else
     SetTargetFPS(TargetFPS);     // Set our game frames-per-second
-    //--------------------------------------------------------------------------------------
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button
@@ -134,7 +133,7 @@ int main(void)
         emscripten_loop();
     }
 #endif
-
+    //--------------------------------------------------------------------------------------
 
 
     game_exit(gameData);
@@ -163,6 +162,6 @@ void emscripten_loop(void) {
 
     BeginDrawing();
     game_draw(target, gameData, gameColors, screenWidth, screenHeight);
-    ui_draw(uiData);
+    ui_draw(uiData, gameColors);
     EndDrawing();
 }

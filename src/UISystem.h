@@ -29,14 +29,14 @@ typedef struct UIButtonHandleValue {
 
 typedef struct UIButton {
     uint16_t RectIndex;
-    Color ColorRectDefault;
-    Color ColorRectHover;
-    Color ColorRectClick;
-    Color ColorRectDisabled;
-    Color ColorTextDefault;
-    Color ColorTextHover;
-    Color ColorTextClick;
-    Color ColorTextDisabled;
+    uint8_t ColorRectDefault;
+    uint8_t ColorRectHover;
+    uint8_t ColorRectClick;
+    uint8_t ColorRectDisabled;
+    uint8_t ColorTextDefault;
+    uint8_t ColorTextHover;
+    uint8_t ColorTextClick;
+    uint8_t ColorTextDisabled;
 
     void (*button_clicked)(void*);
     void* Context;
@@ -45,18 +45,18 @@ typedef struct UIButton {
 
 typedef struct UIButtonEnabled {
     uint16_t RectIndex;
-    Color ColorRectDefault;
-    Color ColorRectHover;
-    Color ColorRectClick;
-    Color ColorTextDefault;
-    Color ColorTextHover;
-    Color ColorTextClick;
+    uint8_t ColorRectDefault;
+    uint8_t ColorRectHover;
+    uint8_t ColorRectClick;
+    uint8_t ColorTextDefault;
+    uint8_t ColorTextHover;
+    uint8_t ColorTextClick;
 } UIButtonEnabled;
 
 typedef struct UIButtonDisabled {
     uint16_t RectIndex;
-    Color ColorRectDisabled;
-    Color ColorTextDisabled;
+    uint8_t ColorRectDisabled;
+    uint8_t ColorTextDisabled;
 } UIButtonDisabled;
 
 typedef struct UIButtonClickFunctionality {
@@ -72,7 +72,7 @@ typedef struct UIRectangle {
     uint16_t PosY;
     uint16_t Width;
     uint16_t Height;
-    Color Color;
+    uint8_t ColorIndex;
 } UIRectangle;
 
 typedef struct UIText {
@@ -80,7 +80,7 @@ typedef struct UIText {
     uint16_t PosX;
     uint16_t PosY;
     int FontSize; // INT OR FLOAT?!
-    Color Color;
+    uint8_t ColorIndex;
 } UIText;
 
 typedef struct UIStyleButton {
@@ -88,29 +88,29 @@ typedef struct UIStyleButton {
     UIAlignmentVertical TextAlignmentVertical;
     int FontSize; // INT OR FLOAT?!
 
-    Color ColorRectDefault;
-    Color ColorRectHover;
-    Color ColorRectClick;
-    Color ColorRectDisabled;
+    uint8_t ColorRectDefault;
+    uint8_t ColorRectHover;
+    uint8_t ColorRectClick;
+    uint8_t ColorRectDisabled;
 
-    Color ColorTextDefault;
-    Color ColorTextHover;
-    Color ColorTextClick;
-    Color ColorTextDisabled;
+    uint8_t ColorTextDefault;
+    uint8_t ColorTextHover;
+    uint8_t ColorTextClick;
+    uint8_t ColorTextDisabled;
 } UIStyleButton;
 
 static struct UIStyleButton UIStyleButtonMainMenu = {
     ALIGN_HOR_CENTER,
     ALIGN_VER_CENTER,
     20,
-    { 120, 120, 120, 255 },
-    { 150, 150, 150, 255 },
-    { 200, 200, 200, 255 },
-    {  50,  50,  50, 255 },
-    { 220, 220, 220, 255 },
-    { 255, 255, 255, 255 },
-    { 120, 120, 120, 255 },
-    { 120, 120, 120, 255 },
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
 };
 
 typedef struct UIData {
@@ -131,9 +131,9 @@ typedef struct UIData {
 
 void ui_exit(UIData* uiData);
 void ui_tick(UIData* uiData);
-void ui_draw(UIData* uiData);
+void ui_draw(UIData* uiData, Color* gameColors);
 
-uint16_t ui_add_rectangle_with_text(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t width, uint16_t height, Color rectColor, const char* text, int fontSize, UIAlignmentHorizontal alignHor, UIAlignmentVertical alignVer, Color textColor);
+uint16_t ui_add_rectangle_with_text(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t width, uint16_t height, uint8_t rectColor, const char* text, int fontSize, UIAlignmentHorizontal alignHor, UIAlignmentVertical alignVer, uint8_t textColor);
 uint16_t ui_add_button(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t width, uint16_t height, const char* text, UIStyleButton uiStyle, void(*button_clicked)(void*), void* context, bool enabled);
 
 void ui_toggle_button(UIData* uiData, uint16_t buttonHandle, bool enabled);
