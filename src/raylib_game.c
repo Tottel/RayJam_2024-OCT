@@ -68,7 +68,6 @@ static RenderTexture2D target = { 0 };  // Render texture to render our game
 static Color gameColors[8];
 
 static GameScreen CurrentState = { SCREEN_MENU };
-static GameScreen NextState = { SCREEN_MENU };
 
 // menu state
 static UIData* UIDataMenu = NULL;
@@ -79,15 +78,15 @@ static GameData* gameData = NULL;
 static UIData* UIDataGame = NULL;
 
 void OnPlayButtonClicked(void* context) {
-    NextState = SCREEN_GAMEPLAY;
+    CurrentState = SCREEN_GAMEPLAY;
 }
 
 void OnHelpButtonClicked(void* context) {
-    NextState = SCREEN_MENU_INSTRUCTIONS;
+    CurrentState = SCREEN_MENU_INSTRUCTIONS;
 }
 
 void OnInstructionBackButtonClicked(void* context) {
-    NextState = SCREEN_MENU;
+    CurrentState = SCREEN_MENU;
 }
 
 //------------------------------------------------------------------------------------
@@ -96,7 +95,7 @@ void OnInstructionBackButtonClicked(void* context) {
 int main(void)
 {
 #if !defined(_DEBUG)
-    SetTraceLogLevel(LOG_ALL);         // Disable raylib trace log messages
+    SetTraceLogLevel(LOG_NONE);         // Disable raylib trace log messages
 #else
     SetTraceLogLevel(LOG_ALL);         
 #endif
@@ -140,7 +139,7 @@ int main(void)
 
     // menu instructions state
     UIDataMenuInstructions = RL_CALLOC(1, sizeof(UIData));
-    ui_add_rectangle_with_text(UIDataMenuInstructions, screenWidth / 2 - 250, screenHeight / 2 - 100, 500, 200, 0, "This is an instruction", 20, ALIGN_HOR_LEFT, ALIGN_VER_CENTER, 4);
+    ui_add_rectangle_with_text(UIDataMenuInstructions, screenWidth / 2 - 300, screenHeight / 2 - 100, 600, 200, 0, "These are instructions. \nJust eh.. You know.. Do stuff.. \nWell, okay, how about YOU write instructions then?!", 20, ALIGN_HOR_LEFT, ALIGN_VER_TOP, 4);
     ui_add_button(UIDataMenuInstructions, screenWidth / 2 - buttonWidth / 2, screenHeight - 80, buttonWidth, buttonHeight, "back", UIStyleButtonMainMenu, OnInstructionBackButtonClicked, NULL, true);
 
     // game state
@@ -187,10 +186,6 @@ int main(void)
 }
 
 void emscripten_loop(void) {
-    if (CurrentState != NextState) {
-        CurrentState = NextState;
-    }
-
     const float dt = GetFrameTime();
 
     switch (CurrentState) {
@@ -206,8 +201,7 @@ void emscripten_loop(void) {
         ui_draw(UIDataMenu, gameColors);
         EndDrawing();
     } break;
-    case SCREEN_MENU_INSTRUCTIONS:
-    {
+    case SCREEN_MENU_INSTRUCTIONS: {
         ui_tick(UIDataMenuInstructions);
 
         BeginDrawing();

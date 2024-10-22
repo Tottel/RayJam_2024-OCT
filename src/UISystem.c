@@ -68,6 +68,13 @@ uint16_t ui_add_rectangle_with_text(UIData* uiData, uint16_t posX, uint16_t posY
 		offsetY = (uint16_t)((height - textDim.y) * ALIGNMENT_TABLE[(int)alignVer]);
 	}
 
+	if (alignHor == 0) {
+		offsetX += 5;
+	}
+	if (alignVer == 0) {
+		offsetY += 5;
+	}
+
 	uiData->RectanglesText[uiData->RectangleCount].Text = text;
 	uiData->RectanglesText[uiData->RectangleCount].PosX = posX + offsetX;
 	uiData->RectanglesText[uiData->RectangleCount].PosY = posY + offsetY;
