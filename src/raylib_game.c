@@ -29,7 +29,7 @@
 #include "UISystem.h"
 #include "image_color_parser.h"
 
-void emscripten_loop(void);
+void app_loop(void);
 
 //----------------------------------------------------------------------------------
 // Defines and Macros
@@ -102,62 +102,63 @@ int main(void)
     //--------------------------------------------------------------------------------------
     InitWindow(screenWidth, screenHeight, "raylib gamejam - Korneel Guns");
     
-    // TODO: Load resources / Initialize variables at this point
-
-    // Load palette
+    // Data/Resource initialization scope
     {
-        Image temp = LoadImage("resources/palettes/custodian.png");
-        assert(temp.data != NULL);
-        if (temp.data != NULL) {
-            int count = temp.width;
-            assert(count == 8);
+        // Load palette
+        {
+            Image temp = LoadImage("resources/palettes/custodian.png");
+            assert(temp.data != NULL);
+            if (temp.data != NULL) {
+                int count = temp.width;
+                assert(count == 8);
 
-            Color* colors = NULL;
-            colors = LoadImageColors(temp);
+                Color* colors = NULL;
+                colors = LoadImageColors(temp);
 
-            memcpy(gameColors, colors, 8 * sizeof(Color));
+                memcpy(gameColors, colors, 8 * sizeof(Color));
 
-            UnloadImageColors(colors);
-            UnloadImage(temp);
+                UnloadImageColors(colors);
+                UnloadImage(temp);
+            }
         }
+
+        UIInstructionTexture1 = load_and_convert_texture("resources/images/panda_fail.jpg", gameColors, 8);
+
+        const uint16_t buttonWidth = 120;
+        const uint16_t buttonHeight = 50;
+
+        // menu state
+        UIDataMenu = RL_CALLOC(1, sizeof(UIData));
+        ui_add_button(UIDataMenu, screenWidth / 2 - buttonWidth / 2, screenHeight - 140, buttonWidth, buttonHeight, "play", UIStyleButtonMainMenu, OnPlayButtonClicked, NULL, true);
+        ui_add_button(UIDataMenu, screenWidth / 2 - buttonWidth / 2, screenHeight - 80, buttonWidth, buttonHeight, "help", UIStyleButtonMainMenu, OnHelpButtonClicked, NULL, true);
+
+        // menu instructions state
+        UIDataMenuInstructions = RL_CALLOC(1, sizeof(UIData));
+        ui_add_rectangle_with_text(UIDataMenuInstructions, screenWidth / 2 - 300, screenHeight / 2 - 100, 600, 200, 0, "These are instructions. \nJust eh.. You know.. Do stuff.. \nWell, okay, how about YOU write instructions then?!", 20, ALIGN_HOR_LEFT, ALIGN_VER_TOP, 4);
+        ui_add_button(UIDataMenuInstructions, screenWidth / 2 - buttonWidth / 2, screenHeight - 80, buttonWidth, buttonHeight, "back", UIStyleButtonMainMenu, OnInstructionBackButtonClicked, NULL, true);
+        ui_add_rectangle_with_texture(UIDataMenuInstructions, 100, 45, 100, 75, 0, UIInstructionTexture1, true, ALIGN_HOR_LEFT, ALIGN_VER_TOP);
+        ui_add_rectangle_with_texture(UIDataMenuInstructions, 210, 45, 100, 75, 0, UIInstructionTexture1, true, ALIGN_HOR_LEFT, ALIGN_VER_TOP);
+
+        // game state
+        gameData = RL_CALLOC(1, sizeof(GameData));
+        UIDataGame = RL_CALLOC(1, sizeof(UIData));   
     }
-
-    UIInstructionTexture1 = load_and_convert_texture("resources/images/panda_fail.jpg", gameColors, 8);
-
-    const uint16_t buttonWidth = 120;
-    const uint16_t buttonHeight = 50;
-
-    // menu state
-    UIDataMenu = RL_CALLOC(1, sizeof(UIData));
-    ui_add_button(UIDataMenu, screenWidth / 2 - buttonWidth / 2, screenHeight - 140, buttonWidth, buttonHeight, "play", UIStyleButtonMainMenu, OnPlayButtonClicked, NULL, true);
-    ui_add_button(UIDataMenu, screenWidth / 2 - buttonWidth / 2, screenHeight - 80, buttonWidth, buttonHeight, "help", UIStyleButtonMainMenu, OnHelpButtonClicked, NULL, true);
-
-    // menu instructions state
-    UIDataMenuInstructions = RL_CALLOC(1, sizeof(UIData));
-    ui_add_rectangle_with_text(UIDataMenuInstructions, screenWidth / 2 - 300, screenHeight / 2 - 100, 600, 200, 0, "These are instructions. \nJust eh.. You know.. Do stuff.. \nWell, okay, how about YOU write instructions then?!", 20, ALIGN_HOR_LEFT, ALIGN_VER_TOP, 4);
-    ui_add_button(UIDataMenuInstructions, screenWidth / 2 - buttonWidth / 2, screenHeight - 80, buttonWidth, buttonHeight, "back", UIStyleButtonMainMenu, OnInstructionBackButtonClicked, NULL, true);
-    ui_add_rectangle_with_texture(UIDataMenuInstructions, screenWidth / 2 - buttonWidth / 2, 10, 100, 100, 0, UIInstructionTexture1, 1.0f, ALIGN_HOR_LEFT, ALIGN_VER_TOP);
-
-    // game state
-    gameData = RL_CALLOC(1, sizeof(GameData));
-    UIDataGame = RL_CALLOC(1, sizeof(UIData));
 
     game_init(gameData);
 
     //--------------------------------------------------------------------------------------
 #if defined(PLATFORM_WEB)
-    emscripten_set_main_loop(emscripten_loop, 0, 1);
+    emscripten_set_main_loop(app_loop, 0, 1);
 #else
     SetTargetFPS(60);     // Set our game frames-per-second
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button
     {
-        emscripten_loop();
+        app_loop();
     }
 #endif
     //--------------------------------------------------------------------------------------
-
 
     game_exit(gameData);
     ui_exit(UIDataGame);
@@ -177,7 +178,7 @@ int main(void)
     return 0;
 }
 
-void emscripten_loop(void) {
+void app_loop(void) {
     const float dt = GetFrameTime();
 
     switch (CurrentState) {
@@ -212,6 +213,7 @@ void emscripten_loop(void) {
         EndDrawing();
     } break;
     default:
+        assert(false); // Should probably implement this state
         break;
     }
 }

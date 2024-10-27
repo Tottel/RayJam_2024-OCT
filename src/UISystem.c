@@ -100,17 +100,35 @@ uint16_t ui_add_rectangle_with_text(UIData* uiData, uint16_t posX, uint16_t posY
 	return rectIndex;
 }
 
-void ui_add_rectangle_with_texture(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t rectWidth, uint16_t rectHeight, uint8_t rectColor, Texture2D texture, float textureScale, UIAlignmentHorizontal alignHor, UIAlignmentVertical alignVer) {
-	if (alignHor < 0 || alignHor > ALIGN_HOR_COUNT - 1) return 0;
-	if (alignVer < 0 || alignVer > ALIGN_VER_COUNT - 1) return 0;
+void ui_add_rectangle_with_texture(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t rectWidth, uint16_t rectHeight, uint8_t rectColor, Texture2D texture, bool scaleToFit, UIAlignmentHorizontal alignHor, UIAlignmentVertical alignVer) {
+	if (alignHor < 0 || alignHor > ALIGN_HOR_COUNT - 1) return;
+	if (alignVer < 0 || alignVer > ALIGN_VER_COUNT - 1) return;
 	
 	uint16_t rectIndex = ui_add_rectangle(uiData, posX, posY, rectWidth, rectHeight, rectColor);
 
 	uint16_t offsetX = 0;
 	uint16_t offsetY = 0;
 
+	float scale = 1.0f;
+
+	if (scaleToFit) {
+		float scaleWidth = 1.0f;
+		float scaleHeight = 1.0f;
+
+		if (texture.width > rectWidth - 10) {
+			scaleWidth = (rectWidth - 10) / (float)texture.width;
+		}
+
+		if (texture.height > rectHeight - 10) {
+			scaleHeight = (rectHeight - 10) / (float)texture.height;
+		}
+
+		// We take the smallest scale
+		scale = scaleWidth < scaleHeight ? scaleWidth : scaleHeight;
+	}
+
 	if (alignHor > 0 || alignVer > 0) {
-		Vector2 textureDim = { texture.width * textureScale, texture.height * textureScale };
+		Vector2 textureDim = { texture.width, texture.height };
 
 		offsetX = (uint16_t)((rectWidth - textureDim.x) * ALIGNMENT_TABLE[(int)alignHor]);
 		offsetY = (uint16_t)((rectHeight - textureDim.y) * ALIGNMENT_TABLE[(int)alignVer]);
@@ -126,7 +144,7 @@ void ui_add_rectangle_with_texture(UIData* uiData, uint16_t posX, uint16_t posY,
 	uiData->Textures[uiData->TextureCount].Texture = texture;
 	uiData->Textures[uiData->TextureCount].PosX = posX + offsetX;
 	uiData->Textures[uiData->TextureCount].PosY = posY + offsetY;
-	uiData->Textures[uiData->TextureCount].Scale = textureScale;
+	uiData->Textures[uiData->TextureCount].Scale = scale;
 
 	uiData->TextureCount += 1;
 }
