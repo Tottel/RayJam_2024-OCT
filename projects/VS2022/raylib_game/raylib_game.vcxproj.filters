@@ -4,6 +4,7 @@
     <ClCompile Include="..\..\..\src\raylib_game.c" />
     <ClCompile Include="..\..\..\src\game.c" />
     <ClCompile Include="..\..\..\src\UISystem.c" />
+    <ClCompile Include="..\..\..\src\image_color_parser.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\..\src\raylib_game.rc" />
@@ -11,6 +12,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\src\game.h" />
     <ClInclude Include="..\..\..\src\UISystem.h" />
+    <ClInclude Include="..\..\..\src\image_color_parser.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="resources">
@@ -18,6 +20,9 @@
     </Filter>
     <Filter Include="resources\palettes">
       <UniqueIdentifier>{5b58b22b-947c-4eff-aade-212a3bd59601}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\images">
+      <UniqueIdentifier>{85be112b-9994-4388-a27e-f7b28fb5e811}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -29,6 +34,12 @@
     </Image>
     <Image Include="..\..\..\src\resources\palettes\rust-gold.png">
       <Filter>resources\palettes</Filter>
+    </Image>
+    <Image Include="..\..\..\src\resources\images\testtest.png">
+      <Filter>resources\images</Filter>
+    </Image>
+    <Image Include="..\..\..\src\resources\images\panda_fail.jpg">
+      <Filter>resources\images</Filter>
     </Image>
   </ItemGroup>
 </Project>

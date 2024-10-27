@@ -27,6 +27,7 @@
 
 #include "game.h"
 #include "UISystem.h"
+#include "image_color_parser.h"
 
 void emscripten_loop(void);
 
@@ -61,10 +62,6 @@ typedef enum {
 static const uint16_t screenWidth = 800;
 static const uint16_t screenHeight = 450;
 
-static const int TargetFPS = 60;
-
-static RenderTexture2D target = { 0 };  // Render texture to render our game
-
 static Color gameColors[8];
 
 static GameScreen CurrentState = { SCREEN_MENU };
@@ -72,6 +69,7 @@ static GameScreen CurrentState = { SCREEN_MENU };
 // menu state
 static UIData* UIDataMenu = NULL;
 static UIData* UIDataMenuInstructions = NULL;
+static Texture2D UIInstructionTexture1;
 
 // game state
 static GameData* gameData = NULL;
@@ -105,11 +103,6 @@ int main(void)
     InitWindow(screenWidth, screenHeight, "raylib gamejam - Korneel Guns");
     
     // TODO: Load resources / Initialize variables at this point
-    
-    // Render texture to draw full screen, enables screen scaling
-    // NOTE: If screen is scaled, mouse input should be scaled proportionally
-    target = LoadRenderTexture(screenWidth, screenHeight);
-    SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
 
     // Load palette
     {
@@ -129,6 +122,8 @@ int main(void)
         }
     }
 
+    UIInstructionTexture1 = load_and_convert_texture("resources/images/panda_fail.jpg", gameColors, 8);
+
     const uint16_t buttonWidth = 120;
     const uint16_t buttonHeight = 50;
 
@@ -141,6 +136,7 @@ int main(void)
     UIDataMenuInstructions = RL_CALLOC(1, sizeof(UIData));
     ui_add_rectangle_with_text(UIDataMenuInstructions, screenWidth / 2 - 300, screenHeight / 2 - 100, 600, 200, 0, "These are instructions. \nJust eh.. You know.. Do stuff.. \nWell, okay, how about YOU write instructions then?!", 20, ALIGN_HOR_LEFT, ALIGN_VER_TOP, 4);
     ui_add_button(UIDataMenuInstructions, screenWidth / 2 - buttonWidth / 2, screenHeight - 80, buttonWidth, buttonHeight, "back", UIStyleButtonMainMenu, OnInstructionBackButtonClicked, NULL, true);
+    ui_add_rectangle_with_texture(UIDataMenuInstructions, screenWidth / 2 - buttonWidth / 2, 10, 100, 100, 0, UIInstructionTexture1, 1.0f, ALIGN_HOR_LEFT, ALIGN_VER_TOP);
 
     // game state
     gameData = RL_CALLOC(1, sizeof(GameData));
@@ -152,7 +148,7 @@ int main(void)
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(emscripten_loop, 0, 1);
 #else
-    SetTargetFPS(TargetFPS);     // Set our game frames-per-second
+    SetTargetFPS(60);     // Set our game frames-per-second
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button
@@ -168,16 +164,12 @@ int main(void)
     ui_exit(UIDataMenu);
     ui_exit(UIDataMenuInstructions);
 
+    UnloadTexture(UIInstructionTexture1);
+
     RL_FREE(gameData);
     RL_FREE(UIDataGame);
     RL_FREE(UIDataMenu);
     RL_FREE(UIDataMenuInstructions);
-
-    // De-Initialization
-    //--------------------------------------------------------------------------------------
-    UnloadRenderTexture(target);
-    
-    // TODO: Unload all loaded resources at this point
 
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
@@ -215,7 +207,7 @@ void emscripten_loop(void) {
 
         BeginDrawing();
         ClearBackground(gameColors[4]);
-        game_draw(target, gameData, gameColors, screenWidth, screenHeight);
+        game_draw(gameData, gameColors, screenWidth, screenHeight);
         ui_draw(UIDataGame, gameColors);
         EndDrawing();
     } break;

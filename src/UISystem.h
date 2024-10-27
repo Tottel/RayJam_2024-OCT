@@ -6,6 +6,7 @@
 #include <stdbool.h>
 
 #define MAX_RECTANGLES 50
+#define MAX_TEXTURES 20
 #define MAX_BUTTONS 50
 
 static const float ALIGNMENT_TABLE[3] = { 0.0f, 0.5f, 1.0f };
@@ -13,13 +14,15 @@ static const float ALIGNMENT_TABLE[3] = { 0.0f, 0.5f, 1.0f };
 typedef enum UIAlignmentHorizontal {
     ALIGN_HOR_LEFT = 0,
     ALIGN_HOR_CENTER,
-    ALIGN_HOR_RIGHT
+    ALIGN_HOR_RIGHT,
+    ALIGN_HOR_COUNT
 } UIAlignmentHorizontal;
 
 typedef enum UIAlignmentVertical {
     ALIGN_VER_TOP = 0,
     ALIGN_VER_CENTER,
-    ALIGN_VER_BOT
+    ALIGN_VER_BOT,
+    ALIGN_VER_COUNT
 } UIAlignmentVertical;
 
 typedef struct UIButtonHandleValue {
@@ -83,6 +86,13 @@ typedef struct UIText {
     uint8_t ColorIndex;
 } UIText;
 
+typedef struct UITexture {
+    Texture2D Texture;
+    uint16_t PosX;
+    uint16_t PosY;
+    float Scale;
+} UITexture;
+
 typedef struct UIStyleButton {
     UIAlignmentHorizontal TextAlignmentHorizontal;
     UIAlignmentVertical TextAlignmentVertical;
@@ -118,6 +128,9 @@ typedef struct UIData {
     UIText RectanglesText[MAX_RECTANGLES];
     uint16_t RectangleCount;
 
+    UITexture Textures[MAX_TEXTURES];
+    uint16_t TextureCount;
+
     UIButton ButtonsAll[MAX_BUTTONS];
     UIButtonEnabled ButtonsEnabled[MAX_BUTTONS];
     UIButtonDisabled ButtonsDisabled[MAX_BUTTONS];
@@ -133,8 +146,11 @@ void ui_exit(UIData* uiData);
 void ui_tick(UIData* uiData);
 void ui_draw(UIData* uiData, Color* gameColors);
 
+uint16_t ui_add_rectangle(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t width, uint16_t height, uint8_t rectColor);
 uint16_t ui_add_rectangle_with_text(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t width, uint16_t height, uint8_t rectColor, const char* text, int fontSize, UIAlignmentHorizontal alignHor, UIAlignmentVertical alignVer, uint8_t textColor);
+void ui_add_rectangle_with_texture(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t rectWidth, uint16_t rectHeight, uint8_t rectColor, Texture2D texture, float imageScale, UIAlignmentHorizontal alignHor, UIAlignmentVertical alignVer);
 uint16_t ui_add_button(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t width, uint16_t height, const char* text, UIStyleButton uiStyle, void(*button_clicked)(void*), void* context, bool enabled);
+
 
 void ui_toggle_button(UIData* uiData, uint16_t buttonHandle, bool enabled);
 
