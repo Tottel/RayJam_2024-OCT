@@ -14,6 +14,9 @@ typedef struct GameData {
 	float Timer;
 	float TileSize;
 
+	float CameraPosX;
+	float CameraSpeed;
+
 	Rectangle DebugRectangles[15];
 	Color DebugRectanglesColors[15];
 	int DebugRectangleCount;

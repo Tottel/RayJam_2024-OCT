@@ -25,8 +25,8 @@ void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
     bool againstWall = false; // if 1 char is against a wall, they are both stuck
     uint32_t wallX = 0;
 
-    Rectangle playerRecs[2] = { (Rectangle) { gameData->PlayerPosX, gameData->PlayerPosY[0], gameData->TileSize, gameData->TileSize },
-                                (Rectangle) { gameData->PlayerPosX, gameData->PlayerPosY[1], gameData->TileSize, gameData->TileSize }};
+    Rectangle playerRecs[2] = { (Rectangle) { gameData->PlayerPosX + 0.5f, gameData->PlayerPosY[0] + 0.5f, gameData->TileSize, gameData->TileSize },
+                                (Rectangle) { gameData->PlayerPosX + 0.5f, gameData->PlayerPosY[1] - 0.5f, gameData->TileSize, gameData->TileSize }};
 
     gameData->DebugRectangleCount = 0;
 
@@ -97,7 +97,7 @@ void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
             againstWall = true;
             wallX = checkX;
             break;
-        }
+        } 
     }
 
     // wall collision check char 2: check for 2 adjacing tiles to our right
@@ -119,7 +119,9 @@ void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
         }
     }
 
-    gameData->PlayerPosX += againstWall ? 0.0f : 200.0f * dt;
+    const float playerMoveSpeed = 300.0f;
+
+    gameData->PlayerPosX += againstWall ? 0.0f : playerMoveSpeed * dt;
 
     for (int i = 0; i < 2; i++) {
         gameData->JumpVelocity[i] = onGround[i] ? 0 : (gameData->JumpVelocity[i] - (250.0f * dt));
@@ -142,15 +144,22 @@ void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
     gameData->PlayerPosY[0] -= gameData->JumpVelocity[0] * dt;
     gameData->PlayerPosY[1] += gameData->JumpVelocity[1] * dt;
 
-    if (onGround[0]) {
-        gameData->PlayerPosY[0] = (groundY[0] - 1) * gameData->TileSize + 1.0f;
+    float cameraLagDistance = gameData->PlayerPosX - gameData->CameraPosX;
+    float catchupMultiplier = 1.0f;
+    if (cameraLagDistance > 200) {
+        catchupMultiplier = cameraLagDistance / 50.0f;
     }
-    if (onGround[1]) {
-        gameData->PlayerPosY[1] = (groundY[1] + 1) * gameData->TileSize - 1.0f;
+
+    if (againstWall) { 
+        gameData->CameraSpeed -= 50.0f * dt;
+        gameData->CameraSpeed = gameData->CameraSpeed < 150.0f ? 150.0f : gameData->CameraSpeed;
     }
-    if (againstWall) {
-        gameData->PlayerPosX = (wallX - 1) * gameData->TileSize + 1.0f;
+    else {
+        gameData->CameraSpeed += 30.0f * catchupMultiplier * dt;
+        gameData->CameraSpeed = gameData->CameraSpeed > (playerMoveSpeed - 10.0f) ? (playerMoveSpeed - 10.0f) : gameData->CameraSpeed;
     }
+
+    gameData->CameraPosX += gameData->CameraSpeed * dt;
 }
 
 void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors) {
@@ -165,7 +174,7 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
             case TILE_VOID:
                 break;
             case TILE_FLOOR:
-                DrawRectangle(x * tileSize, y * tileSize, tileSize, tileSize, gameColors[0]);
+                DrawRectangle(x * tileSize - gameData->CameraPosX, y * tileSize, tileSize, tileSize, gameColors[0]);
                 break;
             default:
                 break;
@@ -174,13 +183,16 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
     }
 
     // Draw char 1
-    DrawRectangleV((Vector2){ gameData->PlayerPosX, gameData->PlayerPosY[0] }, (Vector2){ tileSize, tileSize }, gameColors[1]);
+    DrawRectangleV((Vector2){ gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[0] }, (Vector2){ tileSize, tileSize }, gameColors[1]);
 
     // Draw char 2
-    DrawRectangleV((Vector2){ gameData->PlayerPosX, gameData->PlayerPosY[1] }, (Vector2){ tileSize, tileSize }, gameColors[2]);
+    DrawRectangleV((Vector2){ gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[1] }, (Vector2){ tileSize, tileSize }, gameColors[2]);
 
     for (int i = 0; i < gameData->DebugRectangleCount; ++i) {
-        DrawRectangleRec(gameData->DebugRectangles[i], gameData->DebugRectanglesColors[i]);
+        Rectangle rect = gameData->DebugRectangles[i];
+        rect.x -= gameData->CameraPosX;
+
+        DrawRectangleRec(rect, gameData->DebugRectanglesColors[i]);
     }
 }
 
@@ -212,6 +224,9 @@ void game_restart(GameData* gameData, const LevelData* levelData) {
 
     gameData->GoingUp[0] = false;
     gameData->GoingUp[1] = false;
+
+    gameData->CameraPosX = 0.0f;
+    gameData->CameraSpeed = 0.0f;
 
     gameData->Timer = 0.0f;
 }
