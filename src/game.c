@@ -5,40 +5,7 @@
 #include <assert.h>
 #include <stddef.h>
 
-void game_init(GameData* game) {
-    game->ActiveColor = 2;
-}
-
-void game_exit(GameData* gameData) {
-
-}
-
-void game_tick(GameData* gameData, LevelData* levelData, float dt) {
-    gameData->Timer += dt;
-
-    if (gameData->Timer >= 1.0f) {
-        gameData->Timer = 0.0f;
-
-        gameData->ActiveColor += 1;
-
-        if (gameData->ActiveColor > 7) {
-            gameData->ActiveColor = 0;
-        }
-    }
-}
-
-void game_draw(GameData* gameData, LevelData* levelData, Color* gameColors, int screenWidth, int screenHeight) {
-    //BeginTextureMode(renderTarget);
-    //ClearBackground(RAYWHITE);
-    ////
-    //////// TODO: Draw your game screen here
-    //DrawRectangle(10, 10, screenWidth - 20, screenHeight - 20, gameColors[gameData->ActiveColor]);
-    ////
-    //EndTextureMode();
-
-    // Render to screen (main framebuffer)
-
-    //DrawCircle(200, 200, 200, gameColors[gameData->ActiveColor]);
+void game_init(GameData* game, const LevelData* levelData, int screenWidth, int screenHeight) {
     const float cubeSize = screenHeight / (float)levelData->LevelHeight;
 
     for (uint16_t y = 0; y < levelData->LevelHeight; y++) {
@@ -46,9 +13,41 @@ void game_draw(GameData* gameData, LevelData* levelData, Color* gameColors, int 
             uint16_t tileType = levelData->Tiles[x + (y * levelData->LevelWidth)];
 
             switch (tileType) {
-            case 0: // void
+            case TILE_SPAWN_1:
+                game->PlayerPosX = x * cubeSize;
+                game->PlayerPosY[0] = y * cubeSize;
                 break;
-            case 1: // walls/floors 
+            case TILE_SPAWN_2:
+                game->PlayerPosX = x * cubeSize; // Should be the same as before..
+                game->PlayerPosY[1] = y * cubeSize;
+                break;
+            default:
+                break;
+            }
+        }
+    }
+}
+
+void game_exit(GameData* gameData) {
+
+}
+
+void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
+    gameData->Timer += dt;
+}
+
+void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors, int screenWidth, int screenHeight) {
+    const float cubeSize = screenHeight / (float)levelData->LevelHeight;
+
+    // Draw level
+    for (uint16_t y = 0; y < levelData->LevelHeight; y++) {
+        for (uint32_t x = 0; x < levelData->LevelWidth; x++) {
+            uint16_t tileType = levelData->Tiles[x + (y * levelData->LevelWidth)];
+
+            switch (tileType) {
+            case TILE_VOID:
+                break;
+            case TILE_FLOOR:
                 DrawRectangle(x * cubeSize, y * cubeSize, cubeSize, cubeSize, gameColors[0]);
                 break;
             default:
@@ -57,13 +56,10 @@ void game_draw(GameData* gameData, LevelData* levelData, Color* gameColors, int 
         }
     }
 
-    //DrawText("YAYAYAYAYAYAYA", 100, 100, 20, GREEN);
-    //TraceLog(LOG_DEBUG, "drawing");
+    // Draw char 1
+    DrawRectangle(gameData->PlayerPosX, gameData->PlayerPosY[0], cubeSize, cubeSize, gameColors[1]);
 
-    // Draw render texture to screen, scaled if required
-    //DrawTexturePro(renderTarget.texture, (Rectangle) { 0, 0, (float)renderTarget.texture.width, -(float)renderTarget.texture.height }, (Rectangle) { 0, 0, (float)renderTarget.texture.width, (float)renderTarget.texture.height }, (Vector2) { 0, 0 }, 0.0f, WHITE);
+    // Draw char 2
+    DrawRectangle(gameData->PlayerPosX, gameData->PlayerPosY[1], cubeSize, cubeSize, gameColors[2]);
 
-    // TODO: Draw everything that requires to be drawn at this point, maybe UI?
-
-    //EndDrawing();
 }

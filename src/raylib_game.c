@@ -161,7 +161,7 @@ int main(void)
         parse_level("resources/levels/level_1.txt", levelData);
     }
 
-    game_init(gameData);
+    game_init(gameData, levelData, screenWidth, screenHeight);
 
     //--------------------------------------------------------------------------------------
 #if defined(PLATFORM_WEB)

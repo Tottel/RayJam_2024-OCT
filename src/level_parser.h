@@ -1,14 +1,13 @@
 #ifndef LEVELPARSER_H
 #define LEVELPARSER_H
 
-#include <raylib.h>
+#include <raylib.h> 
 #include <stdint.h>
 
-// Tile Types:
-// 0 = void
-// 1 = floor
-// 2 = player 1 spawn 
-// 3 = player 2 spawn
+#define TILE_VOID    0
+#define TILE_FLOOR   1
+#define TILE_SPAWN_1 2
+#define TILE_SPAWN_2 3
 
 typedef struct LevelData {
 	uint16_t* Tiles;
