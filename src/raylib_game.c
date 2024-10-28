@@ -115,6 +115,7 @@ int main(void)
     // Initialization
     //--------------------------------------------------------------------------------------
     InitWindow(screenWidth, screenHeight, "raylib gamejam - Korneel Guns");
+    InitAudioDevice();
     
     // Data/Resource initialization scope
     {
@@ -190,6 +191,7 @@ int main(void)
     RL_FREE(UIDataMenu);
     RL_FREE(UIDataMenuInstructions);
 
+    CloseAudioDevice();
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 
@@ -226,8 +228,9 @@ void app_loop(void) {
 
         BeginDrawing();
         ClearBackground(gameColors[4]);
-        game_draw(gameData, levelData, gameColors, screenWidth, screenHeight);
+        game_draw(gameData, levelData, gameColors);
         ui_draw(UIDataGame, gameColors);
+        DrawFPS(10, 10);
         EndDrawing();
     } break;
     default:

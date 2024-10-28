@@ -24,7 +24,7 @@ void parse_level(const char* path, LevelData* data) {
 					width = widthCounter;
 				}
 
-				widthCounter = 0;
+				widthCounter = 0; 
 				charCounter += 1;
 
 				continue;
@@ -40,12 +40,12 @@ void parse_level(const char* path, LevelData* data) {
 				break;
 			}
 
-			widthCounter += 1;
+			widthCounter += 1; 
 			charCounter += 1;
 		}
 	}
 
-	data->LevelWidth = width;
+	data->LevelWidth = width; 
 	data->LevelHeight = height;
 	data->Tiles = RL_CALLOC(width * height, sizeof(uint16_t)); 
 
