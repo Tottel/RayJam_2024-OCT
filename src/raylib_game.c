@@ -11,6 +11,15 @@
 *
 ********************************************************************************************/
 
+
+// Game jam idea for the theme: "Connections"
+// A platformer-style infinite-runner game with two characters vertically mirrored across the middle of the screen.
+// The characters have to run (auto?) to the right in unison (horizontal movement is identical), but the characters need certain abilities/attributes that
+// can only be active on 1 character at a time. 
+// e.g.: jumping - shooting - ...
+// Player has to press a keyboard-key to pass an ability to the other character before they can use it!
+// - Certain buttons need to be shot at to open something for the other char?
+
 #include "raylib.h"
 #include "utils.h"
 
@@ -26,6 +35,7 @@
 #include <assert.h>
 
 #include "game.h"
+#include "level_parser.h"
 #include "UISystem.h"
 #include "image_color_parser.h"
 
@@ -74,16 +84,20 @@ static Texture2D UIInstructionTexture1;
 // game state
 static GameData* gameData = NULL;
 static UIData* UIDataGame = NULL;
+static LevelData* levelData = NULL;
 
 void OnPlayButtonClicked(void* context) {
+    (void)context;
     CurrentState = SCREEN_GAMEPLAY;
 }
 
 void OnHelpButtonClicked(void* context) {
+    (void)context;
     CurrentState = SCREEN_MENU_INSTRUCTIONS;
 }
 
 void OnInstructionBackButtonClicked(void* context) {
+    (void)context;
     CurrentState = SCREEN_MENU;
 }
 
@@ -142,6 +156,9 @@ int main(void)
         // game state
         gameData = RL_CALLOC(1, sizeof(GameData));
         UIDataGame = RL_CALLOC(1, sizeof(UIData));   
+        levelData = RL_CALLOC(1, sizeof(LevelData));
+
+        parse_level("resources/levels/level_1.txt", levelData);
     }
 
     game_init(gameData);
@@ -159,7 +176,7 @@ int main(void)
     }
 #endif
     //--------------------------------------------------------------------------------------
-
+  
     game_exit(gameData);
     ui_exit(UIDataGame);
     ui_exit(UIDataMenu);
@@ -167,6 +184,7 @@ int main(void)
 
     UnloadTexture(UIInstructionTexture1);
 
+    RL_FREE(levelData);
     RL_FREE(gameData);
     RL_FREE(UIDataGame);
     RL_FREE(UIDataMenu);
@@ -203,12 +221,12 @@ void app_loop(void) {
         EndDrawing();
     } break;
     case SCREEN_GAMEPLAY: {
-        game_tick(gameData, dt);
+        game_tick(gameData, levelData, dt);
         ui_tick(UIDataGame);
 
         BeginDrawing();
         ClearBackground(gameColors[4]);
-        game_draw(gameData, gameColors, screenWidth, screenHeight);
+        game_draw(gameData, levelData, gameColors, screenWidth, screenHeight);
         ui_draw(UIDataGame, gameColors);
         EndDrawing();
     } break;

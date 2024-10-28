@@ -1,6 +1,7 @@
 #include "game.h"
 #include "utils.h"
 
+#include <stdint.h>
 #include <assert.h>
 #include <stddef.h>
 
@@ -12,7 +13,7 @@ void game_exit(GameData* gameData) {
 
 }
 
-void game_tick(GameData* gameData, float dt) {
+void game_tick(GameData* gameData, LevelData* levelData, float dt) {
     gameData->Timer += dt;
 
     if (gameData->Timer >= 1.0f) {
@@ -26,7 +27,7 @@ void game_tick(GameData* gameData, float dt) {
     }
 }
 
-void game_draw(GameData* gameData, Color* gameColors, int screenWidth, int screenHeight) {
+void game_draw(GameData* gameData, LevelData* levelData, Color* gameColors, int screenWidth, int screenHeight) {
     //BeginTextureMode(renderTarget);
     //ClearBackground(RAYWHITE);
     ////
@@ -37,7 +38,24 @@ void game_draw(GameData* gameData, Color* gameColors, int screenWidth, int scree
 
     // Render to screen (main framebuffer)
 
-    //DrawCircle(200, 200, 200, gameData->Palette_1[gameData->ActiveColor]);
+    //DrawCircle(200, 200, 200, gameColors[gameData->ActiveColor]);
+    const float cubeSize = screenHeight / (float)levelData->LevelHeight;
+
+    for (uint16_t y = 0; y < levelData->LevelHeight; y++) {
+        for (uint32_t x = 0; x < levelData->LevelWidth; x++) {
+            uint16_t tileType = levelData->Tiles[x + (y * levelData->LevelWidth)];
+
+            switch (tileType) {
+            case 0: // void
+                break;
+            case 1: // walls/floors 
+                DrawRectangle(x * cubeSize, y * cubeSize, cubeSize, cubeSize, gameColors[0]);
+                break;
+            default:
+                break;
+            }  
+        }
+    }
 
     //DrawText("YAYAYAYAYAYAYA", 100, 100, 20, GREEN);
     //TraceLog(LOG_DEBUG, "drawing");
