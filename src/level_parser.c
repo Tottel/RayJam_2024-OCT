@@ -7,7 +7,7 @@
 void parse_level(const char* path, LevelData* data) {
 	const char* levelTxtData = LoadFileText(path);  
 
-	// We're going to do this in passes to avoid too much dynamic memory allocation
+	// We're going to do this in passes to avoid too much dynamic memory allocation and complicated loops
 	// Get the max width and height first
 	uint32_t width = 0;
 	uint16_t height = 0;

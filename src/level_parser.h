@@ -11,7 +11,7 @@
 
 typedef struct LevelData {
 	uint16_t* Tiles;
-	uint32_t LevelWidth;
+	uint32_t LevelWidth; 
 	uint16_t LevelHeight;
 } LevelData;
 

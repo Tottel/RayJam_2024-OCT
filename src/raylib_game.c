@@ -86,6 +86,10 @@ static GameData* gameData = NULL;
 static UIData* UIDataGame = NULL;
 static LevelData* levelData = NULL;
 
+static float slowMoMultiplier = 1.0f;
+
+static float timer = 0.0f;
+
 void OnPlayButtonClicked(void* context) {
     (void)context;
     CurrentState = SCREEN_GAMEPLAY;
@@ -201,7 +205,18 @@ int main(void)
 void app_loop(void) {
     float dt = GetFrameTime();
 
+    // hacky speedup
+    dt *= 1.5f;
+
+#if defined (_DEBUG)
     if (dt > 0.5f) dt = 0.5f;
+
+    slowMoMultiplier += GetMouseWheelMove() * 0.05f;
+    slowMoMultiplier -= IsKeyPressed(KEY_O) * 0.1f;
+    slowMoMultiplier += IsKeyPressed(KEY_P) * 0.1f;
+
+    dt *= slowMoMultiplier;
+#endif
 
     switch (CurrentState) {
     case SCREEN_LOGO:
@@ -226,13 +241,15 @@ void app_loop(void) {
     } break;
     case SCREEN_GAMEPLAY: {
 #if defined(_DEBUG)
-        if (IsKeyPressed(KEY_R))             {
+        if (IsKeyPressed(KEY_R)) {
             game_restart(gameData, levelData);
         }
 #endif
 
         game_tick(gameData, levelData, dt);
         ui_tick(UIDataGame);
+
+        timer += dt;
 
         BeginDrawing();
         ClearBackground(gameColors[4]);

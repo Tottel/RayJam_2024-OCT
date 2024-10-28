@@ -23,37 +23,45 @@ void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
     uint16_t groundY[2] = { 0 };
     
     bool againstWall = false; // if 1 char is against a wall, they are both stuck
-    uint32_t wallX = 0;
+    uint32_t wallX = 0; 
 
-    Rectangle playerRecsForGround[2] = { (Rectangle) { gameData->PlayerPosX, gameData->PlayerPosY[0] + gameData->TileSize - 4.0f + 0.5f, gameData->TileSize, 4.0f },
-                                         (Rectangle) { gameData->PlayerPosX, gameData->PlayerPosY[1] - 0.5f, gameData->TileSize, 4.0f }};
+    Rectangle playerRecsForGround[2] = { (Rectangle) { gameData->PlayerPosX, gameData->PlayerPosY[0] + gameData->TileSize - 10.0f + 0.5f, gameData->TileSize, 10.0f },
+                                         (Rectangle) { gameData->PlayerPosX, gameData->PlayerPosY[1] - 0.5f, gameData->TileSize, 10.0f }};
 
-    Rectangle playerRecsForWalls[2] = { (Rectangle) { gameData->PlayerPosX + 0.5f + gameData->TileSize - 4.0f, gameData->PlayerPosY[0], 4.0f, gameData->TileSize },
-                                        (Rectangle) { gameData->PlayerPosX + 0.5f + gameData->TileSize - 4.0f, gameData->PlayerPosY[1], 4.0f, gameData->TileSize } };
+    Rectangle playerRecsForWalls[2] = { (Rectangle) { gameData->PlayerPosX + 0.5f + gameData->TileSize - 10.0f, gameData->PlayerPosY[0] + 5.0f, 10.0f, gameData->TileSize - 10.0f },
+                                        (Rectangle) { gameData->PlayerPosX + 0.5f + gameData->TileSize - 10.0f, gameData->PlayerPosY[1] + 5.0f, 10.0f, gameData->TileSize - 10.0f }};
 
     gameData->DebugRectangleCount = 0;
+
+    gameData->DebugRectangles[gameData->DebugRectangleCount] = playerRecsForGround[0];
+    gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = GREEN;
+    gameData->DebugRectangleCount += 1;
+
+    gameData->DebugRectangles[gameData->DebugRectangleCount] = playerRecsForWalls[0];
+    gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = GREEN;
+    gameData->DebugRectangleCount += 1;
 
     // ground CollisionCheck char 1: Check for the 3 adjacing tiles directly underneath us
     if (!gameData->GoingUp[0]) {
         for (int offsetX = -1; offsetX < 2; offsetX++) {
             int charX = gameData->PlayerPosX / gameData->TileSize;
-            int charY = (gameData->PlayerPosY[0] + gameData->TileSize * 0.95f) / gameData->TileSize;
+            int charY = (gameData->PlayerPosY[0] + gameData->TileSize * 0.8f) / gameData->TileSize;
 
             int checkX = charX + offsetX;
             int checkY = charY + 1; 
 
-            Rectangle levelRect = { checkX * gameData->TileSize, checkY * gameData->TileSize, gameData->TileSize, 5.0f };
-            gameData->DebugRectangles[gameData->DebugRectangleCount] = levelRect;
-            gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
-            gameData->DebugRectangleCount += 1;
+            Rectangle levelRect = { checkX * gameData->TileSize, checkY * gameData->TileSize, gameData->TileSize, 10.0f };
+            //gameData->DebugRectangles[gameData->DebugRectangleCount] = levelRect;
+            //gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
+            //gameData->DebugRectangleCount += 1;
 
             if (levelData->Tiles[checkX + (checkY * levelData->LevelWidth)] != TILE_FLOOR) continue;
 
             if (CheckCollisionRecs(playerRecsForGround[0], levelRect)) {
-                gameData->DebugRectanglesColors[gameData->DebugRectangleCount-1] = RED;
+                //gameData->DebugRectanglesColors[gameData->DebugRectangleCount-1] = RED;
                 onGround[0] = true; 
                 groundY[0] = checkY;
-                break;
+                //break;
             }
         }
     }
@@ -62,26 +70,26 @@ void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
     if (!gameData->GoingUp[1]) {
         for (int offsetX = -1; offsetX < 2; offsetX++) {
             int charX = gameData->PlayerPosX / gameData->TileSize;
-            int charY = (gameData->PlayerPosY[1] + gameData->TileSize * 0.1f) / gameData->TileSize;
+            int charY = (gameData->PlayerPosY[1] + gameData->TileSize * 0.2f) / gameData->TileSize;
 
             int checkX = charX + offsetX;
             int checkY = charY - 1;
 
 
-            Rectangle levelRect = { checkX * gameData->TileSize, (checkY * gameData->TileSize) + gameData->TileSize - 5.0f, gameData->TileSize, 5.0f };
-            gameData->DebugRectangles[gameData->DebugRectangleCount] = levelRect;
-            gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
-            gameData->DebugRectangleCount += 1;
+            Rectangle levelRect = { checkX * gameData->TileSize, (checkY * gameData->TileSize) + gameData->TileSize - 10.0f, gameData->TileSize, 10.0f };
+            //gameData->DebugRectangles[gameData->DebugRectangleCount] = levelRect;
+            //gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
+            //gameData->DebugRectangleCount += 1;
 
             if (levelData->Tiles[checkX + (checkY * levelData->LevelWidth)] != TILE_FLOOR) continue;
 
 
             if (CheckCollisionRecs(playerRecsForGround[1], levelRect)) {
-                gameData->DebugRectanglesColors[gameData->DebugRectangleCount - 1] = RED;
+                //gameData->DebugRectanglesColors[gameData->DebugRectangleCount - 1] = RED;
                 //TraceLog(LOG_ALL, "char 2 on floor!");
                 onGround[1] = true;
                 groundY[1] = checkY;
-                break;
+                //break;
             }
         }
     }
@@ -96,7 +104,7 @@ void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
 
         if (checkY < 0) continue;
 
-        Rectangle levelRect = { (checkX * gameData->TileSize), checkY * gameData->TileSize + 2.0f, 5.0f, gameData->TileSize - 4.0f};
+        Rectangle levelRect = { (checkX * gameData->TileSize), checkY * gameData->TileSize + 2.0f, 10.0f, gameData->TileSize - 10.0f};
         gameData->DebugRectangles[gameData->DebugRectangleCount] = levelRect;
         gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
         gameData->DebugRectangleCount += 1;
@@ -118,17 +126,17 @@ void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
         int charY = (gameData->PlayerPosY[1] + gameData->TileSize*0.1f) / gameData->TileSize;
 
         int checkX = charX + 1;
-        int checkY = charY + offsetY;      
+        int checkY = charY + offsetY;
 
-        Rectangle levelRect = { (checkX * gameData->TileSize), checkY * gameData->TileSize + 2.0f, 5.0f, gameData->TileSize - 4.0f };
-        gameData->DebugRectangles[gameData->DebugRectangleCount] = levelRect;
-        gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
-        gameData->DebugRectangleCount += 1;
+        Rectangle levelRect = { (checkX * gameData->TileSize), checkY * gameData->TileSize + 2.0f, 10.0f, gameData->TileSize - 10.0f };
+        //gameData->DebugRectangles[gameData->DebugRectangleCount] = levelRect;
+        //gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
+        //gameData->DebugRectangleCount += 1;
 
         if (levelData->Tiles[checkX + (checkY * levelData->LevelWidth)] != TILE_FLOOR) continue;
 
         if (CheckCollisionRecs(playerRecsForWalls[1], levelRect)) {
-            gameData->DebugRectanglesColors[gameData->DebugRectangleCount - 1] = RED;
+            //gameData->DebugRectanglesColors[gameData->DebugRectangleCount - 1] = RED;
 
             againstWall = true;
             wallX = checkX;
@@ -141,19 +149,34 @@ void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
     gameData->PlayerPosX += againstWall ? 0.0f : playerMoveSpeed * dt;
 
     for (int i = 0; i < 2; i++) {
-        gameData->JumpVelocity[i] = onGround[i] ? 0 : (gameData->JumpVelocity[i] - (250.0f * dt));
+        gameData->JumpVelocity[i] = onGround[i] ? 0 : (gameData->JumpVelocity[i] - (400.0f * dt));
 
-        if (gameData->JumpVelocity[i] < -0.1f) {
+        if (gameData->JumpVelocity[i] < -0.1f) { 
             gameData->GoingUp[i] = false;
+        }
+    }
+
+    for (int i = 0; i < 2; i++) {
+        if (gameData->GoingUp[i]) {
+            gameData->JumpTimer[i] += dt;
         }
     }
 
     if (IsKeyPressed(KEY_SPACE)) {
         for (int i = 0; i < 2; i++) {
             if (onGround[i]) {
-                gameData->JumpVelocity[i] = 150.0f;
+                gameData->JumpVelocity[i] = 200.0f;
                 gameData->GoingUp[i] = true;
+                gameData->JumpTimer[i] = 0.0f;
                 onGround[i] = false;
+            }
+        }
+    }
+
+    if (IsKeyDown(KEY_SPACE)) {
+        for (int i = 0; i < 2; i++) {
+            if (!onGround[i] && gameData->JumpTimer[i] < 0.5f) {
+                gameData->JumpVelocity[i] += 200.0f * dt;
             }
         }
     }
@@ -205,12 +228,14 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
     // Draw char 2
     DrawRectangleV((Vector2){ gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[1] }, (Vector2){ tileSize, tileSize }, gameColors[2]);
 
+#if defined (_DEBUG)
     for (int i = 0; i < gameData->DebugRectangleCount; ++i) {
         Rectangle rect = gameData->DebugRectangles[i];
         rect.x -= gameData->CameraPosX;
 
-        DrawRectangleRec(rect, gameData->DebugRectanglesColors[i]);
+        //DrawRectangleRec(rect, gameData->DebugRectanglesColors[i]);
     }
+#endif
 }
 
 void game_restart(GameData* gameData, const LevelData* levelData) {
@@ -235,9 +260,10 @@ void game_restart(GameData* gameData, const LevelData* levelData) {
 
     gameData->JumpVelocity[0] = 0.0f;
     gameData->JumpVelocity[1] = 0.0f;
-
     gameData->JumpAcceleration[0] = 0.0f;
     gameData->JumpAcceleration[1] = 0.0f;
+    gameData->JumpTimer[0] = 0.0f;
+    gameData->JumpTimer[1] = 0.0f;
 
     gameData->GoingUp[0] = false;
     gameData->GoingUp[1] = false;
