@@ -25,8 +25,11 @@ void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
     bool againstWall = false; // if 1 char is against a wall, they are both stuck
     uint32_t wallX = 0;
 
-    Rectangle playerRecs[2] = { (Rectangle) { gameData->PlayerPosX + 0.5f, gameData->PlayerPosY[0] + 0.5f, gameData->TileSize, gameData->TileSize },
-                                (Rectangle) { gameData->PlayerPosX + 0.5f, gameData->PlayerPosY[1] - 0.5f, gameData->TileSize, gameData->TileSize }};
+    Rectangle playerRecsForGround[2] = { (Rectangle) { gameData->PlayerPosX, gameData->PlayerPosY[0] + gameData->TileSize - 4.0f + 0.5f, gameData->TileSize, 4.0f },
+                                         (Rectangle) { gameData->PlayerPosX, gameData->PlayerPosY[1] - 0.5f, gameData->TileSize, 4.0f }};
+
+    Rectangle playerRecsForWalls[2] = { (Rectangle) { gameData->PlayerPosX + 0.5f + gameData->TileSize - 4.0f, gameData->PlayerPosY[0], 4.0f, gameData->TileSize },
+                                        (Rectangle) { gameData->PlayerPosX + 0.5f + gameData->TileSize - 4.0f, gameData->PlayerPosY[1], 4.0f, gameData->TileSize } };
 
     gameData->DebugRectangleCount = 0;
 
@@ -34,20 +37,21 @@ void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
     if (!gameData->GoingUp[0]) {
         for (int offsetX = -1; offsetX < 2; offsetX++) {
             int charX = gameData->PlayerPosX / gameData->TileSize;
-            int charY = gameData->PlayerPosY[0] / gameData->TileSize;
+            int charY = (gameData->PlayerPosY[0] + gameData->TileSize * 0.95f) / gameData->TileSize;
 
             int checkX = charX + offsetX;
-            int checkY = charY + 1;
+            int checkY = charY + 1; 
+
+            Rectangle levelRect = { checkX * gameData->TileSize, checkY * gameData->TileSize, gameData->TileSize, 5.0f };
+            gameData->DebugRectangles[gameData->DebugRectangleCount] = levelRect;
+            gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
+            gameData->DebugRectangleCount += 1;
 
             if (levelData->Tiles[checkX + (checkY * levelData->LevelWidth)] != TILE_FLOOR) continue;
 
-            Rectangle levelRect = { checkX * gameData->TileSize, checkY * gameData->TileSize, gameData->TileSize, 5.0f };
-            //gameData->DebugRectangles[gameData->DebugRectangleCount] = levelRect;
-            //gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
-            //gameData->DebugRectangleCount += 1;
-
-            if (CheckCollisionRecs(playerRecs[0], levelRect)) {
-                onGround[0] = true;
+            if (CheckCollisionRecs(playerRecsForGround[0], levelRect)) {
+                gameData->DebugRectanglesColors[gameData->DebugRectangleCount-1] = RED;
+                onGround[0] = true; 
                 groundY[0] = checkY;
                 break;
             }
@@ -58,19 +62,22 @@ void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
     if (!gameData->GoingUp[1]) {
         for (int offsetX = -1; offsetX < 2; offsetX++) {
             int charX = gameData->PlayerPosX / gameData->TileSize;
-            int charY = (gameData->PlayerPosY[1] + gameData->TileSize * 0.5f) / gameData->TileSize;
+            int charY = (gameData->PlayerPosY[1] + gameData->TileSize * 0.1f) / gameData->TileSize;
 
             int checkX = charX + offsetX;
             int checkY = charY - 1;
 
-            if (levelData->Tiles[checkX + (checkY * levelData->LevelWidth)] != TILE_FLOOR) continue;
 
             Rectangle levelRect = { checkX * gameData->TileSize, (checkY * gameData->TileSize) + gameData->TileSize - 5.0f, gameData->TileSize, 5.0f };
-            //gameData->DebugRectangles[gameData->DebugRectangleCount] = levelRect;
-            //gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
-            //gameData->DebugRectangleCount += 1;
+            gameData->DebugRectangles[gameData->DebugRectangleCount] = levelRect;
+            gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
+            gameData->DebugRectangleCount += 1;
 
-            if (CheckCollisionRecs(playerRecs[1], levelRect)) {
+            if (levelData->Tiles[checkX + (checkY * levelData->LevelWidth)] != TILE_FLOOR) continue;
+
+
+            if (CheckCollisionRecs(playerRecsForGround[1], levelRect)) {
+                gameData->DebugRectanglesColors[gameData->DebugRectangleCount - 1] = RED;
                 //TraceLog(LOG_ALL, "char 2 on floor!");
                 onGround[1] = true;
                 groundY[1] = checkY;
@@ -82,18 +89,23 @@ void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
     // wall collision check char 1: check for 2 adjacing tiles to our right
     for (int offsetY = -1; offsetY < 2; offsetY++) {
         int charX = gameData->PlayerPosX / gameData->TileSize;
-        int charY = (gameData->PlayerPosY[0] + gameData->TileSize*0.5f) / gameData->TileSize;
+        int charY = (gameData->PlayerPosY[0] + gameData->TileSize*0.95f) / gameData->TileSize;
 
         int checkX = charX + 1;
         int checkY = charY + offsetY;
 
         if (checkY < 0) continue;
 
+        Rectangle levelRect = { (checkX * gameData->TileSize), checkY * gameData->TileSize + 2.0f, 5.0f, gameData->TileSize - 4.0f};
+        gameData->DebugRectangles[gameData->DebugRectangleCount] = levelRect;
+        gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
+        gameData->DebugRectangleCount += 1;
+
         if (levelData->Tiles[checkX + (checkY * levelData->LevelWidth)] != TILE_FLOOR) continue;
 
-        Rectangle levelRect = { (checkX * gameData->TileSize), checkY * gameData->TileSize + 2.0f, 5.0f, gameData->TileSize - 4.0f};
+        if (CheckCollisionRecs(playerRecsForWalls[0], levelRect)) {
+            gameData->DebugRectanglesColors[gameData->DebugRectangleCount - 1] = RED;
 
-        if (CheckCollisionRecs(playerRecs[0], levelRect)) {
             againstWall = true;
             wallX = checkX;
             break;
@@ -103,16 +115,21 @@ void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
     // wall collision check char 2: check for 2 adjacing tiles to our right
     for (int offsetY = 0; offsetY < 2; offsetY++) {
         int charX = gameData->PlayerPosX / gameData->TileSize;
-        int charY = (gameData->PlayerPosY[1] + gameData->TileSize*0.5f) / gameData->TileSize;
+        int charY = (gameData->PlayerPosY[1] + gameData->TileSize*0.1f) / gameData->TileSize;
 
         int checkX = charX + 1;
         int checkY = charY + offsetY;      
 
+        Rectangle levelRect = { (checkX * gameData->TileSize), checkY * gameData->TileSize + 2.0f, 5.0f, gameData->TileSize - 4.0f };
+        gameData->DebugRectangles[gameData->DebugRectangleCount] = levelRect;
+        gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
+        gameData->DebugRectangleCount += 1;
+
         if (levelData->Tiles[checkX + (checkY * levelData->LevelWidth)] != TILE_FLOOR) continue;
 
-        Rectangle levelRect = { (checkX * gameData->TileSize), checkY * gameData->TileSize + 2.0f, 5.0f, gameData->TileSize - 4.0f };
+        if (CheckCollisionRecs(playerRecsForWalls[1], levelRect)) {
+            gameData->DebugRectanglesColors[gameData->DebugRectangleCount - 1] = RED;
 
-        if (CheckCollisionRecs(playerRecs[1], levelRect)) {
             againstWall = true;
             wallX = checkX;
             break;
