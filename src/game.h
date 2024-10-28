@@ -12,6 +12,9 @@ typedef struct GameData {
 	float JumpTimer[2];
 	bool GoingUp[2];
 
+	float AnimationTimer[2];
+	uint16_t AnimationRectIndex[2];
+
 	float Timer;
 	float TileSize;
 
@@ -23,7 +26,7 @@ typedef struct GameData {
 	int DebugRectangleCount;
 } GameData;
 
-void game_init(GameData* gameData, const LevelData* levelData, int screenWidth, int screenHeight);
+void game_init(GameData* gameData, const LevelData* levelData, Color* allowedColors, int screenWidth, int screenHeight);
 void game_exit(GameData* gameData);
 void game_tick(GameData* gameData, const LevelData* levelData, float dt);
 void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors);

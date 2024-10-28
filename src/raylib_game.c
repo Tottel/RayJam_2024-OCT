@@ -155,8 +155,8 @@ int main(void)
         UIDataMenuInstructions = RL_CALLOC(1, sizeof(UIData));
         ui_add_rectangle_with_text(UIDataMenuInstructions, screenWidth / 2 - 300, screenHeight / 2 - 100, 600, 200, 0, "These are instructions. \nJust eh.. You know.. Do stuff.. \nWell, okay, how about YOU write instructions then?!", 20, ALIGN_HOR_LEFT, ALIGN_VER_TOP, 4);
         ui_add_button(UIDataMenuInstructions, screenWidth / 2 - buttonWidth / 2, screenHeight - 80, buttonWidth, buttonHeight, "back", UIStyleButtonMainMenu, OnInstructionBackButtonClicked, NULL, true);
-        ui_add_rectangle_with_texture(UIDataMenuInstructions, 100, 45, 100, 75, 0, UIInstructionTexture1, true, ALIGN_HOR_LEFT, ALIGN_VER_TOP);
-        ui_add_rectangle_with_texture(UIDataMenuInstructions, 210, 45, 100, 75, 0, UIInstructionTexture1, true, ALIGN_HOR_LEFT, ALIGN_VER_TOP);
+        //ui_add_rectangle_with_texture(UIDataMenuInstructions, 100, 45, 100, 75, 0, UIInstructionTexture1, true, ALIGN_HOR_LEFT, ALIGN_VER_TOP);
+        //ui_add_rectangle_with_texture(UIDataMenuInstructions, 210, 45, 100, 75, 0, UIInstructionTexture1, true, ALIGN_HOR_LEFT, ALIGN_VER_TOP);
 
         // game state
         gameData = RL_CALLOC(1, sizeof(GameData));
@@ -166,7 +166,7 @@ int main(void)
         parse_level("resources/levels/level_1.txt", levelData);
     }
 
-    game_init(gameData, levelData, screenWidth, screenHeight);
+    game_init(gameData, levelData, gameColors, screenWidth, screenHeight);
 
     //--------------------------------------------------------------------------------------
 #if defined(PLATFORM_WEB)
@@ -206,7 +206,7 @@ void app_loop(void) {
     float dt = GetFrameTime();
 
     // hacky speedup
-    dt *= 1.5f;
+    dt *= 1.3f;
 
 #if defined (_DEBUG)
     if (dt > 0.5f) dt = 0.5f;

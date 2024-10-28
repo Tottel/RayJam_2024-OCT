@@ -2,9 +2,9 @@ x
 x
 x
 x      
-x 1         xxx   xx   x  x
+x 1         xxx             xx   xx               xxxx             xxxxx               xx  xx  xx  xx  xx  xx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-x 2      
+x 2         xxx             xx   xx                  xxxx     xxxxx                    xx  xx  xx  xx  xx  xx
 x      
 x
 x

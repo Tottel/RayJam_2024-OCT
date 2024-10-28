@@ -5,19 +5,54 @@
 #include <assert.h>
 #include <stddef.h>
 
-void game_init(GameData* gameData, const LevelData* levelData, int screenWidth, int screenHeight) {
+#include "image_color_parser.h"
+
+static Texture Char1Sheet;
+static Texture Char2Sheet;
+static int CharFrameCount;
+static float AnimationSpeed = 4.0f;
+
+void game_init(GameData* gameData, const LevelData* levelData, Color* allowedColors, int screenWidth, int screenHeight) {
     const float tileSize = screenHeight / (float)levelData->LevelHeight;
     gameData->TileSize = tileSize;
 
     game_restart(gameData, levelData);
+
+    Image tempChar1 = load_and_convert_image("resources/characters/goblin_run.png", allowedColors, 8);
+    Image tempChar2 = load_and_convert_image("resources/characters/goblin_run.png", allowedColors, 8);
+    
+    CharFrameCount = 6; // LoadImageAnim returns the wrong value :(((
+
+    ImageResize(&tempChar1, tileSize * CharFrameCount, tileSize);
+    ImageResize(&tempChar2, tileSize * CharFrameCount, tileSize);
+    ImageFlipVertical(&tempChar2);
+
+    Char1Sheet = LoadTextureFromImage(tempChar1); 
+    Char2Sheet = LoadTextureFromImage(tempChar2);
+
+    UnloadImage(tempChar1);
+    UnloadImage(tempChar2);
 }
 
 void game_exit(GameData* gameData) {
-
+    UnloadTexture(Char1Sheet);
 }
 
 void game_tick(GameData* gameData, const LevelData* levelData, float dt) { 
     gameData->Timer += dt;
+
+    for (int i = 0; i < 2; ++i) {
+        gameData->AnimationTimer[i] += AnimationSpeed * dt;
+
+        if (gameData->AnimationTimer[i] > 1.0f) {
+            gameData->AnimationTimer[i] = 0.0f;
+            gameData->AnimationRectIndex[i] += 1;
+
+            if (gameData->AnimationRectIndex[i] > 6) {
+                gameData->AnimationRectIndex[i] = 0;
+            }
+        }
+    }
 
     bool onGround[2] = { false };
     uint16_t groundY[2] = { 0 };
@@ -69,7 +104,7 @@ void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
     // ground CollisionCheck char 2: Check for the 3 adjacing tiles directly above us
     if (!gameData->GoingUp[1]) {
         for (int offsetX = -1; offsetX < 2; offsetX++) {
-            int charX = gameData->PlayerPosX / gameData->TileSize;
+            int charX = gameData->PlayerPosX / gameData->TileSize; 
             int charY = (gameData->PlayerPosY[1] + gameData->TileSize * 0.2f) / gameData->TileSize;
 
             int checkX = charX + offsetX;
@@ -97,7 +132,7 @@ void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
     // wall collision check char 1: check for 2 adjacing tiles to our right
     for (int offsetY = -1; offsetY < 2; offsetY++) {
         int charX = gameData->PlayerPosX / gameData->TileSize;
-        int charY = (gameData->PlayerPosY[0] + gameData->TileSize*0.95f) / gameData->TileSize;
+        int charY = (gameData->PlayerPosY[0] + gameData->TileSize * 0.95f) / gameData->TileSize;
 
         int checkX = charX + 1;
         int checkY = charY + offsetY;
@@ -146,7 +181,7 @@ void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
 
     const float playerMoveSpeed = 300.0f;
 
-    gameData->PlayerPosX += againstWall ? 0.0f : playerMoveSpeed * dt;
+    gameData->PlayerPosX += againstWall ? 0.0f : playerMoveSpeed * dt; 
 
     for (int i = 0; i < 2; i++) {
         gameData->JumpVelocity[i] = onGround[i] ? 0 : (gameData->JumpVelocity[i] - (400.0f * dt));
@@ -165,7 +200,7 @@ void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
     if (IsKeyPressed(KEY_SPACE)) {
         for (int i = 0; i < 2; i++) {
             if (onGround[i]) {
-                gameData->JumpVelocity[i] = 200.0f;
+                gameData->JumpVelocity[i] = 150.0f;
                 gameData->GoingUp[i] = true;
                 gameData->JumpTimer[i] = 0.0f;
                 onGround[i] = false;
@@ -175,8 +210,8 @@ void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
 
     if (IsKeyDown(KEY_SPACE)) {
         for (int i = 0; i < 2; i++) {
-            if (!onGround[i] && gameData->JumpTimer[i] < 0.5f) {
-                gameData->JumpVelocity[i] += 200.0f * dt;
+            if (!onGround[i] && gameData->JumpTimer[i] < 0.4f) {
+                gameData->JumpVelocity[i] += 350.0f * dt;
             }
         }
     }
@@ -223,10 +258,12 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
     }
 
     // Draw char 1
-    DrawRectangleV((Vector2){ gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[0] }, (Vector2){ tileSize, tileSize }, gameColors[1]);
+    //DrawRectangleV((Vector2){ gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[0] }, (Vector2){ tileSize, tileSize }, gameColors[1]);
+    DrawTextureRec(Char1Sheet, (Rectangle) { gameData->TileSize * gameData->AnimationRectIndex[0], 0, gameData->TileSize, gameData->TileSize }, (Vector2) { gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[0] }, WHITE);
 
     // Draw char 2
-    DrawRectangleV((Vector2){ gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[1] }, (Vector2){ tileSize, tileSize }, gameColors[2]);
+    //DrawRectangleV((Vector2){ gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[1] }, (Vector2){ tileSize, tileSize }, gameColors[2]);
+    DrawTextureRec(Char2Sheet, (Rectangle) { gameData->TileSize * gameData->AnimationRectIndex[1], 0, gameData->TileSize, gameData->TileSize }, (Vector2) { gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[1] }, WHITE);
 
 #if defined (_DEBUG)
     for (int i = 0; i < gameData->DebugRectangleCount; ++i) {
