@@ -199,7 +199,9 @@ int main(void)
 }
 
 void app_loop(void) {
-    const float dt = GetFrameTime();
+    float dt = GetFrameTime();
+
+    if (dt > 0.5f) dt = 0.5f;
 
     switch (CurrentState) {
     case SCREEN_LOGO:
@@ -223,6 +225,12 @@ void app_loop(void) {
         EndDrawing();
     } break;
     case SCREEN_GAMEPLAY: {
+#if defined(_DEBUG)
+        if (IsKeyPressed(KEY_R))             {
+            game_restart(gameData, levelData);
+        }
+#endif
+
         game_tick(gameData, levelData, dt);
         ui_tick(UIDataGame);
 
