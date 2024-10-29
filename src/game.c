@@ -275,6 +275,26 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
 #endif
 }
 
+void game_bladesaws_draw(GameData* gameData, Texture2D bladesaw, float dt) {
+    gameData->BladeSawTimer += dt;
+    if (gameData->BladeSawTimer > 0.1f) {
+        gameData->BladeSawTimer = 0.0f;
+        gameData->BladeSawRectIndex += 1;
+        if (gameData->BladeSawRectIndex >= 2) {
+            gameData->BladeSawRectIndex = 0;
+        }
+    }
+
+    Rectangle blades = (Rectangle){ gameData->BladeSawRectIndex * (bladesaw.width / 2), 0, bladesaw.width / 2, bladesaw.height };
+    float startPosY = -bladesaw.height / 2;
+
+    DrawTextureRec(bladesaw, blades, (Vector2) { 0, startPosY + bladesaw.height * 0 }, WHITE);
+    DrawTextureRec(bladesaw, blades, (Vector2) { 0, startPosY + bladesaw.height * 1 }, WHITE);
+    DrawTextureRec(bladesaw, blades, (Vector2) { 0, startPosY + bladesaw.height * 2 }, WHITE);
+    DrawTextureRec(bladesaw, blades, (Vector2) { 0, startPosY + bladesaw.height * 3 }, WHITE);
+    DrawTextureRec(bladesaw, blades, (Vector2) { 0, startPosY + bladesaw.height * 4 }, WHITE);
+}
+
 void game_restart(GameData* gameData, const LevelData* levelData) {
     for (uint16_t y = 0; y < levelData->LevelHeight; y++) {
         for (uint32_t x = 0; x < levelData->LevelWidth; x++) {
@@ -307,6 +327,9 @@ void game_restart(GameData* gameData, const LevelData* levelData) {
 
     gameData->CameraPosX = 0.0f;
     gameData->CameraSpeed = 0.0f;
+
+    gameData->BladeSawTimer = 0.0f;
+    gameData->BladeSawRectIndex = 0;
 
     gameData->Timer = 0.0f;
 }

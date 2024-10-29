@@ -61,8 +61,14 @@ typedef enum {
     SCREEN_TITLE,
     SCREEN_MENU,
     SCREEN_MENU_INSTRUCTIONS,
+    SCREEN_GAMEPLAY_INTRO,
     SCREEN_GAMEPLAY, 
 } GameScreen;
+
+typedef enum {
+    INTRO_SLIDE_1 = 0,
+    INTRO_SLIDE_2
+} GameIntroSteps;
 
 // TODO: Define your custom data types here
 
@@ -79,11 +85,18 @@ static GameScreen CurrentState = { SCREEN_MENU };
 // menu state
 static UIData* UIDataMenu = NULL;
 static UIData* UIDataMenuInstructions = NULL;
-static Texture2D UIInstructionTexture1;
+
+// game intro state
+static GameIntroSteps IntroSubState = { INTRO_SLIDE_1 };
+static UIData* UIDataGameIntro = NULL;
+static float IntroTimer = 0.0f;
 
 // game state
 static GameData* gameData = NULL;
 static UIData* UIDataGame = NULL;
+
+static Texture2D BladeSaw;
+
 static LevelData* levelData = NULL;
 
 static float slowMoMultiplier = 1.0f;
@@ -92,17 +105,31 @@ static float timer = 0.0f;
 
 void OnPlayButtonClicked(void* context) {
     (void)context;
-    CurrentState = SCREEN_GAMEPLAY;
+
+    CurrentState = SCREEN_GAMEPLAY_INTRO;
+    IntroSubState = INTRO_SLIDE_1;
+    IntroTimer = 0.0f;
 }
 
 void OnHelpButtonClicked(void* context) {
     (void)context;
+
     CurrentState = SCREEN_MENU_INSTRUCTIONS;
 }
 
 void OnInstructionBackButtonClicked(void* context) {
     (void)context;
+
     CurrentState = SCREEN_MENU;
+}
+
+void OnInGameInstructionButtonClicked(void* context) {
+    (void)context;
+
+    IntroSubState = INTRO_SLIDE_2;
+    IntroTimer = 0.0f;
+
+    ui_remove_all(UIDataGameIntro);
 }
 
 //------------------------------------------------------------------------------------
@@ -134,14 +161,14 @@ int main(void)
                 Color* colors = NULL;
                 colors = LoadImageColors(temp);
 
-                memcpy(gameColors, colors, 8 * sizeof(Color));
+                memcpy(gameColors, colors, 8 * sizeof(Color)); 
 
                 UnloadImageColors(colors);
                 UnloadImage(temp);
             }
-        }
 
-        UIInstructionTexture1 = load_and_convert_texture("resources/images/panda_fail.jpg", gameColors, 8);
+            BladeSaw = LoadTexture("resources/images/bladesaw.png");
+        }
 
         const uint16_t buttonWidth = 120;
         const uint16_t buttonHeight = 50;
@@ -158,10 +185,20 @@ int main(void)
         //ui_add_rectangle_with_texture(UIDataMenuInstructions, 100, 45, 100, 75, 0, UIInstructionTexture1, true, ALIGN_HOR_LEFT, ALIGN_VER_TOP);
         //ui_add_rectangle_with_texture(UIDataMenuInstructions, 210, 45, 100, 75, 0, UIInstructionTexture1, true, ALIGN_HOR_LEFT, ALIGN_VER_TOP);
 
+        // game intro state
+        UIDataGameIntro = RL_CALLOC(1, sizeof(UIData));
+        uint16_t rectWidth = 480;
+        uint16_t rectHeight = 200;
+        uint16_t rectPosX = screenWidth / 2 - 150;
+        uint16_t rectPosY = screenHeight / 2 - 100;
+        ui_add_rectangle(UIDataGameIntro, screenWidth / 2 - 155, screenHeight / 2 - 105, 490, 210, 1);
+        ui_add_rectangle_with_text(UIDataGameIntro, rectPosX, rectPosY, rectWidth, rectHeight, 0, "You might be wondering:\n\nHow did I get here? Who am I? ...Who are we?\n\nThose are all great questions.\n\n... But I suggest you run.", 20, ALIGN_HOR_CENTER, ALIGN_VER_CENTER, 4);
+        ui_add_button(UIDataGameIntro, rectPosX + rectWidth / 2 - buttonWidth/2, rectPosY + rectHeight + 20, buttonWidth, buttonHeight, "Yes", UIStyleButtonMainMenu, OnInGameInstructionButtonClicked, NULL, true);
+
         // game state
-        gameData = RL_CALLOC(1, sizeof(GameData));
-        UIDataGame = RL_CALLOC(1, sizeof(UIData));   
-        levelData = RL_CALLOC(1, sizeof(LevelData));
+        gameData        = RL_CALLOC(1, sizeof(GameData));
+        UIDataGame      = RL_CALLOC(1, sizeof(UIData));     
+        levelData       = RL_CALLOC(1, sizeof(LevelData));
 
         parse_level("resources/levels/level_1.txt", levelData);
     }
@@ -182,16 +219,18 @@ int main(void)
 #endif
     //--------------------------------------------------------------------------------------
   
+    UnloadTexture(BladeSaw);
+
     game_exit(gameData);
     ui_exit(UIDataGame);
+    ui_exit(UIDataGameIntro);
     ui_exit(UIDataMenu);
     ui_exit(UIDataMenuInstructions);
-
-    UnloadTexture(UIInstructionTexture1);
 
     RL_FREE(levelData);
     RL_FREE(gameData);
     RL_FREE(UIDataGame);
+    RL_FREE(UIDataGameIntro);
     RL_FREE(UIDataMenu);
     RL_FREE(UIDataMenuInstructions);
 
@@ -239,6 +278,36 @@ void app_loop(void) {
         ui_draw(UIDataMenuInstructions, gameColors);
         EndDrawing();
     } break;
+    case SCREEN_GAMEPLAY_INTRO: {
+        switch (IntroSubState) {
+        case INTRO_SLIDE_1:
+            break;
+        case INTRO_SLIDE_2:
+            IntroTimer += dt;
+
+            if (IntroTimer > 3.0f) {
+                CurrentState = SCREEN_GAMEPLAY; 
+            }
+            break;
+        default:
+            assert(false);
+            break;
+        }
+
+        ui_tick(UIDataGameIntro);
+
+        BeginDrawing();
+        ClearBackground(gameColors[4]);
+        game_draw(gameData, levelData, gameColors);
+
+        if (IntroSubState == INTRO_SLIDE_2 && IntroTimer > 0.5f) {
+            game_bladesaws_draw(gameData, BladeSaw, dt);
+        }
+
+        ui_draw(UIDataGameIntro, gameColors);
+        EndDrawing();
+
+    } break;
     case SCREEN_GAMEPLAY: {
 #if defined(_DEBUG)
         if (IsKeyPressed(KEY_R)) {
@@ -254,6 +323,7 @@ void app_loop(void) {
         BeginDrawing();
         ClearBackground(gameColors[4]);
         game_draw(gameData, levelData, gameColors);
+        game_bladesaws_draw(gameData, BladeSaw, dt);
         ui_draw(UIDataGame, gameColors);
         DrawFPS(10, 10);
         EndDrawing();

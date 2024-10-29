@@ -11,7 +11,11 @@ inline bool IsPointInRectangle(Vector2 point, int rectPosX, int rectPosY, int re
 void ui_exit(UIData* uiData) {
 	// TODO Free text! 
 	// Preferably from a big buffer
-	//RL_FREE(uiData->RectanglesText)
+	//for (int i = 0; i < MAX_RECTANGLES; i++) {
+	//	if (uiData->RectanglesText[i].Text) {
+	//		RL_FREE(uiData->RectanglesText[i].Text);
+	//	}
+	//}
 }
 
 void ui_tick(UIData* uiData) {
@@ -205,6 +209,13 @@ uint16_t ui_add_button(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t wi
 	}
 
 	return uniqueHandle;
+}
+
+void ui_remove_all(UIData* uiData) {
+	uiData->RectangleCount = 0;
+	uiData->TextureCount = 0;
+	uiData->ButtonsEnabledCount = 0;
+	uiData->ButtonsDisabledCount = 0;
 }
 
 void ui_toggle_button(UIData* uiData, uint16_t buttonHandle, bool enabled) {

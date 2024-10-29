@@ -21,6 +21,9 @@ typedef struct GameData {
 	float CameraPosX;
 	float CameraSpeed;
 
+	float BladeSawTimer;
+	int BladeSawRectIndex;
+
 	Rectangle DebugRectangles[15];
 	Color DebugRectanglesColors[15];
 	int DebugRectangleCount;
@@ -30,6 +33,7 @@ void game_init(GameData* gameData, const LevelData* levelData, Color* allowedCol
 void game_exit(GameData* gameData);
 void game_tick(GameData* gameData, const LevelData* levelData, float dt);
 void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors);
+void game_bladesaws_draw(GameData* gameData, Texture2D bladesaw, float dt);
 
 void game_restart(GameData* gameData, const LevelData* levelData);
 

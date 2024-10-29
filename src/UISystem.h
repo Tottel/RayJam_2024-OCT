@@ -151,6 +151,7 @@ uint16_t ui_add_rectangle_with_text(UIData* uiData, uint16_t posX, uint16_t posY
 void ui_add_rectangle_with_texture(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t rectWidth, uint16_t rectHeight, uint8_t rectColor, Texture2D texture, bool scaleToFit, UIAlignmentHorizontal alignHor, UIAlignmentVertical alignVer);
 uint16_t ui_add_button(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t width, uint16_t height, const char* text, UIStyleButton uiStyle, void(*button_clicked)(void*), void* context, bool enabled);
 
+void ui_remove_all(UIData* uiData);
 
 void ui_toggle_button(UIData* uiData, uint16_t buttonHandle, bool enabled);
 
