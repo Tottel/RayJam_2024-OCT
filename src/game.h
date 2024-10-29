@@ -31,7 +31,7 @@ typedef struct GameData {
 
 void game_init(GameData* gameData, const LevelData* levelData, Color* allowedColors, int screenWidth, int screenHeight);
 void game_exit(GameData* gameData);
-void game_tick(GameData* gameData, const LevelData* levelData, float dt);
+void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, int screenHeight, float dt);
 void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors);
 void game_bladesaws_draw(GameData* gameData, Texture2D bladesaw, float dt);
 

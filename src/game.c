@@ -38,7 +38,7 @@ void game_exit(GameData* gameData) {
     UnloadTexture(Char1Sheet);
 }
 
-void game_tick(GameData* gameData, const LevelData* levelData, float dt) { 
+void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, int screenHeight, float dt) { 
     gameData->Timer += dt;
 
     for (int i = 0; i < 2; ++i) {
@@ -222,19 +222,23 @@ void game_tick(GameData* gameData, const LevelData* levelData, float dt) {
     float cameraLagDistance = gameData->PlayerPosX - gameData->CameraPosX;
     float catchupMultiplier = 1.0f;
     if (cameraLagDistance > 200) {
-        catchupMultiplier = cameraLagDistance / 50.0f;
+        catchupMultiplier = cameraLagDistance / 50.0f; 
     }
 
     if (againstWall) { 
         gameData->CameraSpeed -= 50.0f * dt;
-        gameData->CameraSpeed = gameData->CameraSpeed < 150.0f ? 150.0f : gameData->CameraSpeed;
+        gameData->CameraSpeed = gameData->CameraSpeed < 150.0f ? 150.0f : gameData->CameraSpeed; 
     }
     else {
         gameData->CameraSpeed += 30.0f * catchupMultiplier * dt;
-        gameData->CameraSpeed = gameData->CameraSpeed > (playerMoveSpeed - 10.0f) ? (playerMoveSpeed - 10.0f) : gameData->CameraSpeed;
+        gameData->CameraSpeed = gameData->CameraSpeed > (playerMoveSpeed - 5.0f) ? (playerMoveSpeed - 5.0f) : gameData->CameraSpeed;
     }
 
     gameData->CameraPosX += gameData->CameraSpeed * dt;
+
+    if (gameData->PlayerPosX - gameData->CameraPosX < 15) {
+        game_restart(gameData, levelData);
+    }
 }
 
 void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors) {

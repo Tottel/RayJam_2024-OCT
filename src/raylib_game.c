@@ -304,7 +304,7 @@ void app_loop(void) {
             game_bladesaws_draw(gameData, BladeSaw, dt);
         }
 
-        ui_draw(UIDataGameIntro, gameColors);
+        ui_draw(UIDataGameIntro, gameColors); 
         EndDrawing();
 
     } break;
@@ -315,7 +315,7 @@ void app_loop(void) {
         }
 #endif
 
-        game_tick(gameData, levelData, dt);
+        game_tick(gameData, levelData, screenWidth, screenHeight, dt);
         ui_tick(UIDataGame);
 
         timer += dt;
