@@ -13,7 +13,7 @@ typedef struct GameData {
 	bool GoingUp[2];
 
 	float AnimationTimer[2];
-	uint16_t AnimationRectIndex[2];
+	uint16_t AnimationRectIndex[2]; 
 
 	float Timer;
 	float TileSize;

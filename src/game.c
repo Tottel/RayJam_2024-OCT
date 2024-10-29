@@ -219,10 +219,10 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
     gameData->PlayerPosY[0] -= gameData->JumpVelocity[0] * dt;
     gameData->PlayerPosY[1] += gameData->JumpVelocity[1] * dt;
 
-    float cameraLagDistance = gameData->PlayerPosX - gameData->CameraPosX;
+    float cameraLagDistance = gameData->PlayerPosX - gameData->CameraPosX;  
     float catchupMultiplier = 1.0f;
     if (cameraLagDistance > 200) {
-        catchupMultiplier = cameraLagDistance / 50.0f; 
+        catchupMultiplier = cameraLagDistance / 50.0f;   
     }
 
     if (againstWall) { 
@@ -253,7 +253,7 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
             case TILE_VOID:
                 break;
             case TILE_FLOOR:
-                DrawRectangle(x * tileSize - gameData->CameraPosX, y * tileSize, tileSize, tileSize, gameColors[0]);
+                DrawRectangle(x * tileSize - gameData->CameraPosX-1, y * tileSize-1, tileSize+2, tileSize+2, gameColors[0]);
                 break;
             default:
                 break;

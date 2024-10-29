@@ -101,7 +101,10 @@ static LevelData* levelData = NULL;
 
 static float slowMoMultiplier = 1.0f;
 
-static float timer = 0.0f;
+static Texture2D CavePar1;
+static Texture2D CavePar2;
+static Texture2D CavePar3;
+
 
 void OnPlayButtonClicked(void* context) {
     (void)context;
@@ -163,11 +166,15 @@ int main(void)
 
                 memcpy(gameColors, colors, 8 * sizeof(Color)); 
 
-                UnloadImageColors(colors);
+                UnloadImageColors(colors); 
                 UnloadImage(temp);
             }
 
             BladeSaw = LoadTexture("resources/images/bladesaw.png");
+
+            CavePar1 = load_and_convert_texture("resources/images/parallax/cave/2.png", gameColors, 8);
+            CavePar2 = load_and_convert_texture("resources/images/parallax/cave/4.png", gameColors, 8);
+            CavePar3 = load_and_convert_texture("resources/images/parallax/cave/7.png", gameColors, 8);
         }
 
         const uint16_t buttonWidth = 120;
@@ -297,11 +304,26 @@ void app_loop(void) {
         ui_tick(UIDataGameIntro);
 
         BeginDrawing();
-        ClearBackground(gameColors[4]);
+        ClearBackground(gameColors[5]);
+
+        {
+            // aspect ratio is ~3.56
+            Rectangle dest = (Rectangle){ 0, 0, screenWidth, screenHeight / 2 };
+            
+            Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.002f, -90, 1080 * 3.556f, 1080 };
+            DrawTexturePro(CavePar1, source1, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
+
+            Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.04f, 100, 730 * 3.556f, 730 };
+            DrawTexturePro(CavePar2, source2, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
+
+            Rectangle source3 = (Rectangle){ gameData->CameraPosX * 0.9f, 100, 700 * 3.556f, 700 };
+            DrawTexturePro(CavePar3, source3, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
+        }
+
         game_draw(gameData, levelData, gameColors);
 
         if (IntroSubState == INTRO_SLIDE_2 && IntroTimer > 0.5f) {
-            game_bladesaws_draw(gameData, BladeSaw, dt);
+            game_bladesaws_draw(gameData, BladeSaw, dt); 
         }
 
         ui_draw(UIDataGameIntro, gameColors); 
@@ -318,10 +340,23 @@ void app_loop(void) {
         game_tick(gameData, levelData, screenWidth, screenHeight, dt);
         ui_tick(UIDataGame);
 
-        timer += dt;
-
         BeginDrawing();
-        ClearBackground(gameColors[4]);
+        ClearBackground(gameColors[5]);
+
+        {
+            // aspect ratio is ~3.56
+            Rectangle dest = (Rectangle){ 0, 0, screenWidth, screenHeight / 2 };
+
+            Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.002f, -90, 1080 * 3.556f, 1080 };
+            DrawTexturePro(CavePar1, source1, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
+
+            Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.04f, 100, 730 * 3.556f, 730 };
+            DrawTexturePro(CavePar2, source2, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
+
+            Rectangle source3 = (Rectangle){ gameData->CameraPosX * 0.9f, 100, 700 * 3.556f, 700 };
+            DrawTexturePro(CavePar3, source3, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
+        }
+
         game_draw(gameData, levelData, gameColors);
         game_bladesaws_draw(gameData, BladeSaw, dt);
         ui_draw(UIDataGame, gameColors);
