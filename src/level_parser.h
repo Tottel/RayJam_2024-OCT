@@ -4,10 +4,11 @@
 #include <raylib.h> 
 #include <stdint.h>
 
-#define TILE_VOID    0
-#define TILE_FLOOR   1
-#define TILE_SPAWN_1 2
-#define TILE_SPAWN_2 3
+#define TILE_VOID     0
+#define TILE_FLOOR    1
+#define TILE_PLATFORM 2
+#define TILE_SPAWN_1  3
+#define TILE_SPAWN_2  4
 
 typedef struct LevelData {
 	uint16_t* Tiles;

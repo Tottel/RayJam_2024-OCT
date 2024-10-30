@@ -66,8 +66,11 @@ void parse_level(const char* path, LevelData* data) {
 		}
 
 		switch (levelTxtData[charCounter]) {
-		case 'x': // walls/floors
+		case '=': // floors
 			data->Tiles[currX + (currY * width)] = TILE_FLOOR;
+			break;
+		case 'x': // walls
+			data->Tiles[currX + (currY * width)] = TILE_PLATFORM;
 			break;
 		case '1': // player spawn 1
 			data->Tiles[currX + (currY * width)] = TILE_SPAWN_1;

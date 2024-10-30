@@ -147,7 +147,8 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
             //gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
             //gameData->DebugRectangleCount += 1;
 
-            if (levelData->Tiles[checkX + (checkY * levelData->LevelWidth)] != TILE_FLOOR) continue;
+            if (levelData->Tiles[checkX + (checkY * levelData->LevelWidth)] != TILE_FLOOR &&
+                levelData->Tiles[checkX + (checkY * levelData->LevelWidth)] != TILE_PLATFORM) continue;
 
             if (CheckCollisionRecs(playerRecsForGround[0], levelRect)) {
                 //gameData->DebugRectanglesColors[gameData->DebugRectangleCount-1] = RED;
@@ -173,8 +174,8 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
             //gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
             //gameData->DebugRectangleCount += 1;
 
-            if (levelData->Tiles[checkX + (checkY * levelData->LevelWidth)] != TILE_FLOOR) continue;
-
+            if (levelData->Tiles[checkX + (checkY * levelData->LevelWidth)] != TILE_FLOOR &&
+                levelData->Tiles[checkX + (checkY * levelData->LevelWidth)] != TILE_PLATFORM) continue;
 
             if (CheckCollisionRecs(playerRecsForGround[1], levelRect)) {
                 //gameData->DebugRectanglesColors[gameData->DebugRectangleCount - 1] = RED;
@@ -201,7 +202,7 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
         gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
         gameData->DebugRectangleCount += 1;
 
-        if (levelData->Tiles[checkX + (checkY * levelData->LevelWidth)] != TILE_FLOOR) continue;
+        if (levelData->Tiles[checkX + (checkY * levelData->LevelWidth)] != TILE_PLATFORM) continue;
 
         if (CheckCollisionRecs(playerRecsForWalls[0], levelRect)) {
             gameData->DebugRectanglesColors[gameData->DebugRectangleCount - 1] = RED;
@@ -225,7 +226,7 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
         //gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
         //gameData->DebugRectangleCount += 1;
 
-        if (levelData->Tiles[checkX + (checkY * levelData->LevelWidth)] != TILE_FLOOR) continue;
+        if (levelData->Tiles[checkX + (checkY * levelData->LevelWidth)] != TILE_PLATFORM) continue;
 
         if (CheckCollisionRecs(playerRecsForWalls[1], levelRect)) {
             //gameData->DebugRectanglesColors[gameData->DebugRectangleCount - 1] = RED;
@@ -312,15 +313,19 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
 
             switch (tileType) {
             case TILE_VOID:
-                break;
             case TILE_FLOOR:
-                DrawRectangle(x * tileSize - gameData->CameraPosX-1, y * tileSize-1, tileSize+2, tileSize+2, gameColors[0]);
+                break;
+            case TILE_PLATFORM:
+                DrawRectangle(x * tileSize - gameData->CameraPosX - 1, y * tileSize - 1, tileSize + 2, tileSize + 2, gameColors[0]);
                 break;
             default:
                 break;
             }  
         }
     }
+
+    // draw floor
+    DrawRectangle(0, GetScreenHeight() / 2 - tileSize / 2, GetScreenWidth(), tileSize, gameColors[0]);
 
     // Draw char 1
     //DrawRectangleV((Vector2){ gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[0] }, (Vector2){ tileSize, tileSize }, gameColors[1]);
