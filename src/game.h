@@ -19,7 +19,6 @@ typedef struct GameData {
 	float TileSize;
 
 	float CameraPosX;
-	float CameraSpeed;
 
 	float BladeSawTimer;
 	int BladeSawRectIndex;

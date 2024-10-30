@@ -340,7 +340,7 @@ void app_loop(void) {
             Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.002f, 30, 1080 * 3.556f, 1080 };
             DrawTexturePro(CavePar1, source1, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
 
-            Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.04f, 120, 830 * 3.556f, 830 };
+            Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.07f, 120, 830 * 3.556f, 830 };
             DrawTexturePro(CavePar2, source2, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
 
             Rectangle source3 = (Rectangle){ gameData->CameraPosX * 0.9f, 70, 900 * 3.556f, 900 };
@@ -388,7 +388,7 @@ void app_loop(void) {
             Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.002f, 30, 1080 * 3.556f, 1080 };
             DrawTexturePro(CavePar1, source1, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
 
-            Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.04f, 120, 830 * 3.556f, 830 };
+            Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.07f, 120, 830 * 3.556f, 830 };
             DrawTexturePro(CavePar2, source2, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
 
             Rectangle source3 = (Rectangle){ gameData->CameraPosX * 0.9f, 70, 900 * 3.556f, 900 };

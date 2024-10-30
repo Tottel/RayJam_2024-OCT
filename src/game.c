@@ -219,22 +219,21 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
     gameData->PlayerPosY[0] -= gameData->JumpVelocity[0] * dt;
     gameData->PlayerPosY[1] += gameData->JumpVelocity[1] * dt;
 
+    float camSpeed = playerMoveSpeed;
+
     float cameraLagDistance = gameData->PlayerPosX - gameData->CameraPosX;  
+    TraceLog(LOG_DEBUG, TextFormat("%f", cameraLagDistance));  
+
     float catchupMultiplier = 1.0f;
-    if (cameraLagDistance > 200) {
-        catchupMultiplier = cameraLagDistance / 50.0f;   
+    if (cameraLagDistance < 120) {
+        camSpeed -= cameraLagDistance / 20.0f;
     }
 
     if (againstWall) { 
-        gameData->CameraSpeed -= 50.0f * dt;
-        gameData->CameraSpeed = gameData->CameraSpeed < 150.0f ? 150.0f : gameData->CameraSpeed; 
-    }
-    else {
-        gameData->CameraSpeed += 30.0f * catchupMultiplier * dt;
-        gameData->CameraSpeed = gameData->CameraSpeed > (playerMoveSpeed - 5.0f) ? (playerMoveSpeed - 5.0f) : gameData->CameraSpeed;
+        camSpeed -= 50.0f;
     }
 
-    gameData->CameraPosX += gameData->CameraSpeed * dt;
+    gameData->CameraPosX += camSpeed * dt;
 
     if (gameData->PlayerPosX - gameData->CameraPosX < 15) {
         game_restart(gameData, levelData);
@@ -330,7 +329,6 @@ void game_restart(GameData* gameData, const LevelData* levelData) {
     gameData->GoingUp[1] = false;
 
     gameData->CameraPosX = 0.0f;
-    gameData->CameraSpeed = 0.0f;
 
     gameData->BladeSawTimer = 0.0f;
     gameData->BladeSawRectIndex = 0;
