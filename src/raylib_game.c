@@ -178,9 +178,14 @@ int main(void)
             CavePar1 = load_and_convert_texture("resources/images/parallax/cave/2.png", gameColors, 8);
             CavePar2 = load_and_convert_texture("resources/images/parallax/cave/4.png", gameColors, 8);
             CavePar3 = load_and_convert_texture("resources/images/parallax/cave/7.png", gameColors, 8);
+            SetTextureWrap(CavePar1, TEXTURE_WRAP_REPEAT);
+            SetTextureWrap(CavePar2, TEXTURE_WRAP_REPEAT);
+            SetTextureWrap(CavePar3, TEXTURE_WRAP_REPEAT);
 
             WoodsPar1 = load_and_convert_texture("resources/images/parallax/demon-woods/far.png", gameColors, 8);
             WoodsPar2 = load_and_convert_texture("resources/images/parallax/demon-woods/close.png", gameColors, 8);   
+            SetTextureWrap(WoodsPar1, TEXTURE_WRAP_REPEAT);
+            SetTextureWrap(WoodsPar2, TEXTURE_WRAP_REPEAT);
         }
 
         const uint16_t buttonWidth = 120;
@@ -332,13 +337,13 @@ void app_loop(void) {
             // aspect ratio is ~3.56
             Rectangle dest = (Rectangle){ 0, screenHeight / 2, screenWidth, screenHeight / 2 };
             
-            Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.002f, -90, 1080 * 3.556f, 1080 };
+            Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.002f, 30, 1080 * 3.556f, 1080 };
             DrawTexturePro(CavePar1, source1, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
 
-            Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.04f, 100, 730 * 3.556f, 730 };
+            Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.04f, 120, 830 * 3.556f, 830 };
             DrawTexturePro(CavePar2, source2, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
 
-            Rectangle source3 = (Rectangle){ gameData->CameraPosX * 0.9f, 100, 800 * 3.556f, 800 };
+            Rectangle source3 = (Rectangle){ gameData->CameraPosX * 0.9f, 70, 900 * 3.556f, 900 };
             DrawTexturePro(CavePar3, source3, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
         }
 
@@ -380,13 +385,13 @@ void app_loop(void) {
             // aspect ratio is ~3.56
             Rectangle dest = (Rectangle){ 0, screenHeight / 2, screenWidth, screenHeight / 2 };
 
-            Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.002f, -90, 1080 * 3.556f, 1080 };
+            Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.002f, 30, 1080 * 3.556f, 1080 };
             DrawTexturePro(CavePar1, source1, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
 
-            Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.04f, 100, 730 * 3.556f, 730 };
+            Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.04f, 120, 830 * 3.556f, 830 };
             DrawTexturePro(CavePar2, source2, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
 
-            Rectangle source3 = (Rectangle){ gameData->CameraPosX * 0.9f, 100, 800 * 3.556f, 800 };
+            Rectangle source3 = (Rectangle){ gameData->CameraPosX * 0.9f, 70, 900 * 3.556f, 900 };
             DrawTexturePro(CavePar3, source3, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
         }
 
