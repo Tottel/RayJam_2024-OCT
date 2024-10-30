@@ -105,6 +105,9 @@ static Texture2D CavePar1;
 static Texture2D CavePar2;
 static Texture2D CavePar3;
 
+static Texture2D WoodsPar1;
+static Texture2D WoodsPar2;
+
 
 void OnPlayButtonClicked(void* context) {
     (void)context;
@@ -175,6 +178,9 @@ int main(void)
             CavePar1 = load_and_convert_texture("resources/images/parallax/cave/2.png", gameColors, 8);
             CavePar2 = load_and_convert_texture("resources/images/parallax/cave/4.png", gameColors, 8);
             CavePar3 = load_and_convert_texture("resources/images/parallax/cave/7.png", gameColors, 8);
+
+            WoodsPar1 = load_and_convert_texture("resources/images/parallax/demon-woods/far.png", gameColors, 8);
+            WoodsPar2 = load_and_convert_texture("resources/images/parallax/demon-woods/close.png", gameColors, 8);   
         }
 
         const uint16_t buttonWidth = 120;
@@ -227,6 +233,11 @@ int main(void)
     //--------------------------------------------------------------------------------------
   
     UnloadTexture(BladeSaw);
+    UnloadTexture(CavePar1);
+    UnloadTexture(CavePar2);
+    UnloadTexture(CavePar3);
+    UnloadTexture(WoodsPar1);
+    UnloadTexture(WoodsPar2);
 
     game_exit(gameData);
     ui_exit(UIDataGame);
@@ -292,7 +303,7 @@ void app_loop(void) {
         case INTRO_SLIDE_2:
             IntroTimer += dt;
 
-            if (IntroTimer > 3.0f) {
+            if (IntroTimer > 2.0f) {
                 CurrentState = SCREEN_GAMEPLAY; 
             }
             break;
@@ -307,8 +318,19 @@ void app_loop(void) {
         ClearBackground(gameColors[5]);
 
         {
-            // aspect ratio is ~3.56
+            // aspect ratio is ~4.35
             Rectangle dest = (Rectangle){ 0, 0, screenWidth, screenHeight / 2 };
+
+            Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.01f, 60, 230 * 4.35f, 180 };
+            DrawTexturePro(WoodsPar1, source1, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
+
+            Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.3f, 60, 230 * 4.35f, 180 };
+            DrawTexturePro(WoodsPar2, source2, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
+        }
+
+        {
+            // aspect ratio is ~3.56
+            Rectangle dest = (Rectangle){ 0, screenHeight / 2, screenWidth, screenHeight / 2 };
             
             Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.002f, -90, 1080 * 3.556f, 1080 };
             DrawTexturePro(CavePar1, source1, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
@@ -316,7 +338,7 @@ void app_loop(void) {
             Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.04f, 100, 730 * 3.556f, 730 };
             DrawTexturePro(CavePar2, source2, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
 
-            Rectangle source3 = (Rectangle){ gameData->CameraPosX * 0.9f, 100, 700 * 3.556f, 700 };
+            Rectangle source3 = (Rectangle){ gameData->CameraPosX * 0.9f, 100, 800 * 3.556f, 800 };
             DrawTexturePro(CavePar3, source3, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
         }
 
@@ -344,8 +366,19 @@ void app_loop(void) {
         ClearBackground(gameColors[5]);
 
         {
-            // aspect ratio is ~3.56
+            // aspect ratio is ~4.35
             Rectangle dest = (Rectangle){ 0, 0, screenWidth, screenHeight / 2 };
+
+            Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.01f, 60, 230 * 4.35f, 180 };
+            DrawTexturePro(WoodsPar1, source1, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
+
+            Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.3f, 60, 230 * 4.35f, 180 };
+            DrawTexturePro(WoodsPar2, source2, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
+        }
+
+        {
+            // aspect ratio is ~3.56
+            Rectangle dest = (Rectangle){ 0, screenHeight / 2, screenWidth, screenHeight / 2 };
 
             Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.002f, -90, 1080 * 3.556f, 1080 };
             DrawTexturePro(CavePar1, source1, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
@@ -353,7 +386,7 @@ void app_loop(void) {
             Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.04f, 100, 730 * 3.556f, 730 };
             DrawTexturePro(CavePar2, source2, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
 
-            Rectangle source3 = (Rectangle){ gameData->CameraPosX * 0.9f, 100, 700 * 3.556f, 700 };
+            Rectangle source3 = (Rectangle){ gameData->CameraPosX * 0.9f, 100, 800 * 3.556f, 800 };
             DrawTexturePro(CavePar3, source3, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
         }
 
