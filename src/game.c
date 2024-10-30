@@ -222,7 +222,6 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
     float camSpeed = playerMoveSpeed;
 
     float cameraLagDistance = gameData->PlayerPosX - gameData->CameraPosX;  
-    TraceLog(LOG_DEBUG, TextFormat("%f", cameraLagDistance));  
 
     float catchupMultiplier = 1.0f;
     if (cameraLagDistance < 120) {

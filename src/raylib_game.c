@@ -178,14 +178,14 @@ int main(void)
             CavePar1 = load_and_convert_texture("resources/images/parallax/cave/2.png", gameColors, 8);
             CavePar2 = load_and_convert_texture("resources/images/parallax/cave/4.png", gameColors, 8);
             CavePar3 = load_and_convert_texture("resources/images/parallax/cave/7.png", gameColors, 8);
-            SetTextureWrap(CavePar1, TEXTURE_WRAP_REPEAT);
-            SetTextureWrap(CavePar2, TEXTURE_WRAP_REPEAT);
-            SetTextureWrap(CavePar3, TEXTURE_WRAP_REPEAT);
+            SetTextureWrap(CavePar1, TEXTURE_WRAP_MIRROR_REPEAT);
+            SetTextureWrap(CavePar2, TEXTURE_WRAP_MIRROR_REPEAT);
+            SetTextureWrap(CavePar3, TEXTURE_WRAP_MIRROR_REPEAT);
 
             WoodsPar1 = load_and_convert_texture("resources/images/parallax/demon-woods/far.png", gameColors, 8);
             WoodsPar2 = load_and_convert_texture("resources/images/parallax/demon-woods/close.png", gameColors, 8);   
-            SetTextureWrap(WoodsPar1, TEXTURE_WRAP_REPEAT);
-            SetTextureWrap(WoodsPar2, TEXTURE_WRAP_REPEAT);
+            SetTextureWrap(WoodsPar1, TEXTURE_WRAP_MIRROR_REPEAT);
+            SetTextureWrap(WoodsPar2, TEXTURE_WRAP_MIRROR_REPEAT);
         }
 
         const uint16_t buttonWidth = 120;
