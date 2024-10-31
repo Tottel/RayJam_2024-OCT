@@ -100,7 +100,7 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
                 //gameData->DebugRectanglesColors[gameData->DebugRectangleCount-1] = RED;
                 onGround[0] = true; 
                 groundY[0] = checkY;
-                //break;
+                break;
             }
         }
     }
@@ -128,7 +128,7 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
                 //TraceLog(LOG_ALL, "char 2 on floor!");
                 onGround[1] = true;
                 groundY[1] = checkY;
-                //break;
+                break;
             }
         }
     }
@@ -155,7 +155,7 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
                 //gameData->DebugRectanglesColors[gameData->DebugRectangleCount-1] = RED;
                 againstCeiling[0] = true;
                 ceilingY[0] = checkY;
-                //break;
+                break;
             }
         }
     //}
@@ -182,7 +182,7 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
                 //gameData->DebugRectanglesColors[gameData->DebugRectangleCount - 1] = RED;
                 againstCeiling[1] = true;
                 ceilingY[1] = checkY;
-                //break;
+                break;
             }
         }
     //}
@@ -298,6 +298,17 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
 
     gameData->CameraPosX += camSpeed * dt;
 
+    // bullet stuff
+
+    for (int i = 0; i < gameData->BulletCount; ++i) {
+        gameData->BulletPos[i].x += (playerMoveSpeed + 450.0f) * dt;
+    }
+
+    if (IsKeyPressed(KEY_LEFT_CONTROL) || IsKeyPressed(KEY_RIGHT_CONTROL)) {
+        gameData->BulletPos[gameData->BulletCount] = (Vector2){ gameData->PlayerPosX + gameData->TileSize, gameData->PlayerPosY[0] + gameData->TileSize/3 };
+        gameData->BulletCount += 1;
+    }
+
     if (gameData->PlayerPosX - gameData->CameraPosX < 15) {
         game_restart(gameData, levelData);
     }
@@ -327,6 +338,18 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
 
     // draw floor
     DrawRectangle(0, GetScreenHeight() / 2 - tileSize / 2, GetScreenWidth(), tileSize, gameColors[0]);
+
+    // draw bullets
+    float radius1 = 5.0f;
+    float radius2 = 4.0f;
+    float radius3 = 3.0f;
+    float radius4 = 2.0f;
+    for (uint32_t i = 0; i < gameData->BulletCount; i++) {
+        DrawCircle(gameData->BulletPos[i].x + radius1 / 2 - gameData->CameraPosX, gameData->BulletPos[i].y + radius1 / 2, radius1, gameColors[1]);
+        DrawCircle(gameData->BulletPos[i].x + radius2 / 2 - gameData->CameraPosX, gameData->BulletPos[i].y + radius2 / 2, radius2, gameColors[3]);
+        DrawCircle(gameData->BulletPos[i].x + radius3 / 2 - gameData->CameraPosX, gameData->BulletPos[i].y + radius3 / 2, radius3, gameColors[5]);
+        DrawCircle(gameData->BulletPos[i].x + radius4 / 2 - gameData->CameraPosX, gameData->BulletPos[i].y + radius4 / 2, radius4, gameColors[6]);
+    }
 
     // draw enemies
     for (uint32_t i = 0; i < gameData->EnemyCount; i++) {
@@ -396,12 +419,20 @@ void game_restart(GameData* gameData, const LevelData* levelData) {
     gameData->GoingUp[0] = false;
     gameData->GoingUp[1] = false;
 
+    gameData->AnimationTimer[0] = 0.0f;
+    gameData->AnimationTimer[1] = 0.0f;
+    gameData->AnimationRectIndex[0] = 0;
+    gameData->AnimationRectIndex[1] = 0;
+
     gameData->CameraPosX = 0.0f;
 
     gameData->BladeSawTimer = 0.0f;
     gameData->BladeSawRectIndex = 0;
 
     gameData->EnemyCount = 0;
+
+    gameData->BulletFireTimer = 0.0f;
+    gameData->BulletCount = 0;
 
     gameData->Timer = 0.0f;
     

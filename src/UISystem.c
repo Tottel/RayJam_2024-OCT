@@ -54,7 +54,7 @@ void ui_draw(UIData* uiData, Color* gameColors) {
 	}
 
 
-	SetTextLineSpacing(17);
+	SetTextLineSpacing(18);
 	for (int i = 0; i < uiData->RectangleCount; ++i) {
 		DrawText(uiData->RectanglesText[i].Text, uiData->RectanglesText[i].PosX, uiData->RectanglesText[i].PosY, uiData->RectanglesText[i].FontSize, gameColors[uiData->RectanglesText[i].ColorIndex]);
 	}

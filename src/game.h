@@ -26,6 +26,11 @@ typedef struct GameData {
 	Vector2 EnemyPos[15];
 	uint32_t EnemyCount;
 
+	float BulletFireTimer;
+	
+	Vector2 BulletPos[20];
+	uint32_t BulletCount;
+
 	Rectangle DebugRectangles[15];
 	Color DebugRectanglesColors[15];
 	int DebugRectangleCount;
