@@ -1,6 +1,8 @@
 #include "game.h"
 #include "utils.h"
 
+#include "raymath.h"
+
 #include <stdint.h>
 #include <assert.h>
 #include <stddef.h>
@@ -332,18 +334,21 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
     gameData->CameraPosX += camSpeed * dt;
 
     for (int i = 0; i < gameData->EnemyCount; ++i) {
-        if (gameData->EnemiesHit[i] > 0.0f) {
-            gameData->EnemiesHit[i] -= dt;
+        if (gameData->Enemies[i].HitTimer > 0.0f) {
+            gameData->Enemies[i].HitTimer -= dt;
         }
     }
 
     for (int i = 0; i < gameData->EnemyCount; ++i) {
-        if (gameData->EnemyHP[i] <= 0) {
-            gameData->EnemyPos[i] = gameData->EnemyPos[gameData->EnemyCount - 1];
-            gameData->EnemiesHit[i] = gameData->EnemiesHit[gameData->EnemyCount - 1];
-            gameData->EnemyHP[i] = gameData->EnemyHP[gameData->EnemyCount - 1];
+        if (gameData->Enemies[i].HP <= 0) {
+            memcpy(gameData->Enemies + i, gameData->Enemies + (gameData->EnemyCount - 1), sizeof(Enemy));
+
             gameData->EnemyCount -= 1;
         }
+    }
+
+    for (int i = 0; i < gameData->EnemyCount; ++i) {
+        gameData->Enemies[i].PosOffsetTimer += dt;
     }
 
     // bullet stuff
@@ -361,15 +366,15 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
 
     for (int i = 0; i < gameData->BulletCount; ++i) {
         for (int enemyI = 0; enemyI < gameData->EnemyCount; ++enemyI) {
-            Rectangle enemyRect = (Rectangle){ gameData->EnemyPos[enemyI].x, gameData->EnemyPos[enemyI].y, gameData->TileSize, gameData->TileSize };
+            Rectangle enemyRect = (Rectangle){ gameData->Enemies[enemyI].Pos.x, gameData->Enemies[enemyI].Pos.y, gameData->TileSize, gameData->TileSize };
 
             if (CheckCollisionCircleRec(gameData->BulletPos[i], 5.0f, enemyRect)) {
                 gameData->BulletPos[i] = gameData->BulletPos[gameData->BulletCount - 1];
                 gameData->BulletCount -= 1;
 
-                gameData->EnemiesHit[enemyI] = 0.2f;
+                gameData->Enemies[enemyI].HitTimer = 0.2f;
 
-                gameData->EnemyHP[enemyI] -= 1;
+                gameData->Enemies[enemyI].HP -= 1;
             }
         }
     }
@@ -424,9 +429,10 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
 
     // draw enemies
     for (uint32_t i = 0; i < gameData->EnemyCount; i++) {
-        bool isHit = gameData->EnemiesHit[i] > 0.01f;
+        bool isHit = gameData->Enemies[i].HitTimer > 0.01f;
+        float offsetY = Lerp(-8.0f, 14.0f, (sinf(gameData->Enemies[i].PosOffsetTimer * 5.0f) + 2) / 2.0f);
 
-        DrawTextureRec(isHit ? EnemyHitSheet : EnemySheet, (Rectangle) { gameData->TileSize * EnemyAnimationIndex * 1.4f, 0, EnemySheet.width / EnemyFrameCount, EnemySheet.height}, (Vector2) { gameData->EnemyPos[i].x - gameData->CameraPosX - 15.0f, gameData->EnemyPos[i].y - 15.0f }, WHITE);
+        DrawTextureRec(isHit ? EnemyHitSheet : EnemySheet, (Rectangle) { gameData->TileSize * EnemyAnimationIndex * 1.4f, 0, EnemySheet.width / EnemyFrameCount, EnemySheet.height}, (Vector2) { gameData->Enemies[i].Pos.x - gameData->CameraPosX - 15.0f, gameData->Enemies[i].Pos.y - 15.0f + offsetY }, WHITE);
     }
 
     // Draw char 1
@@ -503,9 +509,11 @@ void game_restart(GameData* gameData, const LevelData* levelData) {
     gameData->BladeSawRectIndex = 0;
 
     gameData->EnemyCount = 0;
-    memset(gameData->EnemiesHit, 0, sizeof(gameData->EnemiesHit));
+
     for (int i = 0; i < 15; i++) {
-        gameData->EnemyHP[i] = 3;
+        gameData->Enemies[i].HitTimer = 0.0f;
+        gameData->Enemies[i].HP = 2;
+        gameData->Enemies[i].PosOffsetTimer = 0.0f;
     }
 
     gameData->BulletFireTimer = 0.0f;
@@ -527,7 +535,7 @@ void game_restart(GameData* gameData, const LevelData* levelData) {
                 gameData->PlayerPosY[1] = y * gameData->TileSize;
                 break;
             case TILE_ENEMY:
-                gameData->EnemyPos[gameData->EnemyCount] = (Vector2){x * gameData->TileSize, y * gameData->TileSize};
+                gameData->Enemies[gameData->EnemyCount].Pos = (Vector2){x * gameData->TileSize, y * gameData->TileSize};
                 gameData->EnemyCount += 1;
                 break;
             default:

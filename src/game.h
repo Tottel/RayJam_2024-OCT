@@ -4,6 +4,14 @@
 #include "level_parser.h"
 #include <stdbool.h>
 
+typedef struct Enemy {
+	Vector2 Pos;
+	float HitTimer; // Bigger than 0 means hit. And it counts down
+	int HP;
+	float PosOffsetTimer;
+	//bool bobbingUp;
+} Enemy;
+
 typedef struct GameData {
 	float PlayerPosX;
 	float PlayerPosY[2];
@@ -23,10 +31,8 @@ typedef struct GameData {
 	float BladeSawTimer;
 	int BladeSawRectIndex;
 
-	Vector2 EnemyPos[15];
+	Enemy Enemies[15];
 	uint32_t EnemyCount;
-	float EnemiesHit[15]; // Bigger than 0 means hit. And it counts down
-	int EnemyHP[15];
 
 	float BulletFireTimer;
 	
