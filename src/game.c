@@ -143,14 +143,14 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
             int checkY = charY - 1;
 
             Rectangle levelRect = { checkX * gameData->TileSize, checkY * gameData->TileSize + (gameData->TileSize - 10.0f), gameData->TileSize, 10.0f };
-            gameData->DebugRectangles[gameData->DebugRectangleCount] = levelRect;
-            gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
-            gameData->DebugRectangleCount += 1;
+            //gameData->DebugRectangles[gameData->DebugRectangleCount] = levelRect;
+            //gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
+            //gameData->DebugRectangleCount += 1;
 
             if (levelData->Tiles[checkX + (checkY * levelData->LevelWidth)] != TILE_PLATFORM) continue;
 
             if (CheckCollisionRecs(playerRecsForCeilings[0], levelRect)) {
-                gameData->DebugRectanglesColors[gameData->DebugRectangleCount-1] = RED;
+                //gameData->DebugRectanglesColors[gameData->DebugRectangleCount-1] = RED;
                 againstCeiling[0] = true;
                 ceilingY[0] = checkY;
                 //break;
@@ -168,14 +168,14 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
             int checkY = charY + 1;
 
             Rectangle levelRect = { checkX * gameData->TileSize, checkY * gameData->TileSize, gameData->TileSize, 10.0f };
-            gameData->DebugRectangles[gameData->DebugRectangleCount] = levelRect;
-            gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
-            gameData->DebugRectangleCount += 1;
+            //gameData->DebugRectangles[gameData->DebugRectangleCount] = levelRect;
+            //gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
+            //gameData->DebugRectangleCount += 1;
 
             if (levelData->Tiles[checkX + (checkY * levelData->LevelWidth)] != TILE_PLATFORM) continue;
 
             if (CheckCollisionRecs(playerRecsForCeilings[1], levelRect)) {
-                gameData->DebugRectanglesColors[gameData->DebugRectangleCount - 1] = RED;
+                //gameData->DebugRectanglesColors[gameData->DebugRectangleCount - 1] = RED;
                 againstCeiling[1] = true;
                 ceilingY[1] = checkY;
                 //break;
@@ -302,9 +302,13 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
 void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors) {
     const float tileSize = gameData->TileSize;
 
+    // Only render the tiles that are on the screen
+    int xStart = gameData->CameraPosX / tileSize;
+    int xEnd = xStart + (GetScreenWidth() / tileSize) + 2;
+
     // Draw level
     for (uint16_t y = 0; y < levelData->LevelHeight; y++) {
-        for (uint32_t x = 0; x < levelData->LevelWidth; x++) {
+        for (uint32_t x = xStart; x < xEnd; x++) {
             uint16_t tileType = levelData->Tiles[x + (y * levelData->LevelWidth)];
 
             switch (tileType) {
@@ -322,6 +326,11 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
 
     // draw floor
     DrawRectangle(0, GetScreenHeight() / 2 - tileSize / 2, GetScreenWidth(), tileSize, gameColors[0]);
+
+    // draw enemies
+    for (uint32_t i = 0; i < gameData->EnemyCount; i++) {
+        DrawRectangle(gameData->EnemyPos[i].x - gameData->CameraPosX, gameData->EnemyPos[i].y, tileSize, tileSize, gameColors[5]);
+    }
 
     // Draw char 1
     //DrawRectangleV((Vector2){ gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[0] }, (Vector2){ tileSize, tileSize }, gameColors[1]);
@@ -376,25 +385,6 @@ void game_bladesaws_draw(GameData* gameData, Texture2D bladesaw, float dt) {
 }
 
 void game_restart(GameData* gameData, const LevelData* levelData) {
-    for (uint16_t y = 0; y < levelData->LevelHeight; y++) {
-        for (uint32_t x = 0; x < levelData->LevelWidth; x++) {
-            uint16_t tileType = levelData->Tiles[x + (y * levelData->LevelWidth)];
-
-            switch (tileType) {
-            case TILE_SPAWN_1:
-                gameData->PlayerPosX = x * gameData->TileSize;
-                gameData->PlayerPosY[0] = y * gameData->TileSize;
-                break;
-            case TILE_SPAWN_2:
-                gameData->PlayerPosX = x * gameData->TileSize; // Should be the same as before..
-                gameData->PlayerPosY[1] = y * gameData->TileSize;
-                break;
-            default:
-                break;
-            }
-        }
-    }
-
     gameData->JumpVelocity[0] = 0.0f;
     gameData->JumpVelocity[1] = 0.0f;
     gameData->JumpAcceleration[0] = 0.0f;
@@ -410,5 +400,30 @@ void game_restart(GameData* gameData, const LevelData* levelData) {
     gameData->BladeSawTimer = 0.0f;
     gameData->BladeSawRectIndex = 0;
 
+    gameData->EnemyCount = 0;
+
     gameData->Timer = 0.0f;
+    
+    for (uint16_t y = 0; y < levelData->LevelHeight; y++) {
+        for (uint32_t x = 0; x < levelData->LevelWidth; x++) {
+            uint16_t tileType = levelData->Tiles[x + (y * levelData->LevelWidth)];
+
+            switch (tileType) {
+            case TILE_SPAWN_1:
+                gameData->PlayerPosX = x * gameData->TileSize;
+                gameData->PlayerPosY[0] = y * gameData->TileSize;
+                break;
+            case TILE_SPAWN_2:
+                gameData->PlayerPosX = x * gameData->TileSize; // Should be the same as before..
+                gameData->PlayerPosY[1] = y * gameData->TileSize;
+                break;
+            case TILE_ENEMY:
+                gameData->EnemyPos[gameData->EnemyCount] = (Vector2){x * gameData->TileSize, y * gameData->TileSize};
+                gameData->EnemyCount += 1;
+                break;
+            default:
+                break;
+            }
+        }
+    }
 }

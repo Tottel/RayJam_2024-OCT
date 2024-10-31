@@ -1,11 +1,11 @@
-x                 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-x                       xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-x                             xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-x                                   xxxxxxxxxxxxxxxxxxxxxxxxxx
-x  1    
+x                 
+x                       
+x                             
+x                                   
+x  1                      O
 =============================================================================================================================================================================================================================================================================================
 x  2                     
-x                                   xxxxxxxxxxxxxxxxxxxxxxxxx
-x                             xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-x                       xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-x                 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+x                                   
+x                             
+x                       
+x                 

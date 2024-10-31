@@ -216,7 +216,7 @@ int main(void)
         UIDataGame      = RL_CALLOC(1, sizeof(UIData));     
         levelData       = RL_CALLOC(1, sizeof(LevelData));
 
-        parse_level("resources/levels/level_2.txt", levelData);
+        parse_level("resources/levels/level_1.txt", levelData);
     }
 
     game_init(gameData, levelData, gameColors, screenWidth, screenHeight);

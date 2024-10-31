@@ -23,6 +23,9 @@ typedef struct GameData {
 	float BladeSawTimer;
 	int BladeSawRectIndex;
 
+	Vector2 EnemyPos[15];
+	uint32_t EnemyCount;
+
 	Rectangle DebugRectangles[15];
 	Color DebugRectanglesColors[15];
 	int DebugRectangleCount;

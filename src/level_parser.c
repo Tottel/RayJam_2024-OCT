@@ -5,7 +5,7 @@
 #include <assert.h>
 
 void parse_level(const char* path, LevelData* data) {
-	const char* levelTxtData = LoadFileText(path);  
+	char* levelTxtData = LoadFileText(path);  
 
 	// We're going to do this in passes to avoid too much dynamic memory allocation and complicated loops
 	// Get the max width and height first
@@ -13,8 +13,8 @@ void parse_level(const char* path, LevelData* data) {
 	uint16_t height = 0;
 	
 	{
-		int charCounter = 0;
-		int widthCounter = 0;
+		uint32_t charCounter = 0;
+		uint32_t widthCounter = 0;
 
 		while (true) {
 			if (levelTxtData[charCounter] == '\n') {
@@ -77,6 +77,9 @@ void parse_level(const char* path, LevelData* data) {
 			break;
 		case '2': // player spawn 2
 			data->Tiles[currX + (currY * width)] = TILE_SPAWN_2;
+			break;
+		case 'O': // enemy
+			data->Tiles[currX + (currY * width)] = TILE_ENEMY;
 			break;
 		default:
 			data->Tiles[currX + (currY * width)] = TILE_VOID;
