@@ -301,7 +301,25 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
     // bullet stuff
 
     for (int i = 0; i < gameData->BulletCount; ++i) {
-        gameData->BulletPos[i].x += (playerMoveSpeed + 450.0f) * dt;
+        gameData->BulletPos[i].x += (playerMoveSpeed + 500.0f) * dt;
+    }
+
+    for (int i = 0; i < gameData->BulletCount; ++i) {
+        if (gameData->BulletPos[i].x > gameData->CameraPosX + screenWidth) {
+            gameData->BulletPos[i] = gameData->BulletPos[gameData->BulletCount-1];
+            gameData->BulletCount -= 1;
+        }
+    }
+
+    for (int i = 0; i < gameData->BulletCount; ++i) {
+        for (int enemyI = 0; enemyI < gameData->EnemyCount; ++enemyI) {
+            Rectangle enemyRect = (Rectangle){ gameData->EnemyPos[enemyI].x, gameData->EnemyPos[enemyI].y, gameData->TileSize, gameData->TileSize };
+
+            if (CheckCollisionCircleRec(gameData->BulletPos[i], 5.0f, enemyRect)) {
+                gameData->BulletPos[i] = gameData->BulletPos[gameData->BulletCount - 1];
+                gameData->BulletCount -= 1;
+            }
+        }
     }
 
     if (IsKeyPressed(KEY_LEFT_CONTROL) || IsKeyPressed(KEY_RIGHT_CONTROL)) {
@@ -321,6 +339,7 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
     int xStart = gameData->CameraPosX / tileSize;
     int xEnd = xStart + (GetScreenWidth() / tileSize) + 2;
 
+    // TODO Find the top platform at every X pos and add some random dithering on it to improve visibility
     // Draw level
     for (uint16_t y = 0; y < levelData->LevelHeight; y++) {
         for (uint32_t x = xStart; x < xEnd; x++) {

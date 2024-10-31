@@ -17,7 +17,7 @@ void parse_level(const char* path, LevelData* data) {
 		uint32_t widthCounter = 0;
 
 		while (true) {
-			if (levelTxtData[charCounter] == '\n') {
+			if (levelTxtData[charCounter] == '\n') { 
 				height += 1;
 
 				if (widthCounter > width) {

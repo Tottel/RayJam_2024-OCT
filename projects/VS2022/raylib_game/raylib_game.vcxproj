@@ -390,8 +390,6 @@ XCOPY "C:\dev\raylib\GameJam\2024_OCT\RayJam_2024-OCT\src\resources\" "C:\dev\ra
     <Image Include="..\..\..\src\resources\images\panda_fail.jpg" />
     <Image Include="..\..\..\src\resources\images\testtest.png" />
     <Image Include="..\..\..\src\resources\palettes\custodian.png" />
-    <Image Include="..\..\..\src\resources\palettes\night-rain.png" />
-    <Image Include="..\..\..\src\resources\palettes\rust-gold.png" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\src\resources\levels\level_1.txt" />

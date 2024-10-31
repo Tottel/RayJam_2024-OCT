@@ -36,12 +36,6 @@
     <Image Include="..\..\..\src\resources\palettes\custodian.png">
       <Filter>resources\palettes</Filter>
     </Image>
-    <Image Include="..\..\..\src\resources\palettes\night-rain.png">
-      <Filter>resources\palettes</Filter>
-    </Image>
-    <Image Include="..\..\..\src\resources\palettes\rust-gold.png">
-      <Filter>resources\palettes</Filter>
-    </Image>
     <Image Include="..\..\..\src\resources\images\testtest.png">
       <Filter>resources\images</Filter>
     </Image>

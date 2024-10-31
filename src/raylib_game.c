@@ -324,7 +324,7 @@ void app_loop(void) {
             // aspect ratio is ~4.35
             Rectangle dest = (Rectangle){ 0, 0, screenWidth, screenHeight / 2 };
 
-            Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.01f, 60, 230 * 4.35f, 180 };
+            Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.1f, 60, 230 * 4.35f, 180 };
             DrawTexturePro(WoodsPar1, source1, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
 
             Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.3f, 60, 230 * 4.35f, 180 };
@@ -335,10 +335,10 @@ void app_loop(void) {
             // aspect ratio is ~3.56
             Rectangle dest = (Rectangle){ 0, screenHeight / 2, screenWidth, screenHeight / 2 };
             
-            Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.002f, 30, 1080 * 3.556f, 1080 };
+            Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.05f, 30, 1080 * 3.556f, 1080 };
             DrawTexturePro(CavePar1, source1, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
 
-            Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.07f, 120, 830 * 3.556f, 830 };
+            Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.25f, 120, 830 * 3.556f, 830 };
             DrawTexturePro(CavePar2, source2, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
 
             Rectangle source3 = (Rectangle){ gameData->CameraPosX * 0.9f, 70, 900 * 3.556f, 900 };
@@ -372,7 +372,7 @@ void app_loop(void) {
             // aspect ratio is ~4.35
             Rectangle dest = (Rectangle){ 0, 0, screenWidth, screenHeight / 2 };
 
-            Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.01f, 60, 230 * 4.35f, 180 };
+            Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.1f, 60, 230 * 4.35f, 180 };
             DrawTexturePro(WoodsPar1, source1, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
 
             Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.3f, 60, 230 * 4.35f, 180 };
@@ -383,10 +383,10 @@ void app_loop(void) {
             // aspect ratio is ~3.56
             Rectangle dest = (Rectangle){ 0, screenHeight / 2, screenWidth, screenHeight / 2 };
 
-            Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.002f, 30, 1080 * 3.556f, 1080 };
+            Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.05f, 30, 1080 * 3.556f, 1080 };
             DrawTexturePro(CavePar1, source1, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
 
-            Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.07f, 120, 830 * 3.556f, 830 };
+            Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.25f, 120, 830 * 3.556f, 830 };
             DrawTexturePro(CavePar2, source2, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
 
             Rectangle source3 = (Rectangle){ gameData->CameraPosX * 0.9f, 70, 900 * 3.556f, 900 };
