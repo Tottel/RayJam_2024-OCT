@@ -13,6 +13,8 @@ typedef struct Enemy {
 } Enemy;
 
 typedef struct GameData {
+	bool NextLevel;
+
 	float PlayerPosX;
 	float PlayerPosY[2];
 	float JumpVelocity[2]; 

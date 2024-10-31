@@ -354,14 +354,14 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
 
     float camSpeed = playerMoveSpeed;
 
-    float cameraLagDistance = gameData->PlayerPosX - gameData->CameraPosX;  
-     
+    float cameraLagDistance = gameData->PlayerPosX - gameData->CameraPosX;
+
     float catchupMultiplier = 1.0f;
     if (cameraLagDistance < 120) {
         camSpeed -= cameraLagDistance / 15.0f;
     }
 
-    if (againstWall) { 
+    if (againstWall) {
         camSpeed -= 100.0f;
     }
 
@@ -414,12 +414,16 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
     }
 
     if (IsKeyPressed(KEY_LEFT_CONTROL) || IsKeyPressed(KEY_RIGHT_CONTROL)) {
-        gameData->BulletPos[gameData->BulletCount] = (Vector2){ gameData->PlayerPosX + gameData->TileSize, gameData->PlayerPosY[0] + gameData->TileSize/3 };
+        gameData->BulletPos[gameData->BulletCount] = (Vector2){ gameData->PlayerPosX + gameData->TileSize, gameData->PlayerPosY[0] + gameData->TileSize / 3 };
         gameData->BulletCount += 1;
     }
 
     if (gameData->PlayerPosX - gameData->CameraPosX < 15) {
         game_restart(gameData, levelData);
+    }
+
+    if (gameData->PlayerPosX >= gameData->PortalPosX) {
+        gameData->NextLevel = true;
     }
 }
 
@@ -453,8 +457,8 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
     float radius1 = 5.0f;
     float radius2 = 4.0f;
     float radius3 = 3.0f;
-    float radius4 = 2.0f;
-    for (uint32_t i = 0; i < gameData->BulletCount; i++) { 
+    float radius4 = 2.0f; 
+    for (uint32_t i = 0; i < gameData->BulletCount; i++) {  
         DrawCircle(gameData->BulletPos[i].x + radius1 / 2 - gameData->CameraPosX, gameData->BulletPos[i].y + radius1 / 2, radius1, gameColors[1]);
         DrawCircle(gameData->BulletPos[i].x + radius2 / 2 - gameData->CameraPosX, gameData->BulletPos[i].y + radius2 / 2, radius2, gameColors[3]);
         DrawCircle(gameData->BulletPos[i].x + radius3 / 2 - gameData->CameraPosX, gameData->BulletPos[i].y + radius3 / 2, radius3, gameColors[5]);
@@ -472,7 +476,7 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
     // draw portals
     DrawTextureRec(Portal1Sheet, (Rectangle) { gameData->TileSize * PortalAnimationIndex * 2.2f, 0, Portal1Sheet.width / PortalFrameCount, Portal1Sheet.height }, (Vector2) { gameData->PortalPosX - gameData->CameraPosX - 15.0f, gameData->PortalPosY[0] - 30.0f }, WHITE);
     DrawTextureRec(Portal2Sheet, (Rectangle) { gameData->TileSize * PortalAnimationIndex * 2.2f, 0, Portal2Sheet.width / PortalFrameCount, Portal2Sheet.height }, (Vector2) { gameData->PortalPosX - gameData->CameraPosX - 15.0f, gameData->PortalPosY[1] - 30.0f }, WHITE);
- 
+
 
     // Draw char 1
     //DrawRectangleV((Vector2){ gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[0] }, (Vector2){ tileSize, tileSize }, gameColors[1]);
@@ -527,6 +531,8 @@ void game_bladesaws_draw(GameData* gameData, Texture2D bladesaw, float dt) {
 }
 
 void game_restart(GameData* gameData, const LevelData* levelData) {
+    gameData->NextLevel = false;
+
     gameData->JumpVelocity[0] = 0.0f;
     gameData->JumpVelocity[1] = 0.0f;
     gameData->JumpAcceleration[0] = 0.0f;

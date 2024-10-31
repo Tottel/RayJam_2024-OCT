@@ -40,6 +40,7 @@
 #include "image_color_parser.h"
 
 void app_loop(void);
+void go_to_next_level();
 
 //----------------------------------------------------------------------------------
 // Defines and Macros
@@ -82,6 +83,8 @@ static Color gameColors[8];
 
 static GameScreen CurrentState = { SCREEN_MENU };
 
+static int CurrentLevel = 0;
+
 // menu state
 static UIData* UIDataMenu = NULL;
 static UIData* UIDataMenuInstructions = NULL;
@@ -115,6 +118,10 @@ void OnPlayButtonClicked(void* context) {
     CurrentState = SCREEN_GAMEPLAY_INTRO;
     IntroSubState = INTRO_SLIDE_1;
     IntroTimer = 0.0f;
+    CurrentLevel = 1;
+
+    parse_level("resources/levels/level_1.txt", levelData);
+    game_init(gameData, levelData, gameColors, screenWidth, screenHeight);
 }
 
 void OnHelpButtonClicked(void* context) {
@@ -215,11 +222,7 @@ int main(void)
         gameData        = RL_CALLOC(1, sizeof(GameData));
         UIDataGame      = RL_CALLOC(1, sizeof(UIData));
         levelData       = RL_CALLOC(1, sizeof(LevelData));
-
-        parse_level("resources/levels/level_2.txt", levelData);
     }
-
-    game_init(gameData, levelData, gameColors, screenWidth, screenHeight);
 
     //--------------------------------------------------------------------------------------
 #if defined(PLATFORM_WEB)
@@ -363,44 +366,71 @@ void app_loop(void) {
 #endif
 
         game_tick(gameData, levelData, screenWidth, screenHeight, dt);
-        ui_tick(UIDataGame);
 
-        BeginDrawing();
-        ClearBackground(gameColors[5]);
+        if (gameData->NextLevel) {
+            go_to_next_level();
+        }
+        else {
+            ui_tick(UIDataGame);
 
-        {
-            // aspect ratio is ~4.35
-            Rectangle dest = (Rectangle){ 0, 0, screenWidth, screenHeight / 2 };
+            BeginDrawing();
+            ClearBackground(gameColors[5]);
 
-            Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.1f, 60, 230 * 4.35f, 180 };
-            DrawTexturePro(WoodsPar1, source1, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
+            {
+                // aspect ratio is ~4.35
+                Rectangle dest = (Rectangle){ 0, 0, screenWidth, screenHeight / 2 };
 
-            Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.3f, 60, 230 * 4.35f, 180 };
-            DrawTexturePro(WoodsPar2, source2, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
+                Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.1f, 60, 230 * 4.35f, 180 };
+                DrawTexturePro(WoodsPar1, source1, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
+
+                Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.3f, 60, 230 * 4.35f, 180 };
+                DrawTexturePro(WoodsPar2, source2, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
+            }
+
+            {
+                // aspect ratio is ~3.56
+                Rectangle dest = (Rectangle){ 0, screenHeight / 2, screenWidth, screenHeight / 2 };
+
+                Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.05f, 30, 1080 * 3.556f, 1080 };
+                DrawTexturePro(CavePar1, source1, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
+
+                Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.25f, 120, 830 * 3.556f, 830 };
+                DrawTexturePro(CavePar2, source2, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
+
+                Rectangle source3 = (Rectangle){ gameData->CameraPosX * 0.9f, 70, 900 * 3.556f, 900 };
+                DrawTexturePro(CavePar3, source3, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
+            }
+
+            game_draw(gameData, levelData, gameColors);
+            game_bladesaws_draw(gameData, BladeSaw, dt);
+            ui_draw(UIDataGame, gameColors);
+            DrawFPS(10, 10);
+            EndDrawing();
         }
 
-        {
-            // aspect ratio is ~3.56
-            Rectangle dest = (Rectangle){ 0, screenHeight / 2, screenWidth, screenHeight / 2 };
-
-            Rectangle source1 = (Rectangle){ gameData->CameraPosX * 0.05f, 30, 1080 * 3.556f, 1080 };
-            DrawTexturePro(CavePar1, source1, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
-
-            Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.25f, 120, 830 * 3.556f, 830 };
-            DrawTexturePro(CavePar2, source2, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
-
-            Rectangle source3 = (Rectangle){ gameData->CameraPosX * 0.9f, 70, 900 * 3.556f, 900 };
-            DrawTexturePro(CavePar3, source3, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
-        }
-
-        game_draw(gameData, levelData, gameColors);
-        game_bladesaws_draw(gameData, BladeSaw, dt);
-        ui_draw(UIDataGame, gameColors);
-        DrawFPS(10, 10);
-        EndDrawing();
     } break;
     default:
         assert(false); // Should probably implement this state
         break;
     }
+}
+
+void go_to_next_level() {
+    CurrentLevel += 1;
+    switch(CurrentLevel) {
+    case 2:
+        parse_level("resources/levels/level_2.txt", levelData);
+        break;
+    case 3:
+        parse_level("resources/levels/level_3.txt", levelData);
+        break;
+    case 4:
+        parse_level("resources/levels/level_4.txt", levelData);
+        break;
+    case 5:
+        parse_level("resources/levels/level_5.txt", levelData);
+        break;
+    }
+    
+    game_init(gameData, levelData, gameColors, screenWidth, screenHeight);
 }
