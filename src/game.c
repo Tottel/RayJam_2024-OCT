@@ -142,6 +142,8 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
             int checkX = charX + offsetX;
             int checkY = charY - 1;
 
+            if (checkY < 0) { continue; }
+
             Rectangle levelRect = { checkX * gameData->TileSize, checkY * gameData->TileSize + (gameData->TileSize - 10.0f), gameData->TileSize, 10.0f };
             //gameData->DebugRectangles[gameData->DebugRectangleCount] = levelRect;
             //gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = RAYWHITE;
@@ -166,6 +168,8 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
 
             int checkX = charX + offsetX;
             int checkY = charY + 1;
+
+            if (checkY >= levelData->LevelHeight) continue;
 
             Rectangle levelRect = { checkX * gameData->TileSize, checkY * gameData->TileSize, gameData->TileSize, 10.0f };
             //gameData->DebugRectangles[gameData->DebugRectangleCount] = levelRect;
@@ -309,12 +313,9 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
     // Draw level
     for (uint16_t y = 0; y < levelData->LevelHeight; y++) {
         for (uint32_t x = xStart; x < xEnd; x++) {
-            uint16_t tileType = levelData->Tiles[x + (y * levelData->LevelWidth)];
+            uint16_t tileType = levelData->Tiles[x + (y * levelData->LevelWidth)]; 
 
             switch (tileType) {
-            case TILE_VOID:
-            case TILE_FLOOR:
-                break;
             case TILE_PLATFORM:
                 DrawRectangle(x * tileSize - gameData->CameraPosX - 1, y * tileSize - 1, tileSize + 2, tileSize + 2, gameColors[0]);
                 break;
