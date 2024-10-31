@@ -138,6 +138,9 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
     Rectangle playerRecsForWalls[2] = { (Rectangle) { gameData->PlayerPosX + 0.5f + gameData->TileSize - 10.0f, gameData->PlayerPosY[0] + 5.0f, 10.0f, gameData->TileSize - 10.0f },
                                         (Rectangle) { gameData->PlayerPosX + 0.5f + gameData->TileSize - 10.0f, gameData->PlayerPosY[1] + 5.0f, 10.0f, gameData->TileSize - 10.0f }};
 
+    Rectangle playersRecsFull[2] = { (Rectangle) { gameData->PlayerPosX, gameData->PlayerPosY[0], gameData->TileSize, gameData->TileSize },
+                                     (Rectangle) { gameData->PlayerPosX, gameData->PlayerPosY[1], gameData->TileSize, gameData->TileSize } };
+    
     gameData->DebugRectangleCount = 0;
 
     //gameData->DebugRectangles[gameData->DebugRectangleCount] = playerRecsForGround[0];
@@ -397,8 +400,8 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
             gameData->BulletCount -= 1;
         }
     }
-
-    for (int i = 0; i < gameData->BulletCount; ++i) {
+     
+    for (int i = 0; i < gameData->BulletCount; ++i) { 
         for (int enemyI = 0; enemyI < gameData->EnemyCount; ++enemyI) {
             Rectangle enemyRect = (Rectangle){ gameData->Enemies[enemyI].Pos.x, gameData->Enemies[enemyI].Pos.y, gameData->TileSize, gameData->TileSize };
 
@@ -406,15 +409,30 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
                 gameData->BulletPos[i] = gameData->BulletPos[gameData->BulletCount - 1];
                 gameData->BulletCount -= 1;
 
-                gameData->Enemies[enemyI].HitTimer = 0.2f;
+                gameData->Enemies[enemyI].HitTimer = 0.2f; 
 
                 gameData->Enemies[enemyI].HP -= 1;
             }
         }
     }
 
+    for (int enemyI = 0; enemyI < gameData->EnemyCount; ++enemyI) {
+        Rectangle enemyRect = (Rectangle){ gameData->Enemies[enemyI].Pos.x, gameData->Enemies[enemyI].Pos.y, gameData->TileSize, gameData->TileSize };
+
+        for (int j = 0; j < 2; j++) {
+            if (CheckCollisionRecs(enemyRect, playersRecsFull[j])) {
+                game_restart(gameData, levelData);
+            }
+        } 
+    }
+
+    if (IsKeyPressed(KEY_LEFT_SHIFT) || IsKeyPressed(KEY_RIGHT_SHIFT)) {
+        gameData->GunAtTop = !gameData->GunAtTop;
+    }
+
     if (IsKeyPressed(KEY_LEFT_CONTROL) || IsKeyPressed(KEY_RIGHT_CONTROL)) {
-        gameData->BulletPos[gameData->BulletCount] = (Vector2){ gameData->PlayerPosX + gameData->TileSize, gameData->PlayerPosY[0] + gameData->TileSize / 3 };
+        float posY = gameData->GunAtTop ? gameData->PlayerPosY[0] + gameData->TileSize / 2.0f : gameData->PlayerPosY[1] + gameData->TileSize / 2.0f;
+        gameData->BulletPos[gameData->BulletCount] = (Vector2){ gameData->PlayerPosX + gameData->TileSize, posY };
         gameData->BulletCount += 1;
     }
 
@@ -468,22 +486,21 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
     // draw enemies
     for (uint32_t i = 0; i < gameData->EnemyCount; i++) {
         bool isHit = gameData->Enemies[i].HitTimer > 0.01f;
-        float offsetY = Lerp(-8.0f, 14.0f, (sinf(gameData->Enemies[i].PosOffsetTimer * 5.0f) + 2) / 2.0f);
-
-        DrawTextureRec(isHit ? EnemyHitSheet : EnemySheet, (Rectangle) { gameData->TileSize * EnemyAnimationIndex * 1.4f, 0, EnemySheet.width / EnemyFrameCount, EnemySheet.height}, (Vector2) { gameData->Enemies[i].Pos.x - gameData->CameraPosX - 15.0f, gameData->Enemies[i].Pos.y - 15.0f + offsetY }, WHITE);
+        bool isTop = gameData->Enemies[i].PosY < levelData->LevelHeight / 2;
+        float offsetY = Lerp(0.0f, isTop ? -14.0f : 14.0f, (sinf(gameData->Enemies[i].PosOffsetTimer * 5.0f) + 2) / 2.0f);
+        offsetY -= isTop ? 0.0f : gameData->TileSize / 2;
+        
+        DrawTextureRec(isHit ? EnemyHitSheet : EnemySheet, (Rectangle) { gameData->TileSize * EnemyAnimationIndex * 1.4f, 0, EnemySheet.width / EnemyFrameCount, EnemySheet.height}, (Vector2) { gameData->Enemies[i].Pos.x - gameData->CameraPosX - 15.0f, gameData->Enemies[i].Pos.y + offsetY }, WHITE);
     }
 
     // draw portals
     DrawTextureRec(Portal1Sheet, (Rectangle) { gameData->TileSize * PortalAnimationIndex * 2.2f, 0, Portal1Sheet.width / PortalFrameCount, Portal1Sheet.height }, (Vector2) { gameData->PortalPosX - gameData->CameraPosX - 15.0f, gameData->PortalPosY[0] - 30.0f }, WHITE);
     DrawTextureRec(Portal2Sheet, (Rectangle) { gameData->TileSize * PortalAnimationIndex * 2.2f, 0, Portal2Sheet.width / PortalFrameCount, Portal2Sheet.height }, (Vector2) { gameData->PortalPosX - gameData->CameraPosX - 15.0f, gameData->PortalPosY[1] - 30.0f }, WHITE);
 
-
     // Draw char 1
-    //DrawRectangleV((Vector2){ gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[0] }, (Vector2){ tileSize, tileSize }, gameColors[1]);
     DrawTextureRec(Char1Sheet, (Rectangle) { gameData->TileSize * gameData->AnimationRectIndex[0], 0, gameData->TileSize, gameData->TileSize }, (Vector2) { gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[0] }, WHITE);
 
     // Draw char 2
-    //DrawRectangleV((Vector2){ gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[1] }, (Vector2){ tileSize, tileSize }, gameColors[2]);
     DrawTextureRec(Char2Sheet, (Rectangle) { gameData->TileSize * gameData->AnimationRectIndex[1], 0, gameData->TileSize, gameData->TileSize }, (Vector2) { gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[1] }, WHITE);
 
     // tether
@@ -563,6 +580,7 @@ void game_restart(GameData* gameData, const LevelData* levelData) {
 
     gameData->BulletFireTimer = 0.0f;
     gameData->BulletCount = 0;
+    gameData->GunAtTop = true;
 
     gameData->Timer = 0.0f;
     
@@ -580,6 +598,8 @@ void game_restart(GameData* gameData, const LevelData* levelData) {
                 gameData->PlayerPosY[1] = y * gameData->TileSize;
                 break;
             case TILE_ENEMY:
+                gameData->Enemies[gameData->EnemyCount].PosX = x;
+                gameData->Enemies[gameData->EnemyCount].PosY = y;
                 gameData->Enemies[gameData->EnemyCount].Pos = (Vector2){x * gameData->TileSize, y * gameData->TileSize};
                 gameData->EnemyCount += 1;
                 break;

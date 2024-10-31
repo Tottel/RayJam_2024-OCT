@@ -96,7 +96,7 @@ static float IntroTimer = 0.0f;
 
 // game state
 static GameData* gameData = NULL;
-static UIData* UIDataGame = NULL;
+static UIData* UIDataGame = NULL; 
 
 static Texture2D BladeSaw;
 
@@ -107,7 +107,7 @@ static float slowMoMultiplier = 1.0f;
 static Texture2D CavePar1;
 static Texture2D CavePar2;
 static Texture2D CavePar3;
-
+ 
 static Texture2D WoodsPar1;
 static Texture2D WoodsPar2;
 
@@ -120,8 +120,7 @@ void OnPlayButtonClicked(void* context) {
     IntroTimer = 0.0f;
     CurrentLevel = 1;
 
-    parse_level("resources/levels/level_1.txt", levelData);
-    game_init(gameData, levelData, gameColors, screenWidth, screenHeight);
+    go_to_next_level();
 }
 
 void OnHelpButtonClicked(void* context) {
@@ -418,6 +417,9 @@ void app_loop(void) {
 void go_to_next_level() {
     CurrentLevel += 1;
     switch(CurrentLevel) {
+    case 1:
+        parse_level("resources/levels/level_1.txt", levelData);
+        break;
     case 2:
         parse_level("resources/levels/level_2.txt", levelData);
         break;

@@ -5,11 +5,12 @@
 #include <stdbool.h>
 
 typedef struct Enemy {
+	int PosX;
+	int PosY;
 	Vector2 Pos;
 	float HitTimer; // Bigger than 0 means hit. And it counts down
 	int HP;
-	float PosOffsetTimer;
-	//bool bobbingUp;
+	float PosOffsetTimer; 
 } Enemy;
 
 typedef struct GameData {
@@ -37,7 +38,7 @@ typedef struct GameData {
 	uint32_t EnemyCount;
 
 	float BulletFireTimer;
-	
+	bool GunAtTop;
 	Vector2 BulletPos[20];
 	uint32_t BulletCount;
 
