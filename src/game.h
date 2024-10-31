@@ -7,7 +7,7 @@
 typedef struct GameData {
 	float PlayerPosX;
 	float PlayerPosY[2];
-	float JumpVelocity[2];
+	float JumpVelocity[2]; 
 	float JumpAcceleration[2];
 	float JumpTimer[2];
 	bool GoingUp[2];

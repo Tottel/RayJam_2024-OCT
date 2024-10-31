@@ -200,8 +200,6 @@ int main(void)
         UIDataMenuInstructions = RL_CALLOC(1, sizeof(UIData));
         ui_add_rectangle_with_text(UIDataMenuInstructions, screenWidth / 2 - 300, screenHeight / 2 - 130, 600, 240, 0, "Instructions? Why would you need instructions?\n\nIt's so simple: You are two characters at the same time!\nAll you have to do is jump [SPACE] and they both jump.\n\nOkay, yes, you will also find a gun later on, and only one\nof your characters can have it. But don't worry!\nYou can pass it between them with [SHIFT].\n\nAnd you probably also want to know that you can\nfire that gun with [CTRL]..\n\nNow go!", 20, ALIGN_HOR_LEFT, ALIGN_VER_TOP, 4);
         ui_add_button(UIDataMenuInstructions, screenWidth / 2 - buttonWidth / 2, screenHeight - 80, buttonWidth, buttonHeight, "back", UIStyleButtonMainMenu, OnInstructionBackButtonClicked, NULL, true);
-        //ui_add_rectangle_with_texture(UIDataMenuInstructions, 100, 45, 100, 75, 0, UIInstructionTexture1, true, ALIGN_HOR_LEFT, ALIGN_VER_TOP);
-        //ui_add_rectangle_with_texture(UIDataMenuInstructions, 210, 45, 100, 75, 0, UIInstructionTexture1, true, ALIGN_HOR_LEFT, ALIGN_VER_TOP);
 
         // game intro state
         UIDataGameIntro = RL_CALLOC(1, sizeof(UIData));
@@ -218,7 +216,7 @@ int main(void)
         UIDataGame      = RL_CALLOC(1, sizeof(UIData));     
         levelData       = RL_CALLOC(1, sizeof(LevelData));
 
-        parse_level("resources/levels/level_1.txt", levelData);
+        parse_level("resources/levels/level_2.txt", levelData);
     }
 
     game_init(gameData, levelData, gameColors, screenWidth, screenHeight);
