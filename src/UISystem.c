@@ -53,9 +53,12 @@ void ui_draw(UIData* uiData, Color* gameColors) {
 		DrawTextureEx(uiData->Textures[i].Texture, pos, 0.0f, uiData->Textures[i].Scale, WHITE);
 	}
 
+
+	SetTextLineSpacing(17);
 	for (int i = 0; i < uiData->RectangleCount; ++i) {
 		DrawText(uiData->RectanglesText[i].Text, uiData->RectanglesText[i].PosX, uiData->RectanglesText[i].PosY, uiData->RectanglesText[i].FontSize, gameColors[uiData->RectanglesText[i].ColorIndex]);
 	}
+	SetTextLineSpacing(15); // 15 is the default
 }
 
 uint16_t ui_add_rectangle(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t width, uint16_t height, uint8_t rectColor) {
