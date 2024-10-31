@@ -90,7 +90,7 @@ static UIData* UIDataMenu = NULL;
 static UIData* UIDataMenuInstructions = NULL;
 
 // game intro state
-static GameIntroSteps IntroSubState = { INTRO_SLIDE_1 };
+static GameIntroSteps IntroSubState = { INTRO_SLIDE_1 }; 
 static UIData* UIDataGameIntro = NULL;
 static float IntroTimer = 0.0f;
 
@@ -118,7 +118,7 @@ void OnPlayButtonClicked(void* context) {
     CurrentState = SCREEN_GAMEPLAY_INTRO;
     IntroSubState = INTRO_SLIDE_1;
     IntroTimer = 0.0f;
-    CurrentLevel = 1;
+    CurrentLevel = 0;
 
     go_to_next_level();
 }
