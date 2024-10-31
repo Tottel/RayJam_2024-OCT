@@ -81,8 +81,17 @@ void parse_level(const char* path, LevelData* data) {
 		case 'O': // enemy
 			data->Tiles[currX + (currY * width)] = TILE_ENEMY;
 			break;
-		default:
+		case ']': // end portal 1
+			data->Tiles[currX + (currY * width)] = TILE_PORTAL_1;
+			break;
+		case '}': // end portal 2
+			data->Tiles[currX + (currY * width)] = TILE_PORTAL_2;
+			break;
+		case ' ': // void
 			data->Tiles[currX + (currY * width)] = TILE_VOID;
+			break;
+		default:
+			assert(false);
 			break;
 		}
 

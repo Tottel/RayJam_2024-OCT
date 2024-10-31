@@ -10,6 +10,8 @@
 #define TILE_SPAWN_1  3
 #define TILE_SPAWN_2  4
 #define TILE_ENEMY    5
+#define TILE_PORTAL_1 6
+#define TILE_PORTAL_2 7
 
 typedef struct LevelData {
 	uint16_t* Tiles;

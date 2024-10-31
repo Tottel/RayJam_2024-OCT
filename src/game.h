@@ -42,6 +42,9 @@ typedef struct GameData {
 	Rectangle DebugRectangles[15];
 	Color DebugRectanglesColors[15];
 	int DebugRectangleCount;
+
+	float PortalPosX;
+	float PortalPosY[2];
 } GameData;
 
 void game_init(GameData* gameData, const LevelData* levelData, Color* allowedColors, int screenWidth, int screenHeight);
