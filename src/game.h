@@ -4,8 +4,6 @@
 #include "level_parser.h"
 #include <stdbool.h>
 
-#include "particles.h"
-
 typedef struct GameData {
 	float PlayerPosX;
 	float PlayerPosY[2];
@@ -28,11 +26,6 @@ typedef struct GameData {
 	Rectangle DebugRectangles[15];
 	Color DebugRectanglesColors[15];
 	int DebugRectangleCount;
-
-	ParticleSystem* PSConnection;
-	Emitter* EmitterConnectionDown;
-	Emitter* EmitterConnectionUp;
-	Texture2D PSTexture;
 } GameData;
 
 void game_init(GameData* gameData, const LevelData* levelData, Color* allowedColors, int screenWidth, int screenHeight);

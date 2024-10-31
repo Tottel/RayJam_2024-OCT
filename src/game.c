@@ -18,81 +18,21 @@ void game_init(GameData* gameData, const LevelData* levelData, Color* allowedCol
 
     game_restart(gameData, levelData);
 
-    Image tempChar1 = load_and_convert_image("resources/characters/goblin_run.png", allowedColors, 8);
-    Image tempChar2 = load_and_convert_image("resources/characters/goblin_run.png", allowedColors, 8);
+    Image tempChar = load_and_convert_image("resources/characters/goblin_run.png", allowedColors, 8);
     
     CharFrameCount = 6; // LoadImageAnim returns the wrong value :(((
 
-    ImageResize(&tempChar1, tileSize * CharFrameCount, tileSize);
-    ImageResize(&tempChar2, tileSize * CharFrameCount, tileSize);
-    ImageFlipVertical(&tempChar2);
+    ImageResize(&tempChar, tileSize * CharFrameCount, tileSize);
+    Char1Sheet = LoadTextureFromImage(tempChar);
 
-    Char1Sheet = LoadTextureFromImage(tempChar1); 
-    Char2Sheet = LoadTextureFromImage(tempChar2);
+    ImageFlipVertical(&tempChar);
+    Char2Sheet = LoadTextureFromImage(tempChar);
 
-    UnloadImage(tempChar1);
-    UnloadImage(tempChar2);
-
-    // particles
-    gameData->PSConnection = ParticleSystem_New();
-    assert(gameData->PSConnection != NULL);
-
-    gameData->PSTexture = load_and_convert_texture("resources/images/connection.png", allowedColors, 8);
-
-    struct EmitterConfig emitterDown = {
-        .direction = (Vector2){.x = 0, .y = 1.0f},
-        .velocity = (FloatRange){.min = 80, .max = 100},
-        .directionAngle = (FloatRange){.min = -1, .max = 1},
-        .velocityAngle = (FloatRange){.min = -1, .max = 1},
-        .size = (FloatRange){.min = 1.5f, 3.0f},
-        .burst = (IntRange){.min = 100, .max = 400},
-        .capacity = 200,
-        .emissionRate = 40,
-        .origin = (Vector2){.x = 0, .y = 0},
-        .externalAcceleration = (Vector2){.x = 0, .y = 0},
-        .Color = allowedColors[4],
-        .age = (FloatRange){.min = 0.3f, .max = 0.5f},
-        .haltTime = (FloatRange){1.5f, 3.00f},
-        .blendMode = BLEND_ALPHA,
-        .texture = gameData->PSTexture,
-
-        //.particle_Decellerator = Particle_Decelerator_Sudden,
-    };
-    gameData->EmitterConnectionDown = Emitter_New(emitterDown);
-    assert(gameData->EmitterConnectionDown != NULL);
-
-    struct EmitterConfig emitterUp = {
-        .direction = (Vector2){.x = 0, .y = -1.0f},
-        .velocity = (FloatRange){.min = 80, .max = 100},
-        .directionAngle = (FloatRange){.min = -1, .max = 1},
-        .velocityAngle = (FloatRange){.min = -1, .max = 1},
-        .size = (FloatRange){.min = 1.5f, 3.0f},
-        .burst = (IntRange){.min = 100, .max = 400},
-        .capacity = 200,
-        .emissionRate = 40,
-        .origin = (Vector2){.x = 0, .y = 0},
-        .externalAcceleration = (Vector2){.x = 0, .y = 0},
-        .Color = allowedColors[4],
-        .age = (FloatRange){.min = 0.3f, .max = 0.5f},
-        .haltTime = (FloatRange){1.5f, 3.00f},
-        .blendMode = BLEND_ALPHA,
-        .texture = gameData->PSTexture,
-
-        //.particle_Decellerator = Particle_Decelerator_Sudden,
-            };
-    gameData->EmitterConnectionUp = Emitter_New(emitterUp);
-    assert(gameData->EmitterConnectionUp != NULL);
-
-    ParticleSystem_Register(gameData->PSConnection, gameData->EmitterConnectionDown);
-    ParticleSystem_Register(gameData->PSConnection, gameData->EmitterConnectionUp);
-    ParticleSystem_Start(gameData->PSConnection);
+    UnloadImage(tempChar);
 }
 
 void game_exit(GameData* gameData) {
     UnloadTexture(Char1Sheet);
-    UnloadTexture(gameData->PSTexture);
-
-    ParticleSystem_CleanAndFree(gameData->PSConnection);
 }
 
 void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, int screenHeight, float dt) { 
@@ -292,12 +232,6 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
 
     gameData->CameraPosX += camSpeed * dt;
 
-
-    Emitter_Set_Origin(gameData->EmitterConnectionDown, (Vector2) { gameData->PlayerPosX - gameData->CameraPosX + gameData->TileSize / 2, gameData->PlayerPosY[0] + gameData->TileSize });
-    Emitter_Set_Origin(gameData->EmitterConnectionUp, (Vector2) { gameData->PlayerPosX - gameData->CameraPosX + gameData->TileSize / 2, gameData->PlayerPosY[1] });
-
-    ParticleSystem_Update(gameData->PSConnection, dt);
-
     if (gameData->PlayerPosX - gameData->CameraPosX < 15) {
         game_restart(gameData, levelData);
     }
@@ -335,7 +269,19 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
     //DrawRectangleV((Vector2){ gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[1] }, (Vector2){ tileSize, tileSize }, gameColors[2]);
     DrawTextureRec(Char2Sheet, (Rectangle) { gameData->TileSize * gameData->AnimationRectIndex[1], 0, gameData->TileSize, gameData->TileSize }, (Vector2) { gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[1] }, WHITE);
 
-    ParticleSystem_Draw(gameData->PSConnection);
+    // tether
+    {
+        int charStartX = (int)gameData->PlayerPosX - gameData->CameraPosX + tileSize / 2;
+        int charYUp = (int)gameData->PlayerPosY[0] + tileSize;
+        int charYDown = (int)gameData->PlayerPosY[1];
+        for (int x = -2; x <= 2; x++) {
+            for (int y = charYUp; y < charYDown; y++) {
+                if ((x + y) % 3 == 0) {
+                    DrawPixel(charStartX + x, y, gameColors[x+2]);
+                }        
+            }
+        }
+    }
 
 #if defined (_DEBUG)
     for (int i = 0; i < gameData->DebugRectangleCount; ++i) {
