@@ -25,6 +25,8 @@ typedef struct GameData {
 
 	Vector2 EnemyPos[15];
 	uint32_t EnemyCount;
+	float EnemiesHit[15]; // Bigger than 0 means hit. And it counts down
+	int EnemyHP[15];
 
 	float BulletFireTimer;
 	

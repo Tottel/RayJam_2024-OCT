@@ -25,9 +25,6 @@
     <Filter Include="resources\palettes">
       <UniqueIdentifier>{5b58b22b-947c-4eff-aade-212a3bd59601}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\images">
-      <UniqueIdentifier>{85be112b-9994-4388-a27e-f7b28fb5e811}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resources\levels">
       <UniqueIdentifier>{6af43277-bbf6-46b0-b798-f7e46f6df6b4}</UniqueIdentifier>
     </Filter>
@@ -35,12 +32,6 @@
   <ItemGroup>
     <Image Include="..\..\..\src\resources\palettes\custodian.png">
       <Filter>resources\palettes</Filter>
-    </Image>
-    <Image Include="..\..\..\src\resources\images\testtest.png">
-      <Filter>resources\images</Filter>
-    </Image>
-    <Image Include="..\..\..\src\resources\images\panda_fail.jpg">
-      <Filter>resources\images</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

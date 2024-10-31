@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <assert.h>
 #include <stddef.h>
+#include <string.h>
 
 #include "image_color_parser.h"
 
@@ -11,6 +12,12 @@ static Texture Char1Sheet;
 static Texture Char2Sheet;
 static int CharFrameCount;
 static float AnimationSpeed = 4.0f;
+
+static Texture EnemySheet;
+static Texture EnemyHitSheet;
+static int EnemyFrameCount;
+static float EnemyAnimationTimer = 0.0f;
+static int EnemyAnimationIndex = 0;
 
 void game_init(GameData* gameData, const LevelData* levelData, Color* allowedColors, int screenWidth, int screenHeight) {
     const float tileSize = screenHeight / (float)levelData->LevelHeight;
@@ -26,13 +33,28 @@ void game_init(GameData* gameData, const LevelData* levelData, Color* allowedCol
     Char1Sheet = LoadTextureFromImage(tempChar);
 
     ImageFlipVertical(&tempChar);
-    Char2Sheet = LoadTextureFromImage(tempChar);
+    Char2Sheet = LoadTextureFromImage(tempChar); 
 
-    UnloadImage(tempChar);
+    UnloadImage(tempChar); 
+
+    Image tempEnemy = load_and_convert_image("resources/characters/wachter_side.png", allowedColors, 8);
+    Image tempHitEnemy = load_and_convert_image("resources/characters/wachter_side_hit.png", allowedColors, 8);
+    EnemyFrameCount = 3;
+
+    ImageResize(&tempEnemy   , tileSize * EnemyFrameCount * 1.4f, tileSize * 1.4f);
+    ImageResize(&tempHitEnemy, tileSize * EnemyFrameCount * 1.4f, tileSize * 1.4f);
+    EnemySheet    = LoadTextureFromImage(tempEnemy);
+    EnemyHitSheet = LoadTextureFromImage(tempHitEnemy);
+
+    UnloadImage(tempEnemy);
+    UnloadImage(tempHitEnemy);
 }
 
 void game_exit(GameData* gameData) {
     UnloadTexture(Char1Sheet);
+    UnloadTexture(Char2Sheet);
+    UnloadTexture(EnemySheet);
+    UnloadTexture(EnemyHitSheet);
 }
 
 void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, int screenHeight, float dt) { 
@@ -48,6 +70,17 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
             if (gameData->AnimationRectIndex[i] > 6) {
                 gameData->AnimationRectIndex[i] = 0;
             }
+        }
+    }
+
+    EnemyAnimationTimer += 2.0f * dt;
+
+    if (EnemyAnimationTimer > 1.0f) {
+        EnemyAnimationTimer = 0.0f;
+        EnemyAnimationIndex += 1;
+
+        if (EnemyAnimationIndex > 2) {
+            EnemyAnimationIndex = 0;
         }
     }
 
@@ -298,6 +331,21 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
 
     gameData->CameraPosX += camSpeed * dt;
 
+    for (int i = 0; i < gameData->EnemyCount; ++i) {
+        if (gameData->EnemiesHit[i] > 0.0f) {
+            gameData->EnemiesHit[i] -= dt;
+        }
+    }
+
+    for (int i = 0; i < gameData->EnemyCount; ++i) {
+        if (gameData->EnemyHP[i] <= 0) {
+            gameData->EnemyPos[i] = gameData->EnemyPos[gameData->EnemyCount - 1];
+            gameData->EnemiesHit[i] = gameData->EnemiesHit[gameData->EnemyCount - 1];
+            gameData->EnemyHP[i] = gameData->EnemyHP[gameData->EnemyCount - 1];
+            gameData->EnemyCount -= 1;
+        }
+    }
+
     // bullet stuff
 
     for (int i = 0; i < gameData->BulletCount; ++i) {
@@ -306,7 +354,7 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
 
     for (int i = 0; i < gameData->BulletCount; ++i) {
         if (gameData->BulletPos[i].x > gameData->CameraPosX + screenWidth) {
-            gameData->BulletPos[i] = gameData->BulletPos[gameData->BulletCount-1];
+            gameData->BulletPos[i] = gameData->BulletPos[gameData->BulletCount - 1];
             gameData->BulletCount -= 1;
         }
     }
@@ -318,6 +366,10 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
             if (CheckCollisionCircleRec(gameData->BulletPos[i], 5.0f, enemyRect)) {
                 gameData->BulletPos[i] = gameData->BulletPos[gameData->BulletCount - 1];
                 gameData->BulletCount -= 1;
+
+                gameData->EnemiesHit[enemyI] = 0.2f;
+
+                gameData->EnemyHP[enemyI] -= 1;
             }
         }
     }
@@ -363,7 +415,7 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
     float radius2 = 4.0f;
     float radius3 = 3.0f;
     float radius4 = 2.0f;
-    for (uint32_t i = 0; i < gameData->BulletCount; i++) {
+    for (uint32_t i = 0; i < gameData->BulletCount; i++) { 
         DrawCircle(gameData->BulletPos[i].x + radius1 / 2 - gameData->CameraPosX, gameData->BulletPos[i].y + radius1 / 2, radius1, gameColors[1]);
         DrawCircle(gameData->BulletPos[i].x + radius2 / 2 - gameData->CameraPosX, gameData->BulletPos[i].y + radius2 / 2, radius2, gameColors[3]);
         DrawCircle(gameData->BulletPos[i].x + radius3 / 2 - gameData->CameraPosX, gameData->BulletPos[i].y + radius3 / 2, radius3, gameColors[5]);
@@ -372,7 +424,9 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
 
     // draw enemies
     for (uint32_t i = 0; i < gameData->EnemyCount; i++) {
-        DrawRectangle(gameData->EnemyPos[i].x - gameData->CameraPosX, gameData->EnemyPos[i].y, tileSize, tileSize, gameColors[5]);
+        bool isHit = gameData->EnemiesHit[i] > 0.01f;
+
+        DrawTextureRec(isHit ? EnemyHitSheet : EnemySheet, (Rectangle) { gameData->TileSize * EnemyAnimationIndex * 1.4f, 0, EnemySheet.width / EnemyFrameCount, EnemySheet.height}, (Vector2) { gameData->EnemyPos[i].x - gameData->CameraPosX - 15.0f, gameData->EnemyPos[i].y - 15.0f }, WHITE);
     }
 
     // Draw char 1
@@ -449,6 +503,10 @@ void game_restart(GameData* gameData, const LevelData* levelData) {
     gameData->BladeSawRectIndex = 0;
 
     gameData->EnemyCount = 0;
+    memset(gameData->EnemiesHit, 0, sizeof(gameData->EnemiesHit));
+    for (int i = 0; i < 15; i++) {
+        gameData->EnemyHP[i] = 3;
+    }
 
     gameData->BulletFireTimer = 0.0f;
     gameData->BulletCount = 0;
