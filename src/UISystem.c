@@ -38,7 +38,7 @@ void ui_tick(UIData* uiData) {
 		}
 		else {
 			rect->ColorIndex = uiData->ButtonsEnabled[i].ColorRectDefault;
-			text->ColorIndex = uiData->ButtonsEnabled[i].ColorTextDefault;
+			text->ColorIndex = uiData->ButtonsEnabled[i].ColorTextDefault; 
 		}
 	}
 }

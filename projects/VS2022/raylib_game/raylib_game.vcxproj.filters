@@ -44,5 +44,8 @@
     <Text Include="..\..\..\src\resources\levels\level_3.txt">
       <Filter>resources\levels</Filter>
     </Text>
+    <Text Include="..\..\..\src\resources\levels\level_4.txt">
+      <Filter>resources\levels</Filter>
+    </Text>
   </ItemGroup>
 </Project>

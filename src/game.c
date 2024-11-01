@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <assert.h>
 #include <stddef.h>
+#include <stdbool.h>
 #include <string.h>
 
 #include "image_color_parser.h"
@@ -38,7 +39,7 @@ void game_init(GameData* gameData, const LevelData* levelData, Color* allowedCol
     
     CharFrameCount = 6; // LoadImageAnim returns the wrong value :(((
 
-    ImageResize(&tempChar, tileSize * CharFrameCount, tileSize);
+    ImageResize(&tempChar, tileSize * CharFrameCount * 1.3f, tileSize * 1.3f);
     Char1Sheet = LoadTextureFromImage(tempChar);
 
     ImageFlipVertical(&tempChar);
@@ -82,7 +83,7 @@ void game_exit(GameData* gameData) {
     UnloadTexture(Portal2Sheet);
 }
 
-void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, int screenHeight, float dt) { 
+void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, int screenHeight, float dt) {  
     gameData->Timer += dt;
 
     for (int i = 0; i < 2; ++i) {
@@ -460,7 +461,27 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
 
             switch (tileType) {
             case TILE_PLATFORM:
+                bool isTop = false;
+                if (y < levelData->LevelHeight / 2) {
+                    isTop = y > 0 && levelData->Tiles[x + ((y - 1) * levelData->LevelWidth)] != TILE_PLATFORM;
+                }
+                else {
+                    isTop = y < levelData->LevelHeight && levelData->Tiles[x + ((y + 1) * levelData->LevelWidth)] != TILE_PLATFORM;
+                }
+
                 DrawRectangle(x * tileSize - gameData->CameraPosX - 1, y * tileSize - 1, tileSize + 2, tileSize + 2, gameColors[0]);
+
+                if (isTop) {
+                    for (int y2 = 0; y2 < tileSize; ++y2) {
+                        for (int x2 = 0; x2 < tileSize; ++x2) {
+                            if ((x2 + y2) % 13 == 0) {
+                                int posX = x * tileSize - gameData->CameraPosX - 1 + x2;
+                                int posY = y * tileSize - 1 + y2;
+                                //DrawPixel(posX, posY, gameColors[1]);
+                            }
+                        }
+                    }
+                }
                 break;
             default:
                 break;
@@ -498,10 +519,10 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
     DrawTextureRec(Portal2Sheet, (Rectangle) { gameData->TileSize * PortalAnimationIndex * 2.2f, 0, Portal2Sheet.width / PortalFrameCount, Portal2Sheet.height }, (Vector2) { gameData->PortalPosX - gameData->CameraPosX - 15.0f, gameData->PortalPosY[1] - 30.0f }, WHITE);
 
     // Draw char 1
-    DrawTextureRec(Char1Sheet, (Rectangle) { gameData->TileSize * gameData->AnimationRectIndex[0], 0, gameData->TileSize, gameData->TileSize }, (Vector2) { gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[0] }, WHITE);
+    DrawTextureRec(Char1Sheet, (Rectangle) { gameData->TileSize * gameData->AnimationRectIndex[0] * 1.3f, 0, Char1Sheet.height, Char1Sheet.height }, (Vector2) { gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[0] - 8.0f }, WHITE);
 
     // Draw char 2
-    DrawTextureRec(Char2Sheet, (Rectangle) { gameData->TileSize * gameData->AnimationRectIndex[1], 0, gameData->TileSize, gameData->TileSize }, (Vector2) { gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[1] }, WHITE);
+    DrawTextureRec(Char2Sheet, (Rectangle) { gameData->TileSize * gameData->AnimationRectIndex[1] * 1.3f, 0, Char1Sheet.height, Char1Sheet.height }, (Vector2) { gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[1] }, WHITE);
 
     // tether
     {
