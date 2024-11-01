@@ -121,7 +121,7 @@ void OnPlayButtonClicked(void* context) {
     CurrentState = SCREEN_GAMEPLAY_INTRO;
     IntroSubState = INTRO_SLIDE_1;
     CurrentStateTimer = 0.0f;
-    CurrentLevel = 2;
+    CurrentLevel = 0;
     DoIntroSlide = true;
 
     go_to_next_level();
@@ -391,7 +391,7 @@ void app_loop(void) {
         game_tick(gameData, levelData, screenWidth, screenHeight, dt);
 
         BeginDrawing();
-        //ClearBackground(gameColors[5]);
+        ClearBackground(gameColors[5]);
         draw_parallax();
         game_draw(gameData, levelData, gameColors);
         DrawRectangle(0, 0, CurrentStateTimer * screenWidth * 1.8f, screenHeight, gameColors[0]);
