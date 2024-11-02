@@ -5,8 +5,6 @@
 
 ## Tethered
 
-![Tethered](screenshots/in_game_1.png "Tethered")
-![Tethered](screenshots/in_game_2.png "Tethered")
 ![Tethered](screenshots/main_menu_1.png "Tethered")
 
 ### Description
@@ -27,7 +25,8 @@ Keyboard only:
 
 ### Screenshots
 
-_TODO: Show your game to the world, animated GIFs recommended!._
+![Tethered](screenshots/in_game_1.png "Tethered")
+![Tethered](screenshots/in_game_2.png "Tethered")
 
 ### Developers
 
@@ -37,7 +36,6 @@ _TODO: Show your game to the world, animated GIFs recommended!._
 
  - YouTube Gameplay: $(YouTube Link)
  - itch.io Release: $(itch.io Game Page)
- - Steam Release: $(Steam Game Page)
 
 ### License
 
