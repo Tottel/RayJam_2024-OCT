@@ -50,6 +50,7 @@ typedef struct GameData {
 	float PortalPosY[2];
 } GameData;
 
+void game_create(GameData* gameData, const LevelData* levelData, Color* allowedColors, int screenWidth, int screenHeight);
 void game_init(GameData* gameData, const LevelData* levelData, Color* allowedColors, int screenWidth, int screenHeight);
 void game_exit(GameData* gameData);
 void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, int screenHeight, float dt);

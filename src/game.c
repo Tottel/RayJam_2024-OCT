@@ -28,7 +28,9 @@ static int PortalFrameCount;
 static float PortalAnimationTimer = 0.0f;
 static int PortalAnimationIndex = 0;
 
-void game_init(GameData* gameData, const LevelData* levelData, Color* allowedColors, int screenWidth, int screenHeight) {
+static Sound JumpSoundTop[3];
+
+void game_create(GameData* gameData, const LevelData* levelData, Color* allowedColors, int screenWidth, int screenHeight) {
     const float tileSize = screenHeight / (float)levelData->LevelHeight;
     gameData->TileSize = tileSize;
 
@@ -36,26 +38,26 @@ void game_init(GameData* gameData, const LevelData* levelData, Color* allowedCol
 
     // player chars
     Image tempChar = load_and_convert_image("resources/characters/goblin_run.png", allowedColors, 8);
-    
+
     CharFrameCount = 6; // LoadImageAnim returns the wrong value :(((
 
     ImageResize(&tempChar, tileSize * CharFrameCount * 1.3f, tileSize * 1.3f);
     Char1Sheet = LoadTextureFromImage(tempChar);
 
     ImageFlipVertical(&tempChar);
-    Char2Sheet = LoadTextureFromImage(tempChar); 
+    Char2Sheet = LoadTextureFromImage(tempChar);
 
-    UnloadImage(tempChar); 
+    UnloadImage(tempChar);
 
     // enemies
     Image tempEnemy = load_and_convert_image("resources/characters/wachter_side.png", allowedColors, 8);
     Image tempHitEnemy = load_and_convert_image("resources/characters/wachter_side_hit.png", allowedColors, 8);
     EnemyFrameCount = 3;
 
-    ImageResize(&tempEnemy   , tileSize * EnemyFrameCount * 1.4f, tileSize * 1.4f);
+    ImageResize(&tempEnemy, tileSize * EnemyFrameCount * 1.4f, tileSize * 1.4f);
     ImageResize(&tempHitEnemy, tileSize * EnemyFrameCount * 1.4f, tileSize * 1.4f);
-    EnemySheet    = LoadTextureFromImage(tempEnemy);
-    EnemyHitSheet = LoadTextureFromImage(tempHitEnemy); 
+    EnemySheet = LoadTextureFromImage(tempEnemy);
+    EnemyHitSheet = LoadTextureFromImage(tempHitEnemy);
 
     UnloadImage(tempEnemy);
     UnloadImage(tempHitEnemy);
@@ -72,6 +74,18 @@ void game_init(GameData* gameData, const LevelData* levelData, Color* allowedCol
     Portal2Sheet = LoadTextureFromImage(tempPortal);
 
     UnloadImage(tempPortal);
+
+    // sound
+    JumpSoundTop[0] = LoadSound("resources/sound/hop_top_1.wav");
+    JumpSoundTop[1] = LoadSound("resources/sound/hop_top_1.wav");
+    JumpSoundTop[2] = LoadSound("resources/sound/hop_top_1.wav");
+}
+
+void game_init(GameData* gameData, const LevelData* levelData, Color* allowedColors, int screenWidth, int screenHeight) {
+    const float tileSize = screenHeight / (float)levelData->LevelHeight;
+    gameData->TileSize = tileSize;
+
+    game_restart(gameData, levelData); 
 }
 
 void game_exit(GameData* gameData) {
@@ -81,6 +95,10 @@ void game_exit(GameData* gameData) {
     UnloadTexture(EnemyHitSheet);
     UnloadTexture(Portal1Sheet);
     UnloadTexture(Portal2Sheet);
+
+    for (int i = 0; i < 3; ++i) {
+        UnloadSound(JumpSoundTop[i]);
+    }
 }
 
 void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, int screenHeight, float dt) {  

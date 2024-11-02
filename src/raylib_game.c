@@ -231,6 +231,9 @@ int main(void)
         UIDataGame      = RL_CALLOC(1, sizeof(UIData));
         levelData       = RL_CALLOC(1, sizeof(LevelData));
     }
+    
+    parse_level("resources/levels/level_1.txt", levelData);
+    game_create(gameData, levelData, gameColors, screenWidth, screenHeight);
 
     //--------------------------------------------------------------------------------------
 #if defined(PLATFORM_WEB)
@@ -440,7 +443,8 @@ void go_to_next_level(void) {
     CurrentLevel += 1;
     switch(CurrentLevel) {
     case 1:
-        parse_level("resources/levels/level_1.txt", levelData);
+        assert(levelData != NULL);
+        //parse_level("resources/levels/level_1.txt", levelData); // We have already pre-loaded it
         break;
     case 2:
         parse_level("resources/levels/level_2.txt", levelData);
@@ -456,5 +460,5 @@ void go_to_next_level(void) {
         break;
     }
     
-    game_init(gameData, levelData, gameColors, screenWidth, screenHeight);
+    game_restart(gameData, levelData);
 }
