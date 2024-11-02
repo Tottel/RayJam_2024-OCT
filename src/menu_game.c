@@ -24,7 +24,6 @@ void game_menu_init(GameData* gameData, int screenWidth, int screenHeight) {
         0.0f, 9999, (GetRandomValue(0, 1000) / 1000.0f)
     };
 
-
     gameData->EnemyCount = 2;
 }
 
@@ -106,6 +105,11 @@ void game_menu_tick(GameData* gameData, int screenWidth, int screenHeight, float
                 
                 jumped = true;
             }
+        }
+
+        if (jumped) {
+            int randSound = GetRandomValue(0, 2);
+            PlaySound(gameData->JumpSoundTop[randSound]);
         }
     }
 

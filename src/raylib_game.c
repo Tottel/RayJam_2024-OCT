@@ -209,7 +209,7 @@ int main(void)
 
         // menu state
         UIDataMenu = RL_CALLOC(1, sizeof(UIData));
-        ui_add_rectangle_with_text(UIDataMenu, screenWidth / 2 - 150, 75, 300, 200, 4, "TETHERED", UIStyleTitleMainMenu);
+        ui_add_rectangle_with_text(UIDataMenu, 70, 75, 660, 200, 4, "TETHERED", UIStyleTitleMainMenu);
         ui_add_button(UIDataMenu, screenWidth / 2 - buttonWidth / 2, screenHeight - 140, buttonWidth, buttonHeight, "play", UIStyleButtonMainMenu, OnPlayButtonClicked, NULL, true);
         ui_add_button(UIDataMenu, screenWidth / 2 - buttonWidth / 2, screenHeight - 80, buttonWidth, buttonHeight, "help", UIStyleButtonMainMenu, OnHelpButtonClicked, NULL, true);
 
@@ -311,7 +311,7 @@ void app_loop(void) {
         EndDrawing();
     } break;
     case SCREEN_MENU_INSTRUCTIONS: {
-        ui_tick(UIDataMenuInstructions);
+        ui_tick(UIDataMenuInstructions); 
 
         BeginDrawing();
         ClearBackground(gameColors[4]);
