@@ -9,6 +9,7 @@ inline bool IsPointInRectangle(Vector2 point, int rectPosX, int rectPosY, int re
 }
 
 void ui_exit(UIData* uiData) {
+	(void)uiData;
 	// TODO Free text! 
 	// Preferably from a big buffer
 	//for (int i = 0; i < MAX_RECTANGLES; i++) {
@@ -111,7 +112,7 @@ void ui_add_rectangle_with_texture(UIData* uiData, uint16_t posX, uint16_t posY,
 	if (alignHor < 0 || alignHor > ALIGN_HOR_COUNT - 1) return;
 	if (alignVer < 0 || alignVer > ALIGN_VER_COUNT - 1) return;
 	
-	uint16_t rectIndex = ui_add_rectangle(uiData, posX, posY, rectWidth, rectHeight, rectColor);
+	ui_add_rectangle(uiData, posX, posY, rectWidth, rectHeight, rectColor);
 
 	uint16_t offsetX = 0;
 	uint16_t offsetY = 0;
@@ -135,7 +136,7 @@ void ui_add_rectangle_with_texture(UIData* uiData, uint16_t posX, uint16_t posY,
 	}
 
 	if (alignHor > 0 || alignVer > 0) {
-		Vector2 textureDim = { texture.width, texture.height };
+		Vector2 textureDim = { (float)texture.width, (float)texture.height };
 
 		offsetX = (uint16_t)((rectWidth - textureDim.x) * ALIGNMENT_TABLE[(int)alignHor]);
 		offsetY = (uint16_t)((rectHeight - textureDim.y) * ALIGNMENT_TABLE[(int)alignVer]);
