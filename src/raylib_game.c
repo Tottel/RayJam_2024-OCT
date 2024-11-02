@@ -35,6 +35,7 @@
 #include <assert.h>
 
 #include "game.h"
+#include "menu_game.h"
 #include "level_parser.h"
 #include "UISystem.h"
 #include "image_color_parser.h"
@@ -208,7 +209,7 @@ int main(void)
 
         // menu state
         UIDataMenu = RL_CALLOC(1, sizeof(UIData));
-        ui_add_rectangle_with_text(UIDataMenu, screenWidth / 2 - 150, 50, 300, 200, 4, "TETHERED", UIStyleTitleMainMenu);
+        ui_add_rectangle_with_text(UIDataMenu, screenWidth / 2 - 150, 75, 300, 200, 4, "TETHERED", UIStyleTitleMainMenu);
         ui_add_button(UIDataMenu, screenWidth / 2 - buttonWidth / 2, screenHeight - 140, buttonWidth, buttonHeight, "play", UIStyleButtonMainMenu, OnPlayButtonClicked, NULL, true);
         ui_add_button(UIDataMenu, screenWidth / 2 - buttonWidth / 2, screenHeight - 80, buttonWidth, buttonHeight, "help", UIStyleButtonMainMenu, OnHelpButtonClicked, NULL, true);
 
@@ -235,6 +236,7 @@ int main(void)
     
     parse_level("resources/levels/level_1.txt", levelData); // Preload
     game_create(gameData, levelData, gameColors, screenWidth, screenHeight);
+    game_menu_init(gameData, screenWidth, screenHeight);
 
     //--------------------------------------------------------------------------------------
 #if defined(PLATFORM_WEB)
@@ -299,12 +301,13 @@ void app_loop(void) {
     case SCREEN_TITLE:
         break;
     case SCREEN_MENU: {
+        game_menu_tick(gameData, screenWidth, screenHeight, dt);
         ui_tick(UIDataMenu);
 
         BeginDrawing();
         ClearBackground(gameColors[4]);
         ui_draw(UIDataMenu, gameColors);
-
+        game_menu_draw(gameData, gameColors);
         EndDrawing();
     } break;
     case SCREEN_MENU_INSTRUCTIONS: {

@@ -370,6 +370,7 @@ XCOPY "C:\dev\raylib\GameJam\2024_OCT\RayJam_2024-OCT\src\resources\" "C:\dev\ra
     <ClCompile Include="..\..\..\src\game.c" />
     <ClCompile Include="..\..\..\src\image_color_parser.c" />
     <ClCompile Include="..\..\..\src\level_parser.c" />
+    <ClCompile Include="..\..\..\src\menu_game.c" />
     <ClCompile Include="..\..\..\src\particles.c" />
     <ClCompile Include="..\..\..\src\raylib_game.c" />
   </ItemGroup>
@@ -383,6 +384,7 @@ XCOPY "C:\dev\raylib\GameJam\2024_OCT\RayJam_2024-OCT\src\resources\" "C:\dev\ra
     </ClCompile>
     <ClInclude Include="..\..\..\src\image_color_parser.h" />
     <ClInclude Include="..\..\..\src\level_parser.h" />
+    <ClInclude Include="..\..\..\src\menu_game.h" />
     <ClInclude Include="..\..\..\src\particles.h" />
     <ClInclude Include="..\..\..\src\UISystem.h" />
   </ItemGroup>
