@@ -91,7 +91,7 @@ void parse_level(const char* path, LevelData* data) {
 			data->Tiles[currX + (currY * width)] = TILE_VOID;
 			break;
 		default:
-			assert(false);
+			//assert(false);
 			break;
 		}
 

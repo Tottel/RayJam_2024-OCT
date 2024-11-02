@@ -93,7 +93,7 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
             gameData->AnimationTimer[i] = 0.0f;
             gameData->AnimationRectIndex[i] += 1;
 
-            if (gameData->AnimationRectIndex[i] > CharFrameCount) {
+            if (gameData->AnimationRectIndex[i] > CharFrameCount-1) {
                 gameData->AnimationRectIndex[i] = 0;
             }
         }
@@ -105,7 +105,7 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
         EnemyAnimationTimer = 0.0f;
         EnemyAnimationIndex += 1;
 
-        if (EnemyAnimationIndex > EnemyFrameCount) {
+        if (EnemyAnimationIndex > EnemyFrameCount-1) {
             EnemyAnimationIndex = 0;
         }
     }
@@ -116,7 +116,7 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
         PortalAnimationTimer = 0.0f;
         PortalAnimationIndex += 1;
 
-        if (PortalAnimationIndex > PortalFrameCount) {
+        if (PortalAnimationIndex > PortalFrameCount-1) {
             PortalAnimationIndex = 0;
         }
     }

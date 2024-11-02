@@ -123,7 +123,7 @@ void OnPlayButtonClicked(void* context) {
     CurrentState = SCREEN_GAMEPLAY_INTRO;
     IntroSubState = INTRO_SLIDE_1;
     CurrentStateTimer = 0.0f;
-    CurrentLevel = 2;
+    CurrentLevel = 0;
     DoIntroSlide = true;
 
     go_to_next_level();
