@@ -5,7 +5,9 @@
 
 ## Tethered
 
-![Tethered](screenshots/screenshot000.png "Tethered")
+![Tethered](screenshots/in_game_1.png "Tethered")
+![Tethered](screenshots/in_game_2.png "Tethered")
+![Tethered](screenshots/main_menu_1.png "Tethered")
 
 ### Description
 

@@ -388,7 +388,7 @@ void app_loop(void) {
             DrawRectangle(CurrentStateTimer * screenWidth * 2.3f, 0, screenWidth, screenHeight, gameColors[0]);
         }
 
-        DrawFPS(10, 10);
+        //DrawFPS(10, 10);
         EndDrawing();
 
         if (gameData->NextLevel) {
@@ -434,6 +434,10 @@ void app_loop(void) {
     }
 
     CurrentStateTimer += dt;
+
+    if (!IsSoundPlaying(MainTheme)) {
+        PlaySound(MainTheme);
+    }
 }
 
 void draw_parallax(void) {
