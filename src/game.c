@@ -11,25 +11,6 @@
 
 #include "image_color_parser.h"
 
-static Texture Char1Sheet;
-static Texture Char2Sheet;
-static int CharFrameCount;
-static float AnimationSpeed = 4.0f;
-
-static Texture EnemySheet;
-static Texture EnemyHitSheet;
-static int EnemyFrameCount;
-static float EnemyAnimationTimer = 0.0f;
-static int EnemyAnimationIndex = 0;
-
-static Texture Portal1Sheet;
-static Texture Portal2Sheet;
-static int PortalFrameCount;
-static float PortalAnimationTimer = 0.0f;
-static int PortalAnimationIndex = 0;
-
-static Sound JumpSoundTop[3];
-
 void game_create(GameData* gameData, const LevelData* levelData, Color* allowedColors, int screenWidth, int screenHeight) {
     const float tileSize = screenHeight / (float)levelData->LevelHeight;
     gameData->TileSize = tileSize;
@@ -39,46 +20,46 @@ void game_create(GameData* gameData, const LevelData* levelData, Color* allowedC
     // player chars
     Image tempChar = load_and_convert_image("resources/characters/goblin_run.png", allowedColors, 8);
 
-    CharFrameCount = 6; // LoadImageAnim returns the wrong value :(((
+    gameData->CharFrameCount = 6; // LoadImageAnim returns the wrong value :(((
 
-    ImageResize(&tempChar, tileSize * CharFrameCount * 1.3f, tileSize * 1.3f);
-    Char1Sheet = LoadTextureFromImage(tempChar);
+    ImageResize(&tempChar, tileSize * gameData->CharFrameCount * 1.3f, tileSize * 1.3f);
+    gameData->CharSheet[0] = LoadTextureFromImage(tempChar);
 
     ImageFlipVertical(&tempChar);
-    Char2Sheet = LoadTextureFromImage(tempChar);
+    gameData->CharSheet[1] = LoadTextureFromImage(tempChar);
 
     UnloadImage(tempChar);
 
     // enemies
     Image tempEnemy = load_and_convert_image("resources/characters/wachter_side.png", allowedColors, 8);
     Image tempHitEnemy = load_and_convert_image("resources/characters/wachter_side_hit.png", allowedColors, 8);
-    EnemyFrameCount = 3;
+    gameData->EnemyFrameCount = 3;
 
-    ImageResize(&tempEnemy, tileSize * EnemyFrameCount * 1.4f, tileSize * 1.4f);
-    ImageResize(&tempHitEnemy, tileSize * EnemyFrameCount * 1.4f, tileSize * 1.4f);
-    EnemySheet = LoadTextureFromImage(tempEnemy);
-    EnemyHitSheet = LoadTextureFromImage(tempHitEnemy);
+    ImageResize(&tempEnemy, tileSize * gameData->EnemyFrameCount * 1.4f, tileSize * 1.4f);
+    ImageResize(&tempHitEnemy, tileSize * gameData->EnemyFrameCount * 1.4f, tileSize * 1.4f);
+    gameData->EnemySheet = LoadTextureFromImage(tempEnemy);
+    gameData->EnemyHitSheet = LoadTextureFromImage(tempHitEnemy);
 
     UnloadImage(tempEnemy);
     UnloadImage(tempHitEnemy);
 
     // portal
     Image tempPortal = LoadImage("resources/images/portal.png");
-    PortalFrameCount = 8;
+    gameData->PortalFrameCount = 8;
 
-    ImageResize(&tempPortal, tileSize * PortalFrameCount * 2.2f, tileSize * 2.2f);
+    ImageResize(&tempPortal, tileSize * gameData->PortalFrameCount * 2.2f, tileSize * 2.2f);
     ImageFlipHorizontal(&tempPortal);
-    Portal1Sheet = LoadTextureFromImage(tempPortal);
+    gameData->PortalSheet[0] = LoadTextureFromImage(tempPortal);
 
     ImageFlipVertical(&tempPortal);
-    Portal2Sheet = LoadTextureFromImage(tempPortal);
+    gameData->PortalSheet[1] = LoadTextureFromImage(tempPortal);
 
     UnloadImage(tempPortal);
 
     // sound
-    JumpSoundTop[0] = LoadSound("resources/sound/hop_top_1.wav");
-    JumpSoundTop[1] = LoadSound("resources/sound/hop_top_1.wav");
-    JumpSoundTop[2] = LoadSound("resources/sound/hop_top_1.wav");
+    gameData->JumpSoundTop[0] = LoadSound("resources/sound/hop_top_1.wav");
+    gameData->JumpSoundTop[1] = LoadSound("resources/sound/hop_top_2.wav");
+    gameData->JumpSoundTop[2] = LoadSound("resources/sound/hop_top_3.wav");
 }
 
 void game_init(GameData* gameData, const LevelData* levelData, Color* allowedColors, int screenWidth, int screenHeight) {
@@ -89,15 +70,15 @@ void game_init(GameData* gameData, const LevelData* levelData, Color* allowedCol
 }
 
 void game_exit(GameData* gameData) {
-    UnloadTexture(Char1Sheet);
-    UnloadTexture(Char2Sheet);
-    UnloadTexture(EnemySheet);
-    UnloadTexture(EnemyHitSheet);
-    UnloadTexture(Portal1Sheet);
-    UnloadTexture(Portal2Sheet);
+    UnloadTexture(gameData->CharSheet[0]);
+    UnloadTexture(gameData->CharSheet[1]);
+    UnloadTexture(gameData->EnemySheet);
+    UnloadTexture(gameData->EnemyHitSheet);
+    UnloadTexture(gameData->PortalSheet[0]);
+    UnloadTexture(gameData->PortalSheet[1]);
 
     for (int i = 0; i < 3; ++i) {
-        UnloadSound(JumpSoundTop[i]);
+        UnloadSound(gameData->JumpSoundTop[i]);
     }
 }
 
@@ -105,37 +86,37 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
     gameData->Timer += dt;
 
     for (int i = 0; i < 2; ++i) {
-        gameData->AnimationTimer[i] += AnimationSpeed * dt;
+        gameData->AnimationTimer[i] += gameData->AnimationSpeed * dt;
 
         if (gameData->AnimationTimer[i] > 1.0f) {
             gameData->AnimationTimer[i] = 0.0f;
             gameData->AnimationRectIndex[i] += 1;
 
-            if (gameData->AnimationRectIndex[i] > CharFrameCount-1) {
+            if (gameData->AnimationRectIndex[i] > gameData->CharFrameCount-1) {
                 gameData->AnimationRectIndex[i] = 0;
             }
         }
     }
 
-    EnemyAnimationTimer += 2.0f * dt;
+    gameData->EnemyAnimationTimer += 2.0f * dt;
 
-    if (EnemyAnimationTimer > 1.0f) {
-        EnemyAnimationTimer = 0.0f;
-        EnemyAnimationIndex += 1;
+    if (gameData->EnemyAnimationTimer > 1.0f) {
+        gameData->EnemyAnimationTimer = 0.0f;
+        gameData->EnemyAnimationIndex += 1;
 
-        if (EnemyAnimationIndex > EnemyFrameCount-1) {
-            EnemyAnimationIndex = 0;
+        if (gameData->EnemyAnimationIndex > gameData->EnemyFrameCount-1) {
+            gameData->EnemyAnimationIndex = 0;
         }
     }
 
-    PortalAnimationTimer += 5.0f * dt;
+    gameData->PortalAnimationTimer += 5.0f * dt;
 
-    if (PortalAnimationTimer > 1.0f) {
-        PortalAnimationTimer = 0.0f;
-        PortalAnimationIndex += 1;
+    if (gameData->PortalAnimationTimer > 1.0f) {
+        gameData->PortalAnimationTimer = 0.0f;
+        gameData->PortalAnimationIndex += 1;
 
-        if (PortalAnimationIndex > PortalFrameCount-1) {
-            PortalAnimationIndex = 0;
+        if (gameData->PortalAnimationIndex > gameData->PortalFrameCount-1) {
+            gameData->PortalAnimationIndex = 0;
         }
     }
 
@@ -344,13 +325,22 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
     }
 
     if (IsKeyPressed(KEY_SPACE)) {
+        bool jumped = false;
+
         for (int i = 0; i < 2; i++) {
             if (onGround[i] && !againstCeiling[i]) {
                 gameData->JumpVelocity[i] = 150.0f;
                 gameData->GoingUp[i] = true;
                 gameData->JumpTimer[i] = 0.0f;
                 onGround[i] = false;
+                
+                jumped = true;
             }
+        }
+
+        if (jumped) {
+            int randSound = GetRandomValue(0, 2);
+            PlaySound(gameData->JumpSoundTop[randSound]);
         }
     }
 
@@ -532,18 +522,18 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
         float offsetY = Lerp(0.0f, isTop ? -14.0f : 14.0f, (sinf(gameData->Enemies[i].PosOffsetTimer * 5.0f) + 2) / 2.0f);
         offsetY -= isTop ? 0.0f : gameData->TileSize / 2;
         
-        DrawTextureRec(isHit ? EnemyHitSheet : EnemySheet, (Rectangle) { gameData->TileSize * EnemyAnimationIndex * 1.4f, 0, EnemySheet.width / EnemyFrameCount, EnemySheet.height}, (Vector2) { gameData->Enemies[i].Pos.x - gameData->CameraPosX - 15.0f, gameData->Enemies[i].Pos.y + offsetY }, WHITE);
+        DrawTextureRec(isHit ? gameData->EnemyHitSheet : gameData->EnemySheet, (Rectangle) { gameData->TileSize * gameData->EnemyAnimationIndex * 1.4f, 0, gameData->EnemySheet.width / gameData->EnemyFrameCount, gameData->EnemySheet.height}, (Vector2) { gameData->Enemies[i].Pos.x - gameData->CameraPosX - 15.0f, gameData->Enemies[i].Pos.y + offsetY }, WHITE);
     }
 
     // draw portals
-    DrawTextureRec(Portal1Sheet, (Rectangle) { gameData->TileSize * PortalAnimationIndex * 2.2f, 0, Portal1Sheet.width / PortalFrameCount, Portal1Sheet.height }, (Vector2) { gameData->PortalPosX - gameData->CameraPosX - 15.0f, gameData->PortalPosY[0] - 30.0f }, WHITE);
-    DrawTextureRec(Portal2Sheet, (Rectangle) { gameData->TileSize * PortalAnimationIndex * 2.2f, 0, Portal2Sheet.width / PortalFrameCount, Portal2Sheet.height }, (Vector2) { gameData->PortalPosX - gameData->CameraPosX - 15.0f, gameData->PortalPosY[1] - 30.0f }, WHITE);
+    DrawTextureRec(gameData->PortalSheet[0], (Rectangle) { gameData->TileSize* gameData->PortalAnimationIndex * 2.2f, 0, gameData->PortalSheet[0].width / gameData->PortalFrameCount, gameData->PortalSheet[0].height }, (Vector2) { gameData->PortalPosX - gameData->CameraPosX - 15.0f, gameData->PortalPosY[0] - 30.0f }, WHITE);
+    DrawTextureRec(gameData->PortalSheet[1], (Rectangle) { gameData->TileSize* gameData->PortalAnimationIndex * 2.2f, 0, gameData->PortalSheet[1].width / gameData->PortalFrameCount, gameData->PortalSheet[1].height }, (Vector2) { gameData->PortalPosX - gameData->CameraPosX - 15.0f, gameData->PortalPosY[1] - 30.0f }, WHITE);
 
     // Draw char 1
-    DrawTextureRec(Char1Sheet, (Rectangle) { gameData->TileSize * gameData->AnimationRectIndex[0] * 1.3f, 0, Char1Sheet.height, Char1Sheet.height }, (Vector2) { gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[0] - 8.0f }, WHITE);
+    DrawTextureRec(gameData->CharSheet[0], (Rectangle) { gameData->TileSize* gameData->AnimationRectIndex[0] * 1.3f, 0, gameData->CharSheet[0].height, gameData->CharSheet[0].height }, (Vector2) { gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[0] - 8.0f }, WHITE);
 
     // Draw char 2
-    DrawTextureRec(Char2Sheet, (Rectangle) { gameData->TileSize * gameData->AnimationRectIndex[1] * 1.3f, 0, Char1Sheet.height, Char1Sheet.height }, (Vector2) { gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[1] }, WHITE);
+    DrawTextureRec(gameData->CharSheet[1], (Rectangle) { gameData->TileSize* gameData->AnimationRectIndex[1] * 1.3f, 0, gameData->CharSheet[1].height, gameData->CharSheet[1].height }, (Vector2) { gameData->PlayerPosX - gameData->CameraPosX, gameData->PlayerPosY[1] }, WHITE);
 
     // tether
     {

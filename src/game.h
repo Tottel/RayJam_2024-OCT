@@ -48,6 +48,23 @@ typedef struct GameData {
 
 	float PortalPosX;
 	float PortalPosY[2];
+
+	Texture CharSheet[2];
+	int CharFrameCount;
+	float AnimationSpeed;
+
+	Texture EnemySheet;
+	Texture EnemyHitSheet;
+	int EnemyFrameCount;
+	float EnemyAnimationTimer;
+	int EnemyAnimationIndex;
+
+	Texture PortalSheet[2];
+	int PortalFrameCount;
+	float PortalAnimationTimer;
+	int PortalAnimationIndex;
+
+	Sound JumpSoundTop[3];
 } GameData;
 
 void game_create(GameData* gameData, const LevelData* levelData, Color* allowedColors, int screenWidth, int screenHeight);

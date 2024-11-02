@@ -93,34 +93,51 @@ typedef struct UITexture {
     float Scale;
 } UITexture;
 
-typedef struct UIStyleButton {
+typedef struct UIStyleText {
     UIAlignmentHorizontal TextAlignmentHorizontal;
     UIAlignmentVertical TextAlignmentVertical;
     int FontSize; // INT OR FLOAT?!
+
+    uint8_t ColorTextDefault;
+} UIStyleText;
+
+typedef struct UIStyleButton {
+    UIStyleText TextStyle;
 
     uint8_t ColorRectDefault;
     uint8_t ColorRectHover;
     uint8_t ColorRectClick;
     uint8_t ColorRectDisabled;
-
-    uint8_t ColorTextDefault;
+ 
     uint8_t ColorTextHover;
     uint8_t ColorTextClick;
     uint8_t ColorTextDisabled;
 } UIStyleButton;
 
-static struct UIStyleButton UIStyleButtonMainMenu = {
+static struct UIStyleText UIStyleTextInstructions = {
     ALIGN_HOR_CENTER,
     ALIGN_VER_CENTER,
     20,
+    4
+};
+
+static struct UIStyleButton UIStyleButtonMainMenu = {
+    { ALIGN_HOR_CENTER, ALIGN_VER_CENTER, 20, 4 },
     0,
     1,
     2,
     3,
-    4,
+
     5,
     6,
     7,
+};
+
+static struct UIStyleText UIStyleTitleMainMenu = {
+    ALIGN_HOR_CENTER,
+    ALIGN_VER_CENTER,
+    110,
+    1
 };
 
 typedef struct UIData {
@@ -147,7 +164,7 @@ void ui_tick(UIData* uiData);
 void ui_draw(UIData* uiData, Color* gameColors);
 
 uint16_t ui_add_rectangle(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t width, uint16_t height, uint8_t rectColor);
-uint16_t ui_add_rectangle_with_text(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t width, uint16_t height, uint8_t rectColor, const char* text, int fontSize, UIAlignmentHorizontal alignHor, UIAlignmentVertical alignVer, uint8_t textColor);
+uint16_t ui_add_rectangle_with_text(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t width, uint16_t height, uint8_t rectColor, const char* text, UIStyleText textStyle);
 void ui_add_rectangle_with_texture(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t rectWidth, uint16_t rectHeight, uint8_t rectColor, Texture2D texture, bool scaleToFit, UIAlignmentHorizontal alignHor, UIAlignmentVertical alignVer);
 uint16_t ui_add_button(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t width, uint16_t height, const char* text, UIStyleButton uiStyle, void(*button_clicked)(void*), void* context, bool enabled);
 

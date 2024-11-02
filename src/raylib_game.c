@@ -208,12 +208,13 @@ int main(void)
 
         // menu state
         UIDataMenu = RL_CALLOC(1, sizeof(UIData));
+        ui_add_rectangle_with_text(UIDataMenu, screenWidth / 2 - 150, 50, 300, 200, 4, "TETHERED", UIStyleTitleMainMenu);
         ui_add_button(UIDataMenu, screenWidth / 2 - buttonWidth / 2, screenHeight - 140, buttonWidth, buttonHeight, "play", UIStyleButtonMainMenu, OnPlayButtonClicked, NULL, true);
         ui_add_button(UIDataMenu, screenWidth / 2 - buttonWidth / 2, screenHeight - 80, buttonWidth, buttonHeight, "help", UIStyleButtonMainMenu, OnHelpButtonClicked, NULL, true);
 
         // menu instructions state
         UIDataMenuInstructions = RL_CALLOC(1, sizeof(UIData));
-        ui_add_rectangle_with_text(UIDataMenuInstructions, screenWidth / 2 - 300, screenHeight / 2 - 130, 600, 250, 0, "Instructions? Why would you need instructions?\n\nIt's so simple: You are two characters at the same time!\nAll you have to do is jump [SPACE] and they both jump.\n\nOkay, yes, you will also find a gun later on, and only one\nof your characters can have it. But don't worry!\nYou can pass it between them with [SHIFT].\n\nAnd you probably also want to know that you can\nfire that gun with [CTRL]..\n\nNow go!", 20, ALIGN_HOR_LEFT, ALIGN_VER_TOP, 4);
+        ui_add_rectangle_with_text(UIDataMenuInstructions, screenWidth / 2 - 300, screenHeight / 2 - 130, 600, 250, 0, "Instructions? Why would you need instructions?\n\nIt's so simple: You are two characters at the same time!\nAll you have to do is jump [SPACE] and they both jump.\n\nOkay, yes, you will also find a gun later on, and only one\nof your characters can have it. But don't worry!\nYou can pass it between them with [SHIFT].\n\nAnd you probably also want to know that you can\nfire that gun with [CTRL]..\n\nNow go!", UIStyleTextInstructions);
         ui_add_button(UIDataMenuInstructions, screenWidth / 2 - buttonWidth / 2, screenHeight - 80, buttonWidth, buttonHeight, "back", UIStyleButtonMainMenu, OnInstructionBackButtonClicked, NULL, true);
 
         // game intro state
@@ -223,7 +224,7 @@ int main(void)
         uint16_t rectPosX = screenWidth / 2 - 150;
         uint16_t rectPosY = screenHeight / 2 - 100;
         ui_add_rectangle(UIDataGameIntro, screenWidth / 2 - 155, screenHeight / 2 - 105, 490, 210, 1);
-        ui_add_rectangle_with_text(UIDataGameIntro, rectPosX, rectPosY, rectWidth, rectHeight, 0, "You might be wondering:\n\nHow did I get here? Who am I? ...Who are we?\n\nThose are all great questions.\n\n... But I suggest you run.", 20, ALIGN_HOR_CENTER, ALIGN_VER_CENTER, 4);
+        ui_add_rectangle_with_text(UIDataGameIntro, rectPosX, rectPosY, rectWidth, rectHeight, 0, "You might be wondering:\n\nHow did I get here? Who am I? ...Who are we?\n\nThose are all great questions.\n\n... But I suggest you run.", UIStyleTextInstructions);
         ui_add_button(UIDataGameIntro, rectPosX + rectWidth / 2 - buttonWidth/2, rectPosY + rectHeight + 20, buttonWidth, buttonHeight, "Yes", UIStyleButtonMainMenu, OnInGameInstructionButtonClicked, NULL, true);
 
         // game state
@@ -232,7 +233,7 @@ int main(void)
         levelData       = RL_CALLOC(1, sizeof(LevelData));
     }
     
-    parse_level("resources/levels/level_1.txt", levelData);
+    parse_level("resources/levels/level_1.txt", levelData); // Preload
     game_create(gameData, levelData, gameColors, screenWidth, screenHeight);
 
     //--------------------------------------------------------------------------------------
@@ -303,6 +304,7 @@ void app_loop(void) {
         BeginDrawing();
         ClearBackground(gameColors[4]);
         ui_draw(UIDataMenu, gameColors);
+
         EndDrawing();
     } break;
     case SCREEN_MENU_INSTRUCTIONS: {
@@ -381,18 +383,8 @@ void app_loop(void) {
             CurrentState = SCREEN_GAMEPLAY_LEVEL_TRANSITION;
             CurrentStateTimer = 0.0f;
         }
-
     } break;
     case SCREEN_GAMEPLAY_LEVEL_TRANSITION: {
-        if (CurrentStateTimer > 1.2f) {
-            CurrentState = SCREEN_GAMEPLAY;
-            CurrentStateTimer = 0.0f;
-            gameData->NextLevel = false;
-            DoIntroSlide = true;
-
-            go_to_next_level();
-        }
-
         game_tick(gameData, levelData, screenWidth, screenHeight, dt);
 
         BeginDrawing();
@@ -402,6 +394,15 @@ void app_loop(void) {
         DrawRectangle(0, 0, CurrentStateTimer * screenWidth * 1.8f, screenHeight, gameColors[0]);
         //DrawFPS(10, 10);
         EndDrawing();
+
+        if (CurrentStateTimer > 1.2f) {
+            CurrentState = SCREEN_GAMEPLAY;
+            CurrentStateTimer = 0.0f;
+            gameData->NextLevel = false;
+            DoIntroSlide = true;
+
+            go_to_next_level();
+        }
 
     } break;
     default:

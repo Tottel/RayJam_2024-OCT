@@ -74,10 +74,11 @@ uint16_t ui_add_rectangle(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t
 	return uiData->RectangleCount - 1;
 }
 
-uint16_t ui_add_rectangle_with_text(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t width, uint16_t height, uint8_t rectColor, const char* text, int fontSize, UIAlignmentHorizontal alignHor, UIAlignmentVertical alignVer, uint8_t textColor) {
-	if (alignHor < 0 || alignHor > ALIGN_HOR_COUNT - 1) return 0;
-	if (alignVer < 0 || alignVer > ALIGN_VER_COUNT - 1) return 0;
+uint16_t ui_add_rectangle_with_text(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t width, uint16_t height, uint8_t rectColor, const char* text, UIStyleText textStyle) {
+	if (textStyle.TextAlignmentHorizontal < 0 || textStyle.TextAlignmentHorizontal > ALIGN_HOR_COUNT - 1) return 0;
+	if (textStyle.TextAlignmentVertical < 0 || textStyle.TextAlignmentVertical > ALIGN_VER_COUNT - 1) return 0;
 	
+	int fontSize = textStyle.FontSize;
 	if (fontSize < 10) fontSize = 10;
 
 	uint16_t rectIndex = ui_add_rectangle(uiData, posX, posY, width, height, rectColor);
@@ -85,17 +86,17 @@ uint16_t ui_add_rectangle_with_text(UIData* uiData, uint16_t posX, uint16_t posY
 	uint16_t offsetX = 0;
 	uint16_t offsetY = 0;
 
-	if (alignHor > 0 || alignVer > 0) {
+	if (textStyle.TextAlignmentHorizontal > 0 || textStyle.TextAlignmentVertical > 0) {
 		Vector2 textDim = MeasureTextEx(GetFontDefault(), text, (float)fontSize, fontSize / 10.0f);
 
-		offsetX = (uint16_t)(( width - textDim.x) * ALIGNMENT_TABLE[(int)alignHor]);
-		offsetY = (uint16_t)((height - textDim.y) * ALIGNMENT_TABLE[(int)alignVer]);
+		offsetX = (uint16_t)(( width - textDim.x) * ALIGNMENT_TABLE[(int)textStyle.TextAlignmentHorizontal]);
+		offsetY = (uint16_t)((height - textDim.y) * ALIGNMENT_TABLE[(int)textStyle.TextAlignmentVertical]);
 	}
 
-	if (alignHor == 0) {
+	if (textStyle.TextAlignmentHorizontal == 0) {
 		offsetX += 5;
 	}
-	if (alignVer == 0) {
+	if (textStyle.TextAlignmentVertical == 0) {
 		offsetY += 5;
 	}
 
@@ -103,7 +104,7 @@ uint16_t ui_add_rectangle_with_text(UIData* uiData, uint16_t posX, uint16_t posY
 	uiData->RectanglesText[rectIndex].PosX = posX + offsetX;
 	uiData->RectanglesText[rectIndex].PosY = posY + offsetY;
 	uiData->RectanglesText[rectIndex].FontSize = fontSize;
-	uiData->RectanglesText[rectIndex].ColorIndex = textColor;
+	uiData->RectanglesText[rectIndex].ColorIndex = textStyle.ColorTextDefault;
 
 	return rectIndex;
 }
@@ -162,7 +163,7 @@ uint16_t ui_add_button(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t wi
 	char* copy = RL_MALLOC(strlen(text) + 1);
 	strcpy(copy, text);
 	
-	uint16_t rectIndex = ui_add_rectangle_with_text(uiData, posX, posY, width, height, uiStyle.ColorRectDefault, copy, uiStyle.FontSize, uiStyle.TextAlignmentHorizontal, uiStyle.TextAlignmentVertical, uiStyle.ColorTextDefault);
+	uint16_t rectIndex = ui_add_rectangle_with_text(uiData, posX, posY, width, height, uiStyle.ColorRectDefault, copy, uiStyle.TextStyle);
 	uint16_t uniqueHandle = uiData->ButtonsEnabledCount + uiData->ButtonsDisabledCount; // TODO May stop working when we allow removing buttons..
 
 	uiData->ButtonsAll[uniqueHandle].RectIndex = rectIndex;
@@ -170,7 +171,7 @@ uint16_t ui_add_button(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t wi
 	uiData->ButtonsAll[uniqueHandle].ColorRectHover = uiStyle.ColorRectHover;
 	uiData->ButtonsAll[uniqueHandle].ColorRectClick = uiStyle.ColorRectClick;
 	uiData->ButtonsAll[uniqueHandle].ColorRectDisabled = uiStyle.ColorRectDisabled;
-	uiData->ButtonsAll[uniqueHandle].ColorTextDefault = uiStyle.ColorTextDefault;
+	uiData->ButtonsAll[uniqueHandle].ColorTextDefault = uiStyle.TextStyle.ColorTextDefault;
 	uiData->ButtonsAll[uniqueHandle].ColorTextHover = uiStyle.ColorTextHover;
 	uiData->ButtonsAll[uniqueHandle].ColorTextClick = uiStyle.ColorTextClick;
 	uiData->ButtonsAll[uniqueHandle].ColorTextDisabled = uiStyle.ColorTextDisabled;
@@ -195,12 +196,12 @@ uint16_t ui_add_button(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t wi
 		uiData->ButtonsEnabled[uiData->ButtonsEnabledCount].ColorRectDefault = uiStyle.ColorRectDefault;
 		uiData->ButtonsEnabled[uiData->ButtonsEnabledCount].ColorRectHover = uiStyle.ColorRectHover;
 		uiData->ButtonsEnabled[uiData->ButtonsEnabledCount].ColorRectClick = uiStyle.ColorRectClick;
-		uiData->ButtonsEnabled[uiData->ButtonsEnabledCount].ColorTextDefault = uiStyle.ColorTextDefault;
+		uiData->ButtonsEnabled[uiData->ButtonsEnabledCount].ColorTextDefault = uiStyle.TextStyle.ColorTextDefault;
 		uiData->ButtonsEnabled[uiData->ButtonsEnabledCount].ColorTextHover = uiStyle.ColorTextHover;
 		uiData->ButtonsEnabled[uiData->ButtonsEnabledCount].ColorTextClick = uiStyle.ColorTextClick;
 
 		uiData->Rectangles[rectIndex].ColorIndex = uiStyle.ColorRectDefault;
-		uiData->RectanglesText[rectIndex].ColorIndex = uiStyle.ColorTextDefault;
+		uiData->RectanglesText[rectIndex].ColorIndex = uiStyle.TextStyle.ColorTextDefault;
 
 		uiData->ButtonsFunctionalities[uiData->ButtonsEnabledCount].RectIndex = rectIndex;
 		uiData->ButtonsFunctionalities[uiData->ButtonsEnabledCount].button_clicked = button_clicked;
