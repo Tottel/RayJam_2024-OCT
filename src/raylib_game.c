@@ -105,7 +105,9 @@ static Texture2D BladeSaw;
 
 static LevelData* levelData = NULL;
 
+#if defined (_DEBUG)
 static float slowMoMultiplier = 1.0f;
+#endif
 
 static Texture2D CavePar1;
 static Texture2D CavePar2;
@@ -121,7 +123,7 @@ void OnPlayButtonClicked(void* context) {
     CurrentState = SCREEN_GAMEPLAY_INTRO;
     IntroSubState = INTRO_SLIDE_1;
     CurrentStateTimer = 0.0f;
-    CurrentLevel = 0;
+    CurrentLevel = 2;
     DoIntroSlide = true;
 
     go_to_next_level();

@@ -122,13 +122,10 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
     }
 
     bool onGround[2] = { false };
-    uint16_t groundY[2] = { 0 };
     
     bool againstWall = false; // if 1 char is against a wall, they are both stuck
-    uint32_t wallX = 0; 
 
     bool againstCeiling[2] = { false };
-    uint16_t ceilingY[2] = { 0 };
 
     Rectangle playerRecsForGround[2] = { (Rectangle) { gameData->PlayerPosX, gameData->PlayerPosY[0] + gameData->TileSize - 10.0f + 0.5f, gameData->TileSize, 10.0f },
                                          (Rectangle) { gameData->PlayerPosX, gameData->PlayerPosY[1] - 0.5f, gameData->TileSize, 10.0f }};
@@ -172,7 +169,6 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
             if (CheckCollisionRecs(playerRecsForGround[0], levelRect)) {
                 //gameData->DebugRectanglesColors[gameData->DebugRectangleCount-1] = RED;
                 onGround[0] = true; 
-                groundY[0] = checkY;
                 break;
             }
         }
@@ -200,7 +196,6 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
                 //gameData->DebugRectanglesColors[gameData->DebugRectangleCount - 1] = RED;
                 //TraceLog(LOG_ALL, "char 2 on floor!");
                 onGround[1] = true;
-                groundY[1] = checkY;
                 break;
             }
         }
@@ -227,7 +222,6 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
             if (CheckCollisionRecs(playerRecsForCeilings[0], levelRect)) {
                 //gameData->DebugRectanglesColors[gameData->DebugRectangleCount-1] = RED;
                 againstCeiling[0] = true;
-                ceilingY[0] = checkY;
                 break;
             }
         }
@@ -254,7 +248,6 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
             if (CheckCollisionRecs(playerRecsForCeilings[1], levelRect)) {
                 //gameData->DebugRectanglesColors[gameData->DebugRectangleCount - 1] = RED;
                 againstCeiling[1] = true;
-                ceilingY[1] = checkY;
                 break;
             }
         }
@@ -281,7 +274,6 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
             //gameData->DebugRectanglesColors[gameData->DebugRectangleCount - 1] = RED;
 
             againstWall = true;
-            wallX = checkX;
             break; 
         } 
     }
@@ -305,7 +297,6 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
             //gameData->DebugRectanglesColors[gameData->DebugRectangleCount - 1] = RED;
 
             againstWall = true;
-            wallX = checkX;
             break; 
         }
     }
@@ -360,7 +351,6 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
 
     float cameraLagDistance = gameData->PlayerPosX - gameData->CameraPosX;
 
-    float catchupMultiplier = 1.0f;
     if (cameraLagDistance < 120) {
         camSpeed -= cameraLagDistance / 15.0f;
     }
@@ -461,28 +451,41 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
 
             switch (tileType) {
             case TILE_PLATFORM:
+            {
                 bool isTop = false;
+                bool high = false;
                 if (y < levelData->LevelHeight / 2) {
                     isTop = y > 0 && levelData->Tiles[x + ((y - 1) * levelData->LevelWidth)] != TILE_PLATFORM;
+                    high = true;
                 }
                 else {
-                    isTop = y < levelData->LevelHeight && levelData->Tiles[x + ((y + 1) * levelData->LevelWidth)] != TILE_PLATFORM;
+                    isTop = y < levelData->LevelHeight - 1 && levelData->Tiles[x + ((y + 1) * levelData->LevelWidth)] != TILE_PLATFORM;
                 }
 
                 DrawRectangle(x * tileSize - gameData->CameraPosX - 1, y * tileSize - 1, tileSize + 2, tileSize + 2, gameColors[0]);
 
                 if (isTop) {
-                    for (int y2 = 0; y2 < tileSize; ++y2) {
+                    for (int y2 = 0; y2 < tileSize / 7; ++y2) {
                         for (int x2 = 0; x2 < tileSize; ++x2) {
-                            if ((x2 + y2) % 13 == 0) {
+                            if ((x2 / 2 + y2) % 4 == 0) {
                                 int posX = x * tileSize - gameData->CameraPosX - 1 + x2;
-                                int posY = y * tileSize - 1 + y2;
-                                //DrawPixel(posX, posY, gameColors[1]);
+                                int posY = high ? (y * tileSize + y2) : (y * tileSize + (tileSize - tileSize / 7) + y2);
+                                DrawPixel(posX, posY, gameColors[1]);
+                            }
+                        }
+                    }
+
+                    for (int y2 = tileSize / 7; y2 < tileSize / 4; ++y2) {
+                        for (int x2 = 0; x2 < tileSize; ++x2) {
+                            if ((x2 / 2 + y2) % 10 == 0) {
+                                int posX = x * tileSize - gameData->CameraPosX - 1 + x2;
+                                int posY = high ? (y * tileSize + y2) : ((y + 1) * tileSize - tileSize / 4 - tileSize / 7 + y2);
+                                DrawPixel(posX, posY, gameColors[1]);
                             }
                         }
                     }
                 }
-                break;
+            } break;
             default:
                 break;
             }  
