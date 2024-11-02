@@ -53,8 +53,8 @@ typedef struct GameData {
 	int CharFrameCount;
 	float AnimationSpeed;
 
-	Texture EnemySheet;
-	Texture EnemyHitSheet;
+	Texture EnemySheet[2];
+	Texture EnemyHitSheet[2];
 	int EnemyFrameCount;
 	float EnemyAnimationTimer;
 	int EnemyAnimationIndex;

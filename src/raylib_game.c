@@ -225,7 +225,7 @@ int main(void)
         uint16_t rectPosX = screenWidth / 2 - 150;
         uint16_t rectPosY = screenHeight / 2 - 100;
         ui_add_rectangle(UIDataGameIntro, screenWidth / 2 - 155, screenHeight / 2 - 105, 490, 210, 1);
-        ui_add_rectangle_with_text(UIDataGameIntro, rectPosX, rectPosY, rectWidth, rectHeight, 0, "You might be wondering:\n\nHow did I get here? Who am I? ...Who are we?\n\nThose are all great questions.\n\n... But I suggest you run.", UIStyleTextInstructions);
+        ui_add_rectangle_with_text(UIDataGameIntro, rectPosX, rectPosY, rectWidth, rectHeight, 0, "You might be wondering:\n\nHow did I get here? Who am I? ...Who are we?\n\nThose are all great questions.\n\n... But I suggest you run.", UIStyleTextInGameInstructions);
         ui_add_button(UIDataGameIntro, rectPosX + rectWidth / 2 - buttonWidth/2, rectPosY + rectHeight + 20, buttonWidth, buttonHeight, "Yes", UIStyleButtonMainMenu, OnInGameInstructionButtonClicked, NULL, true);
 
         // game state

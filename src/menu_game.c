@@ -15,12 +15,12 @@ void game_menu_init(GameData* gameData, int screenWidth, int screenHeight) {
     gameData->PlayerPosY[1] = 206.0f;
 
     gameData->Enemies[0] = (Enemy){
-        450, 82, (Vector2) { 450.0f, 82.0f },
+        450, 80, (Vector2) { 450.0f, 80.0f },
         0.0f, 9999, (GetRandomValue(0, 1000) / 1000.0f)
     };
 
     gameData->Enemies[1] = (Enemy){
-        550, 200, (Vector2) { 550.0f, 200.0f },
+        550, 202, (Vector2) { 550.0f, 202.0f },
         0.0f, 9999, (GetRandomValue(0, 1000) / 1000.0f)
     };
 
@@ -185,8 +185,9 @@ void game_menu_draw(GameData* gameData, Color* gameColors) {
         bool isHit = gameData->Enemies[i].HitTimer > 0.01f;
         bool isTop = gameData->Enemies[i].PosY < 150.0f;
         float offsetY = Lerp(0.0f, isTop ? -8.0f : 8.0f, (sinf(gameData->Enemies[i].PosOffsetTimer * 3.0f) + 2) / 2.0f);
-        
-        DrawTextureRec(isHit ? gameData->EnemyHitSheet : gameData->EnemySheet, (Rectangle) { gameData->TileSize * gameData->EnemyAnimationIndex * 1.4f, 0, gameData->EnemySheet.width / gameData->EnemyFrameCount, gameData->EnemySheet.height}, (Vector2) { gameData->Enemies[i].Pos.x - gameData->CameraPosX - 15.0f, gameData->Enemies[i].Pos.y + offsetY }, WHITE);
+        Texture toUse = isTop ? (isHit ? gameData->EnemyHitSheet[0] : gameData->EnemySheet[0]) : (isHit ? gameData->EnemyHitSheet[1] : gameData->EnemySheet[1]);
+
+        DrawTextureRec(toUse, (Rectangle) { gameData->TileSize * gameData->EnemyAnimationIndex * 1.4f, 0, gameData->EnemySheet[0].width / gameData->EnemyFrameCount, gameData->EnemySheet[0].height }, (Vector2) { gameData->Enemies[i].Pos.x - gameData->CameraPosX - 15.0f, gameData->Enemies[i].Pos.y + offsetY }, WHITE);
     }
 
     // draw portals

@@ -37,8 +37,13 @@ void game_create(GameData* gameData, const LevelData* levelData, Color* allowedC
 
     ImageResize(&tempEnemy, tileSize * gameData->EnemyFrameCount * 1.4f, tileSize * 1.4f);
     ImageResize(&tempHitEnemy, tileSize * gameData->EnemyFrameCount * 1.4f, tileSize * 1.4f);
-    gameData->EnemySheet = LoadTextureFromImage(tempEnemy);
-    gameData->EnemyHitSheet = LoadTextureFromImage(tempHitEnemy);
+    gameData->EnemySheet[0] = LoadTextureFromImage(tempEnemy);
+    gameData->EnemyHitSheet[0] = LoadTextureFromImage(tempHitEnemy);
+
+    ImageFlipVertical(&tempEnemy);
+    ImageFlipVertical(&tempHitEnemy);
+    gameData->EnemySheet[1] = LoadTextureFromImage(tempEnemy);
+    gameData->EnemyHitSheet[1] = LoadTextureFromImage(tempHitEnemy);
 
     UnloadImage(tempEnemy);
     UnloadImage(tempHitEnemy);
@@ -72,8 +77,10 @@ void game_init(GameData* gameData, const LevelData* levelData, Color* allowedCol
 void game_exit(GameData* gameData) {
     UnloadTexture(gameData->CharSheet[0]);
     UnloadTexture(gameData->CharSheet[1]);
-    UnloadTexture(gameData->EnemySheet);
-    UnloadTexture(gameData->EnemyHitSheet);
+    UnloadTexture(gameData->EnemySheet[0]);
+    UnloadTexture(gameData->EnemySheet[1]);
+    UnloadTexture(gameData->EnemyHitSheet[0]);
+    UnloadTexture(gameData->EnemyHitSheet[1]);
     UnloadTexture(gameData->PortalSheet[0]);
     UnloadTexture(gameData->PortalSheet[1]);
 
@@ -521,8 +528,10 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
         bool isTop = gameData->Enemies[i].PosY < levelData->LevelHeight / 2;
         float offsetY = Lerp(0.0f, isTop ? -14.0f : 14.0f, (sinf(gameData->Enemies[i].PosOffsetTimer * 5.0f) + 2) / 2.0f);
         offsetY -= isTop ? 0.0f : gameData->TileSize / 2;
+
+        Texture toUse = isTop ? (isHit ? gameData->EnemyHitSheet[0] : gameData->EnemySheet[0]) : (isHit ? gameData->EnemyHitSheet[1] : gameData->EnemySheet[1]);
         
-        DrawTextureRec(isHit ? gameData->EnemyHitSheet : gameData->EnemySheet, (Rectangle) { gameData->TileSize * gameData->EnemyAnimationIndex * 1.4f, 0, gameData->EnemySheet.width / gameData->EnemyFrameCount, gameData->EnemySheet.height}, (Vector2) { gameData->Enemies[i].Pos.x - gameData->CameraPosX - 15.0f, gameData->Enemies[i].Pos.y + offsetY }, WHITE);
+        DrawTextureRec(toUse, (Rectangle) { gameData->TileSize * gameData->EnemyAnimationIndex * 1.4f, 0, gameData->EnemySheet[0].width / gameData->EnemyFrameCount, gameData->EnemySheet[0].height }, (Vector2) { gameData->Enemies[i].Pos.x - gameData->CameraPosX - 15.0f, gameData->Enemies[i].Pos.y + offsetY }, WHITE);
     }
 
     // draw portals

@@ -115,6 +115,13 @@ typedef struct UIStyleButton {
 } UIStyleButton;
 
 static struct UIStyleText UIStyleTextInstructions = {
+    ALIGN_HOR_LEFT,
+    ALIGN_VER_TOP,
+    20,
+    4
+};
+
+static struct UIStyleText UIStyleTextInGameInstructions = {
     ALIGN_HOR_CENTER,
     ALIGN_VER_CENTER,
     20,
