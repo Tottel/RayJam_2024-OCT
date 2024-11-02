@@ -15,6 +15,7 @@ typedef struct Enemy {
 
 typedef struct GameData {
 	bool NextLevel;
+	bool RestartLevel;
 
 	float PlayerPosX;
 	float PlayerPosY[2];
@@ -65,6 +66,8 @@ typedef struct GameData {
 	int PortalAnimationIndex;
 
 	Sound JumpSoundTop[3];
+	Sound Portal;
+	Sound Respawn;
 } GameData;
 
 void game_create(GameData* gameData, const LevelData* levelData, Color* allowedColors, int screenWidth, int screenHeight);

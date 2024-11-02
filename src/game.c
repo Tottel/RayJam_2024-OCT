@@ -65,6 +65,9 @@ void game_create(GameData* gameData, const LevelData* levelData, Color* allowedC
     gameData->JumpSoundTop[0] = LoadSound("resources/sound/hop_top_1.wav");
     gameData->JumpSoundTop[1] = LoadSound("resources/sound/hop_top_2.wav");
     gameData->JumpSoundTop[2] = LoadSound("resources/sound/hop_top_3.wav");
+
+    gameData->Respawn = LoadSound("resources/sound/respawn.wav");
+    gameData->Portal = LoadSound("resources/sound/portal.wav");
 }
 
 void game_init(GameData* gameData, const LevelData* levelData, Color* allowedColors, int screenWidth, int screenHeight) {
@@ -87,6 +90,9 @@ void game_exit(GameData* gameData) {
     for (int i = 0; i < 3; ++i) {
         UnloadSound(gameData->JumpSoundTop[i]);
     }
+
+    UnloadSound(gameData->Respawn);
+    UnloadSound(gameData->Portal);
 }
 
 void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, int screenHeight, float dt) {  
@@ -427,7 +433,8 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
 
         for (int j = 0; j < 2; j++) {
             if (CheckCollisionRecs(enemyRect, playersRecsFull[j])) {
-                game_restart(gameData, levelData);
+                //game_restart(gameData, levelData);
+                gameData->RestartLevel = true;
             }
         } 
     }
@@ -443,11 +450,16 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
     }
 
     if (gameData->PlayerPosX - gameData->CameraPosX < 15) {
-        game_restart(gameData, levelData);
+        gameData->RestartLevel = true;
+        //game_restart(gameData, levelData);
     }
 
     if (gameData->PlayerPosX >= gameData->PortalPosX) {
         gameData->NextLevel = true;
+
+        if (!IsSoundPlaying(gameData->Portal)) {
+            PlaySound(gameData->Portal);
+        }
     }
 }
 

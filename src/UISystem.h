@@ -5,9 +5,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define MAX_RECTANGLES 20
-#define MAX_TEXTURES 2
-#define MAX_BUTTONS 10
+#define MAX_RECTANGLES 8
+#define MAX_TEXTURES 1
+#define MAX_BUTTONS 4
 
 static const float ALIGNMENT_TABLE[3] = { 0.0f, 0.5f, 1.0f };
 

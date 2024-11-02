@@ -117,6 +117,7 @@ static Texture2D CavePar3;
 static Texture2D WoodsPar1;
 static Texture2D WoodsPar2;
 
+static Sound MainTheme;
 
 void OnPlayButtonClicked(void* context) {
     (void)context;
@@ -232,11 +233,15 @@ int main(void)
         gameData        = RL_CALLOC(1, sizeof(GameData));
         UIDataGame      = RL_CALLOC(1, sizeof(UIData));
         levelData       = RL_CALLOC(1, sizeof(LevelData));
+
+        MainTheme = LoadSound("resources/music/relax_and_chill.mp3");
     }
     
     parse_level("resources/levels/level_1.txt", levelData); // Preload
     game_create(gameData, levelData, gameColors, screenWidth, screenHeight);
     game_menu_init(gameData, screenWidth, screenHeight);
+
+    PlaySound(MainTheme);
 
     //--------------------------------------------------------------------------------------
 #if defined(PLATFORM_WEB)
@@ -258,6 +263,8 @@ int main(void)
     UnloadTexture(CavePar3);
     UnloadTexture(WoodsPar1);
     UnloadTexture(WoodsPar2);
+
+    UnloadSound(MainTheme);
 
     game_exit(gameData);
     ui_exit(UIDataGame);
@@ -323,10 +330,12 @@ void app_loop(void) {
         case INTRO_SLIDE_1:
             break;
         case INTRO_SLIDE_2:
-            if (CurrentStateTimer > 0.2f) {
-                CurrentState = SCREEN_GAMEPLAY; 
-                CurrentStateTimer = 0.0f;
-            }
+            //if (CurrentStateTimer > 0.1f) {
+                CurrentState = SCREEN_GAMEPLAY;     
+                CurrentStateTimer = -2.0f;
+
+                //PlaySound(gameData->FirstSpawn);
+            //}
             break;
         default:
             assert(false);
@@ -347,8 +356,8 @@ void app_loop(void) {
 
         ui_draw(UIDataGameIntro, gameColors); 
 
-        if (DoIntroSlide && CurrentStateTimer < 1.0f) {
-            DrawRectangle(CurrentStateTimer * screenWidth * 1.8f, 0, screenWidth, screenHeight, gameColors[0]);
+        if (DoIntroSlide && CurrentStateTimer < 0.5f) {
+            DrawRectangle(CurrentStateTimer * screenWidth * 2.3f, 0, screenWidth, screenHeight, gameColors[0]);
         }
 
         EndDrawing();
@@ -361,7 +370,7 @@ void app_loop(void) {
         }
 #endif
 
-        if (CurrentStateTimer > 1.0f) {
+        if (CurrentStateTimer > 0.5f) {
             game_tick(gameData, levelData, screenWidth, screenHeight, dt);
         }
 
@@ -375,8 +384,8 @@ void app_loop(void) {
         game_bladesaws_draw(gameData, BladeSaw, dt);
         ui_draw(UIDataGame, gameColors);
 
-        if (DoIntroSlide && CurrentStateTimer < 1.0f) {
-            DrawRectangle(CurrentStateTimer * screenWidth * 1.8f, 0, screenWidth, screenHeight, gameColors[0]);
+        if (DoIntroSlide && CurrentStateTimer < 0.5f) {
+            DrawRectangle(CurrentStateTimer * screenWidth * 2.3f, 0, screenWidth, screenHeight, gameColors[0]);
         }
 
         DrawFPS(10, 10);
@@ -386,6 +395,17 @@ void app_loop(void) {
             CurrentState = SCREEN_GAMEPLAY_LEVEL_TRANSITION;
             CurrentStateTimer = 0.0f;
         }
+
+        if (gameData->RestartLevel) {
+            gameData->RestartLevel = false;
+
+            PlaySound(gameData->Respawn);
+
+            CurrentStateTimer = 0.0f;
+
+            game_restart(gameData, levelData);
+        }
+
     } break;
     case SCREEN_GAMEPLAY_LEVEL_TRANSITION: {
         game_tick(gameData, levelData, screenWidth, screenHeight, dt);

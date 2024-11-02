@@ -15,12 +15,12 @@ void game_menu_init(GameData* gameData, int screenWidth, int screenHeight) {
     gameData->PlayerPosY[1] = 206.0f;
 
     gameData->Enemies[0] = (Enemy){
-        450, 80, (Vector2) { 450.0f, 80.0f },
+        435, 80, (Vector2) { 435.0f, 80.0f },
         0.0f, 9999, (GetRandomValue(0, 1000) / 1000.0f)
     };
 
     gameData->Enemies[1] = (Enemy){
-        550, 202, (Vector2) { 550.0f, 202.0f },
+        590, 202, (Vector2) { 590.0f, 202.0f },
         0.0f, 9999, (GetRandomValue(0, 1000) / 1000.0f)
     };
 
