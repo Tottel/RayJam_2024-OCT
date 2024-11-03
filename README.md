@@ -29,7 +29,8 @@ Keyboard only:
 
 ![Tethered](screenshots/in_game_1.png "Tethered")
 ![Tethered](screenshots/in_game_2.png "Tethered")
-![Tethered](screenshots/video_1.mp4 "Tethered")
+https://github.com/user-attachments/assets/6e5160ab-29b1-428c-9c33-a506df35c60b
+
 
 ### Developers
 
