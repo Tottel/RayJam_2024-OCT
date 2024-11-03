@@ -64,6 +64,7 @@ typedef enum {
     SCREEN_TITLE,
     SCREEN_MENU,
     SCREEN_MENU_INSTRUCTIONS,
+    SCREEN_MENU_CREDITS,
     SCREEN_GAMEPLAY_INTRO,
     SCREEN_GAMEPLAY, 
     SCREEN_GAMEPLAY_LEVEL_TRANSITION,
@@ -93,6 +94,7 @@ static bool DoIntroSlide = false;
 // menu state
 static UIData* UIDataMenu = NULL;
 static UIData* UIDataMenuInstructions = NULL;
+static UIData* UIDataMenuCredits = NULL;
 
 // game intro state
 static GameIntroSteps IntroSubState = { INTRO_SLIDE_1 }; 
@@ -138,7 +140,21 @@ void OnHelpButtonClicked(void* context) {
     CurrentStateTimer = 0.0f;
 }
 
+void OnCreditsButtonClicked(void* context) {
+    (void)context;
+
+    CurrentState = SCREEN_MENU_CREDITS;
+    CurrentStateTimer = 0.0f;
+}
+
 void OnInstructionBackButtonClicked(void* context) {
+    (void)context;
+
+    CurrentState = SCREEN_MENU;
+    CurrentStateTimer = 0.0f;
+}
+
+void OnCreditsBackButtonClicked(void* context) {
     (void)context;
 
     CurrentState = SCREEN_MENU;
@@ -205,19 +221,25 @@ int main(void)
             SetTextureWrap(WoodsPar2, TEXTURE_WRAP_REPEAT);
         }
 
-        const uint16_t buttonWidth = 120;
-        const uint16_t buttonHeight = 50;
+        const uint16_t buttonWidth = 180;
+        const uint16_t buttonHeight = 40; 
 
         // menu state
         UIDataMenu = RL_CALLOC(1, sizeof(UIData));
         ui_add_rectangle_with_text(UIDataMenu, 70, 75, 660, 200, 4, "TETHERED", UIStyleTitleMainMenu);
-        ui_add_button(UIDataMenu, screenWidth / 2 - buttonWidth / 2, screenHeight - 140, buttonWidth, buttonHeight, "play", UIStyleButtonMainMenu, OnPlayButtonClicked, NULL, true);
-        ui_add_button(UIDataMenu, screenWidth / 2 - buttonWidth / 2, screenHeight - 80, buttonWidth, buttonHeight, "help", UIStyleButtonMainMenu, OnHelpButtonClicked, NULL, true);
+        ui_add_button(UIDataMenu, screenWidth / 2 - buttonWidth / 2, screenHeight - 160, buttonWidth, buttonHeight, "play", UIStyleButtonMainMenu, OnPlayButtonClicked, NULL, true);
+        ui_add_button(UIDataMenu, screenWidth / 2 - buttonWidth / 2, screenHeight - 110, buttonWidth, buttonHeight, "help", UIStyleButtonMainMenu, OnHelpButtonClicked, NULL, true);
+        ui_add_button(UIDataMenu, screenWidth / 2 - buttonWidth / 2, screenHeight - 60, buttonWidth, buttonHeight, "credits", UIStyleButtonMainMenu, OnCreditsButtonClicked, NULL, true);
 
         // menu instructions state
         UIDataMenuInstructions = RL_CALLOC(1, sizeof(UIData));
-        ui_add_rectangle_with_text(UIDataMenuInstructions, screenWidth / 2 - 300, screenHeight / 2 - 130, 600, 250, 0, "Instructions? Why would you need instructions?\n\nIt's so simple: You are two characters at the same time!\nAll you have to do is jump [SPACE] and they both jump.\n\nOkay, yes, you will also find a gun later on, and only one\nof your characters can have it. But don't worry!\nYou can pass it between them with [SHIFT].\n\nAnd you probably also want to know that you can\nfire that gun with [CTRL]..\n\nNow go!", UIStyleTextInstructions);
-        ui_add_button(UIDataMenuInstructions, screenWidth / 2 - buttonWidth / 2, screenHeight - 80, buttonWidth, buttonHeight, "back", UIStyleButtonMainMenu, OnInstructionBackButtonClicked, NULL, true);
+        ui_add_rectangle_with_text(UIDataMenuInstructions, screenWidth / 2 - 300, screenHeight / 2 - 155, 600, 260, 0, "Instructions? Why would you need instructions?\n\nIt's so simple: You are two characters at the same time!\nAll you have to do is jump [SPACE] and they both jump.\n\nOkay, yes, you will also find a gun later on, and only one\nof your characters can have it. But don't worry!\nYou can pass it between them with [SHIFT].\n\nAnd you probably also want to know that you can\nfire that gun with [CTRL]..\n\nNow go!", UIStyleTextInstructions);
+        ui_add_button(UIDataMenuInstructions, screenWidth / 2 - buttonWidth / 2, screenHeight - 110, buttonWidth, buttonHeight, "back", UIStyleButtonMainMenu, OnInstructionBackButtonClicked, NULL, true);
+
+        // menu credits state
+        UIDataMenuCredits = RL_CALLOC(1, sizeof(UIData));
+        ui_add_rectangle_with_text(UIDataMenuCredits, screenWidth / 2 - 300, screenHeight / 2 - 155, 600, 260, 0, "Credits:\n\nCode and Design by Korneel Guns\n\nAdditional art:\nSeetyaji - parallax cave art\nlionheart963 - goblin run sprite\nTheRealFusion - Keeper (monster) \n\nMain Theme:\nTBF - Relax and Chill (newgrounds.com) ", UIStyleTextInstructions);
+        ui_add_button(UIDataMenuCredits, screenWidth / 2 - buttonWidth / 2, screenHeight - 60, buttonWidth, buttonHeight, "back", UIStyleButtonMainMenu, OnCreditsBackButtonClicked, NULL, true);
 
         // game intro state
         UIDataGameIntro = RL_CALLOC(1, sizeof(UIData));
@@ -271,6 +293,7 @@ int main(void)
     ui_exit(UIDataGameIntro);
     ui_exit(UIDataMenu);
     ui_exit(UIDataMenuInstructions);
+    ui_exit(UIDataMenuCredits);
 
     RL_FREE(levelData);
     RL_FREE(gameData);
@@ -278,6 +301,7 @@ int main(void)
     RL_FREE(UIDataGameIntro);
     RL_FREE(UIDataMenu);
     RL_FREE(UIDataMenuInstructions);
+    RL_FREE(UIDataMenuCredits);
 
     CloseAudioDevice();
     CloseWindow();        // Close window and OpenGL context
@@ -323,6 +347,14 @@ void app_loop(void) {
         BeginDrawing();
         ClearBackground(gameColors[4]);
         ui_draw(UIDataMenuInstructions, gameColors);
+        EndDrawing();
+    } break;
+    case SCREEN_MENU_CREDITS:{
+        ui_tick(UIDataMenuCredits);
+
+        BeginDrawing();
+        ClearBackground(gameColors[4]);
+        ui_draw(UIDataMenuCredits, gameColors);
         EndDrawing();
     } break;
     case SCREEN_GAMEPLAY_INTRO: {
