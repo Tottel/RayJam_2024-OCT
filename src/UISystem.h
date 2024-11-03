@@ -6,7 +6,6 @@
 #include <stdbool.h>
 
 #define MAX_RECTANGLES 8
-#define MAX_TEXTURES 1
 #define MAX_BUTTONS 4
 
 static const float ALIGNMENT_TABLE[3] = { 0.0f, 0.5f, 1.0f };
@@ -86,13 +85,6 @@ typedef struct UIText {
     uint8_t ColorIndex;
 } UIText;
 
-typedef struct UITexture {
-    Texture2D Texture;
-    uint16_t PosX;
-    uint16_t PosY;
-    float Scale;
-} UITexture;
-
 typedef struct UIStyleText {
     UIAlignmentHorizontal TextAlignmentHorizontal;
     UIAlignmentVertical TextAlignmentVertical;
@@ -152,9 +144,6 @@ typedef struct UIData {
     UIText RectanglesText[MAX_RECTANGLES];
     uint16_t RectangleCount;
 
-    UITexture Textures[MAX_TEXTURES];
-    uint16_t TextureCount;
-
     UIButton ButtonsAll[MAX_BUTTONS];
     UIButtonEnabled ButtonsEnabled[MAX_BUTTONS];
     UIButtonDisabled ButtonsDisabled[MAX_BUTTONS];
@@ -172,7 +161,6 @@ void ui_draw(UIData* uiData, Color* gameColors);
 
 uint16_t ui_add_rectangle(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t width, uint16_t height, uint8_t rectColor);
 uint16_t ui_add_rectangle_with_text(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t width, uint16_t height, uint8_t rectColor, const char* text, UIStyleText textStyle);
-void ui_add_rectangle_with_texture(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t rectWidth, uint16_t rectHeight, uint8_t rectColor, Texture2D texture, bool scaleToFit, UIAlignmentHorizontal alignHor, UIAlignmentVertical alignVer);
 uint16_t ui_add_button(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t width, uint16_t height, const char* text, UIStyleButton uiStyle, void(*button_clicked)(void*), void* context, bool enabled);
 
 void ui_remove_all(UIData* uiData);

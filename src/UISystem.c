@@ -49,12 +49,6 @@ void ui_draw(UIData* uiData, Color* gameColors) {
 		DrawRectangle(uiData->Rectangles[i].PosX, uiData->Rectangles[i].PosY, uiData->Rectangles[i].Width, uiData->Rectangles[i].Height, gameColors[uiData->Rectangles[i].ColorIndex]);
 	}
 
-	for (int i = 0; i < uiData->TextureCount; ++i) {
-		Vector2 pos = { uiData->Textures[i].PosX, uiData->Textures[i].PosY };
-		DrawTextureEx(uiData->Textures[i].Texture, pos, 0.0f, uiData->Textures[i].Scale, WHITE);
-	}
-
-
 	SetTextLineSpacing(18);
 	for (int i = 0; i < uiData->RectangleCount; ++i) {
 		DrawText(uiData->RectanglesText[i].Text, uiData->RectanglesText[i].PosX, uiData->RectanglesText[i].PosY, uiData->RectanglesText[i].FontSize, gameColors[uiData->RectanglesText[i].ColorIndex]);
@@ -107,55 +101,6 @@ uint16_t ui_add_rectangle_with_text(UIData* uiData, uint16_t posX, uint16_t posY
 	uiData->RectanglesText[rectIndex].ColorIndex = textStyle.ColorTextDefault;
 
 	return rectIndex;
-}
-
-void ui_add_rectangle_with_texture(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t rectWidth, uint16_t rectHeight, uint8_t rectColor, Texture2D texture, bool scaleToFit, UIAlignmentHorizontal alignHor, UIAlignmentVertical alignVer) {
-	if (alignHor < 0 || alignHor > ALIGN_HOR_COUNT - 1) return;
-	if (alignVer < 0 || alignVer > ALIGN_VER_COUNT - 1) return;
-	
-	ui_add_rectangle(uiData, posX, posY, rectWidth, rectHeight, rectColor);
-
-	uint16_t offsetX = 0;
-	uint16_t offsetY = 0;
-
-	float scale = 1.0f;
-
-	if (scaleToFit) {
-		float scaleWidth = 1.0f;
-		float scaleHeight = 1.0f;
-
-		if (texture.width > rectWidth - 10) {
-			scaleWidth = (rectWidth - 10) / (float)texture.width;
-		}
-
-		if (texture.height > rectHeight - 10) {
-			scaleHeight = (rectHeight - 10) / (float)texture.height;
-		}
-
-		// We take the smallest scale
-		scale = scaleWidth < scaleHeight ? scaleWidth : scaleHeight;
-	}
-
-	if (alignHor > 0 || alignVer > 0) {
-		Vector2 textureDim = { (float)texture.width, (float)texture.height };
-
-		offsetX = (uint16_t)((rectWidth - textureDim.x) * ALIGNMENT_TABLE[(int)alignHor]);
-		offsetY = (uint16_t)((rectHeight - textureDim.y) * ALIGNMENT_TABLE[(int)alignVer]);
-	}
-
-	if (alignHor == 0) {
-		offsetX += 5;
-	}
-	if (alignVer == 0) {
-		offsetY += 5;
-	}
-
-	uiData->Textures[uiData->TextureCount].Texture = texture;
-	uiData->Textures[uiData->TextureCount].PosX = posX + offsetX;
-	uiData->Textures[uiData->TextureCount].PosY = posY + offsetY;
-	uiData->Textures[uiData->TextureCount].Scale = scale;
-
-	uiData->TextureCount += 1;
 }
 
 uint16_t ui_add_button(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t width, uint16_t height, const char* text, UIStyleButton uiStyle, void(*button_clicked)(void*), void* context, bool enabled) {
@@ -218,7 +163,6 @@ uint16_t ui_add_button(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t wi
 
 void ui_remove_all(UIData* uiData) {
 	uiData->RectangleCount = 0;
-	uiData->TextureCount = 0;
 	uiData->ButtonsEnabledCount = 0;
 	uiData->ButtonsDisabledCount = 0;
 }
