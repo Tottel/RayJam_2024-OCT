@@ -29,7 +29,7 @@ Keyboard only:
 
 ![Tethered](screenshots/in_game_1.png "Tethered")
 ![Tethered](screenshots/in_game_2.png "Tethered")
-https://github.com/user-attachments/assets/6e5160ab-29b1-428c-9c33-a506df35c60b
+<video width="630" height="300" src="https://github.com/user-attachments/assets/6e5160ab-29b1-428c-9c33-a506df35c60b"></video>
 
 
 ### Developers
