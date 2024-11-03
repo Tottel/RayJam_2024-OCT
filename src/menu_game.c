@@ -30,19 +30,6 @@ void game_menu_init(GameData* gameData, int screenWidth, int screenHeight) {
 void game_menu_tick(GameData* gameData, int screenWidth, int screenHeight, float dt) {  
     gameData->Timer += dt;
 
-    for (int i = 0; i < 2; ++i) {
-        gameData->AnimationTimer[i] += gameData->AnimationSpeed * dt;
-
-        if (gameData->AnimationTimer[i] > 1.0f) {
-            gameData->AnimationTimer[i] = 0.0f;
-            gameData->AnimationRectIndex[i] += 1;
-
-            if (gameData->AnimationRectIndex[i] > gameData->CharFrameCount-1) {
-                gameData->AnimationRectIndex[i] = 0;
-            }
-        }
-    }
-
     gameData->EnemyAnimationTimer += 2.0f * dt;
 
     if (gameData->EnemyAnimationTimer > 1.0f) {

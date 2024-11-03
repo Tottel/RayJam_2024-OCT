@@ -168,7 +168,7 @@ int main(void)
 
     // Initialization
     //--------------------------------------------------------------------------------------
-    InitWindow(screenWidth, screenHeight, "raylib gamejam - Korneel Guns");
+    InitWindow(screenWidth, screenHeight, "Korneel Guns: Tethered (RayJam 2024)");
     InitAudioDevice();
     
     // Data/Resource initialization scope

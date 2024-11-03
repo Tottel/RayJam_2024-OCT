@@ -9,12 +9,14 @@
 
 ### Description
 
-$(Your Project Description)
+Keep running, no matter what. Get to the end.
+You are you, but he is also you. I can't promise that it will make sense. 
+But I can promise you that you'll make it through, if you cooperate with yourself!
 
 ### Features
 
- - X challenging hand-crafted levels for you to traverse
- - Run, jump and shoot your way across - with both characters!
+ - X challenging hand-crafted levels for you to traverse.
+ - Run, jump and shoot your way across - with both characters at the same time!
 
 ### Controls
 
