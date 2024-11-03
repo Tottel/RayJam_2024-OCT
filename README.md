@@ -29,6 +29,7 @@ Keyboard only:
 
 ![Tethered](screenshots/in_game_1.png "Tethered")
 ![Tethered](screenshots/in_game_2.png "Tethered")
+![Tethered](screenshots/video_1.mp4 "Tethered")
 
 ### Developers
 
