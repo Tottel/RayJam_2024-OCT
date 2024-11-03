@@ -43,7 +43,7 @@ void parse_level(const char* path, LevelData* data) {
 			widthCounter += 1; 
 			charCounter += 1;
 		}
-	}
+	} 
 
 	data->LevelWidth = width; 
 	data->LevelHeight = (uint16_t)height;
@@ -64,30 +64,32 @@ void parse_level(const char* path, LevelData* data) {
 			break;
 		}
 
+		uint32_t tileIndex = currX + (currY * width); 
+
 		switch (levelTxtData[charCounter]) {
 		case '=': // floors
-			data->Tiles[currX + (currY * width)] = TILE_FLOOR;
+			data->Tiles[tileIndex] = TILE_FLOOR;
 			break;
 		case 'x': // walls
-			data->Tiles[currX + (currY * width)] = TILE_PLATFORM;
+			data->Tiles[tileIndex] = TILE_PLATFORM;
 			break;
 		case '1': // player spawn 1
-			data->Tiles[currX + (currY * width)] = TILE_SPAWN_1;
+			data->Tiles[tileIndex] = TILE_SPAWN_1;
 			break;
 		case '2': // player spawn 2
-			data->Tiles[currX + (currY * width)] = TILE_SPAWN_2;
+			data->Tiles[tileIndex] = TILE_SPAWN_2;
 			break;
 		case 'O': // enemy
-			data->Tiles[currX + (currY * width)] = TILE_ENEMY;
+			data->Tiles[tileIndex] = TILE_ENEMY;
 			break;
 		case ']': // end portal 1
-			data->Tiles[currX + (currY * width)] = TILE_PORTAL_1;
+			data->Tiles[tileIndex] = TILE_PORTAL_1;
 			break;
 		case '}': // end portal 2
-			data->Tiles[currX + (currY * width)] = TILE_PORTAL_2;
+			data->Tiles[tileIndex] = TILE_PORTAL_2;
 			break;
 		case ' ': // void
-			data->Tiles[currX + (currY * width)] = TILE_VOID;
+			data->Tiles[tileIndex] = TILE_VOID;
 			break;
 		default:
 			//assert(false);

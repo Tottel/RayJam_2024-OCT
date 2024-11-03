@@ -150,16 +150,6 @@ void game_tick(GameData* gameData, const LevelData* levelData, int screenWidth, 
 
     Rectangle playersRecsFull[2] = { (Rectangle) { gameData->PlayerPosX, gameData->PlayerPosY[0], gameData->TileSize, gameData->TileSize },
                                      (Rectangle) { gameData->PlayerPosX, gameData->PlayerPosY[1], gameData->TileSize, gameData->TileSize } };
-    
-    gameData->DebugRectangleCount = 0;
-
-    //gameData->DebugRectangles[gameData->DebugRectangleCount] = playerRecsForGround[0];
-    //gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = GREEN;
-    //gameData->DebugRectangleCount += 1;
-    //
-    //gameData->DebugRectangles[gameData->DebugRectangleCount] = playerRecsForWalls[0];
-    //gameData->DebugRectanglesColors[gameData->DebugRectangleCount] = GREEN;
-    //gameData->DebugRectangleCount += 1;
 
     // ground CollisionCheck char 1: Check for the 3 adjacing tiles directly underneath us
     if (!gameData->GoingUp[0]) {
@@ -474,7 +464,8 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
     // Draw level
     for (uint16_t y = 0; y < levelData->LevelHeight; y++) {
         for (uint32_t x = xStart; x < xEnd; x++) {
-            uint16_t tileType = levelData->Tiles[x + (y * levelData->LevelWidth)]; 
+            uint32_t tileIndex = x + (y * levelData->LevelWidth);
+            uint16_t tileType = levelData->Tiles[tileIndex];
 
             switch (tileType) {
             case TILE_PLATFORM:
@@ -569,15 +560,6 @@ void game_draw(GameData* gameData, const LevelData* levelData, Color* gameColors
             }
         }
     }
-
-#if defined (_DEBUG)
-    for (int i = 0; i < gameData->DebugRectangleCount; ++i) {
-        Rectangle rect = gameData->DebugRectangles[i];
-        rect.x -= gameData->CameraPosX;
-
-        DrawRectangleRec(rect, gameData->DebugRectanglesColors[i]);
-    }
-#endif
 }
 
 void game_bladesaws_draw(GameData* gameData, Texture2D bladesaw, float dt) {
@@ -638,7 +620,7 @@ void game_restart(GameData* gameData, const LevelData* levelData) {
     gameData->Timer = 0.0f;
     
     for (uint16_t y = 0; y < levelData->LevelHeight; y++) {
-        for (uint32_t x = 0; x < levelData->LevelWidth; x++) {
+        for (uint32_t x = 0; x < levelData->LevelWidth; x++) { 
             uint16_t tileType = levelData->Tiles[x + (y * levelData->LevelWidth)];
 
             switch (tileType) {
@@ -651,6 +633,7 @@ void game_restart(GameData* gameData, const LevelData* levelData) {
                 gameData->PlayerPosY[1] = y * gameData->TileSize;
                 break;
             case TILE_ENEMY:
+                assert(gameData->EnemyCount < MAX_ENEMIES);
                 gameData->Enemies[gameData->EnemyCount].PosX = x;
                 gameData->Enemies[gameData->EnemyCount].PosY = y;
                 gameData->Enemies[gameData->EnemyCount].Pos = (Vector2){x * gameData->TileSize, y * gameData->TileSize};

@@ -4,6 +4,8 @@
 #include "level_parser.h"
 #include <stdbool.h>
 
+#define MAX_ENEMIES 50
+
 typedef struct Enemy {
 	int PosX;
 	int PosY;
@@ -35,17 +37,13 @@ typedef struct GameData {
 	float BladeSawTimer;
 	int BladeSawRectIndex;
 
-	Enemy Enemies[15];
+	Enemy Enemies[MAX_ENEMIES];
 	uint32_t EnemyCount;
 
 	float BulletFireTimer;
 	bool GunAtTop;
 	Vector2 BulletPos[20];
 	uint32_t BulletCount;
-
-	Rectangle DebugRectangles[15];
-	Color DebugRectanglesColors[15];
-	int DebugRectangleCount;
 
 	float PortalPosX;
 	float PortalPosY[2];
