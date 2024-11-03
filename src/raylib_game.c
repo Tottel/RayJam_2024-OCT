@@ -183,6 +183,8 @@ void OnInGameVictoryButtonClicked(void* context) {
 
     CurrentState = SCREEN_MENU;
     CurrentStateTimer = 0.0f;
+
+    game_menu_init(gameData, screenWidth, screenHeight);
 }
 
 //------------------------------------------------------------------------------------
