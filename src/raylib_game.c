@@ -68,6 +68,7 @@ typedef enum {
     SCREEN_GAMEPLAY_INTRO,
     SCREEN_GAMEPLAY, 
     SCREEN_GAMEPLAY_LEVEL_TRANSITION,
+    SCREEN_GAMEPLAY_VICTORY
 } GameScreen;
 
 typedef enum {
@@ -127,7 +128,7 @@ void OnPlayButtonClicked(void* context) {
     CurrentState = SCREEN_GAMEPLAY_INTRO;
     IntroSubState = INTRO_SLIDE_1;
     CurrentStateTimer = 0.0f;
-    CurrentLevel = 2; 
+    CurrentLevel = 0; 
     DoIntroSlide = true;
 
     go_to_next_level();
@@ -473,7 +474,7 @@ void app_loop(void) {
     }
 }
 
-void draw_parallax(void) {
+void draw_parallax(void) { 
     {
         // aspect ratio is ~4.35
         Rectangle dest = (Rectangle){ 0, 0, screenWidth, screenHeight / 2 };
@@ -502,6 +503,14 @@ void draw_parallax(void) {
 
 void go_to_next_level(void) {
     CurrentLevel += 1;
+
+    if (CurrentLevel > 3) {
+        CurrentState = SCREEN_GAMEPLAY_VICTORY;
+        CurrentStateTimer = 0.0f;
+
+        return;
+    }
+
     switch(CurrentLevel) {
     case 1:
         assert(levelData != NULL);
@@ -512,12 +521,6 @@ void go_to_next_level(void) {
         break;
     case 3:
         parse_level("resources/levels/level_3.txt", levelData);
-        break;
-    case 4:
-        parse_level("resources/levels/level_4.txt", levelData);
-        break;
-    case 5:
-        parse_level("resources/levels/level_5.txt", levelData);
         break;
     }
     

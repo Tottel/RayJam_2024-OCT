@@ -607,7 +607,7 @@ void game_restart(GameData* gameData, const LevelData* levelData) {
 
     gameData->EnemyCount = 0;
 
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < MAX_ENEMIES; i++) {
         gameData->Enemies[i].HitTimer = 0.0f;
         gameData->Enemies[i].HP = 2;
         gameData->Enemies[i].PosOffsetTimer = 0.0f;

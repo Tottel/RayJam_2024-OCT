@@ -395,7 +395,6 @@ XCOPY "C:\dev\raylib\GameJam\2024_OCT\RayJam_2024-OCT\src\resources\" "C:\dev\ra
     <Text Include="..\..\..\src\resources\levels\level_1.txt" />
     <Text Include="..\..\..\src\resources\levels\level_2.txt" />
     <Text Include="..\..\..\src\resources\levels\level_3.txt" />
-    <Text Include="..\..\..\src\resources\levels\level_4.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

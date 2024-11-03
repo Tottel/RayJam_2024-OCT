@@ -64,7 +64,7 @@ void parse_level(const char* path, LevelData* data) {
 			break;
 		}
 
-		uint32_t tileIndex = currX + (currY * width); 
+		uint32_t tileIndex = currX + (currY * width);
 
 		switch (levelTxtData[charCounter]) {
 		case '=': // floors
