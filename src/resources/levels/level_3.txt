@@ -1,11 +1,11 @@
-x               xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-x                     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-x                           xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-x                                 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-x  1                                                  ]                 
-=================================================================
-x  2                                                  }                  
-x                                 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-x                           xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-x                     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-x               xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+x                                                                                                                                                                                                                                                                                  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx           
+x                                                                                                                                                                                                            O                                                                           xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx           
+x                     xxxxx       xxxxx      xx      xx      xx                          O                                                                                      xxxxx       xxxxx      xx      xx      xx                                                                      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx           
+x  1                                                                             xxxxx                                                                                                                                                                                                               xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx           
+x xxxxxxxxxxxxxxx                O         O    O              O          xxx    x                        O          O          O xxx        xxx        xxx          xxxxxxx              O        O        O        O                                                                                                   ]                     
+====================================================================================================================================================================================================================================================================================================================================          
+x  2          xxx                     O              O    O    O          xxx    x               xxx        xxx        xxx                 O          O          O       xxx                 O        O        O        O                                                                                                }                     
+x                                                                                xxxxx                                                                                                                                                                                                               xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx           
+x                     xxxxx       xxxxx      xx      xx      xx                                                                                                                 xxxxx       xxxxx      xx      xx      xx                                                                      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx           
+x                                                                                                                                                                                                                                                                                        xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx           
+x                                                                                                                                                                                                                                                                                  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx           

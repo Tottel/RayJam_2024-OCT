@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <assert.h>
 
 inline bool IsPointInRectangle(Vector2 point, int rectPosX, int rectPosY, int rectWidth, int rectHeight) {
 	return point.x >= rectPosX && point.x <= rectPosX + rectWidth && point.y >= rectPosY && point.y <= rectPosY + rectHeight;
@@ -57,6 +58,8 @@ void ui_draw(UIData* uiData, Color* gameColors) {
 }
 
 uint16_t ui_add_rectangle(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t width, uint16_t height, uint8_t rectColor) {
+	assert(uiData->RectangleCount < MAX_RECTANGLES - 1);
+
 	uiData->Rectangles[uiData->RectangleCount].PosX = posX;
 	uiData->Rectangles[uiData->RectangleCount].PosY = posY;
 	uiData->Rectangles[uiData->RectangleCount].Width = width;
@@ -104,6 +107,8 @@ uint16_t ui_add_rectangle_with_text(UIData* uiData, uint16_t posX, uint16_t posY
 }
 
 uint16_t ui_add_button(UIData* uiData, uint16_t posX, uint16_t posY, uint16_t width, uint16_t height, const char* text, UIStyleButton uiStyle, void(*button_clicked)(void*), void* context, bool enabled) {
+	assert(uiData->ButtonsDisabledCount + uiData->ButtonsEnabledCount < MAX_BUTTONS - 1);
+
 	// TODO So much memory allocation.. Can we do this in a block of memory instead?
 	char* copy = RL_MALLOC(strlen(text) + 1);
 	strcpy(copy, text);

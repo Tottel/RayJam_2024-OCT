@@ -122,12 +122,12 @@ static Texture2D WoodsPar2;
 static Sound MainTheme;
 
 void OnPlayButtonClicked(void* context) {
-    (void)context;
+    (void)context; 
 
     CurrentState = SCREEN_GAMEPLAY_INTRO;
     IntroSubState = INTRO_SLIDE_1;
     CurrentStateTimer = 0.0f;
-    CurrentLevel = 0;
+    CurrentLevel = 2; 
     DoIntroSlide = true;
 
     go_to_next_level();
@@ -181,7 +181,7 @@ int main(void)
 #else
     SetTraceLogLevel(LOG_ALL);         
 #endif
-
+ 
     // Initialization
     //--------------------------------------------------------------------------------------
     InitWindow(screenWidth, screenHeight, "Korneel Guns: Tethered (RayJam 2024)");
@@ -222,7 +222,7 @@ int main(void)
         }
 
         const uint16_t buttonWidth = 180;
-        const uint16_t buttonHeight = 40; 
+        const uint16_t buttonHeight = 40;
 
         // menu state
         UIDataMenu = RL_CALLOC(1, sizeof(UIData));
@@ -252,9 +252,10 @@ int main(void)
         ui_add_button(UIDataGameIntro, rectPosX + rectWidth / 2 - buttonWidth/2, rectPosY + rectHeight + 20, buttonWidth, buttonHeight, "Yes", UIStyleButtonMainMenu, OnInGameInstructionButtonClicked, NULL, true);
 
         // game state
-        gameData        = RL_CALLOC(1, sizeof(GameData));
-        UIDataGame      = RL_CALLOC(1, sizeof(UIData));
-        levelData       = RL_CALLOC(1, sizeof(LevelData));
+        gameData         = RL_CALLOC(1, sizeof(GameData));
+        UIDataGame       = RL_CALLOC(1, sizeof(UIData));
+        levelData        = RL_CALLOC(1, sizeof(LevelData));
+        levelData->Tiles = RL_CALLOC(1, 11 * 500 * sizeof(uint16_t)); // Totally assuming a max level size here
 
         MainTheme = LoadSound("resources/music/relax_and_chill.mp3");
     }
@@ -492,10 +493,10 @@ void draw_parallax(void) {
         DrawTexturePro(CavePar1, source1, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
 
         Rectangle source2 = (Rectangle){ gameData->CameraPosX * 0.25f, 120, 830 * 3.556f, 830 };
-        DrawTexturePro(CavePar2, source2, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
+        DrawTexturePro(CavePar2, source2, dest, (Vector2) { 0, 0 }, 0.0f, WHITE); 
 
         Rectangle source3 = (Rectangle){ gameData->CameraPosX * 0.9f, 70, 900 * 3.556f, 900 };
-        DrawTexturePro(CavePar3, source3, dest, (Vector2) { 0, 0 }, 0.0f, WHITE);
+        DrawTexturePro(CavePar3, source3, dest, (Vector2) { 0, 0 }, 0.0f, WHITE); 
     }
 }
 

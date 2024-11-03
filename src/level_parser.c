@@ -10,7 +10,7 @@ void parse_level(const char* path, LevelData* data) {
 	// We're going to do this in passes to avoid too much dynamic memory allocation and complicated loops
 	// Get the max width and height first
 	uint32_t width = 0;
-	uint16_t height = 0;
+	uint32_t height = 0;
 	
 	{
 		uint32_t charCounter = 0;
@@ -46,12 +46,11 @@ void parse_level(const char* path, LevelData* data) {
 	}
 
 	data->LevelWidth = width; 
-	data->LevelHeight = height;
-	data->Tiles = RL_CALLOC(width * height, sizeof(uint16_t)); 
+	data->LevelHeight = (uint16_t)height;
 
-	int currX = 0;
-	int currY = 0; 
-	int charCounter = 0;
+	uint32_t currX = 0;
+	uint32_t currY = 0;
+	uint32_t charCounter = 0;
 
 	while (true) {
 		if (levelTxtData[charCounter] == '\n') {
@@ -97,6 +96,9 @@ void parse_level(const char* path, LevelData* data) {
 
 		currX += 1;
 		charCounter += 1;
+
+		//assert(currX <= width);
+		//assert(charCounter <= width * height);
 	}
 
 	RL_FREE(levelTxtData);
