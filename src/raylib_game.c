@@ -84,6 +84,9 @@ typedef enum {
 static const uint16_t screenWidth = 800;
 static const uint16_t screenHeight = 450;
 
+#define STARTING_LEVEL 1
+#define MAX_LEVELS 3
+
 static Color gameColors[8];
 
 static GameScreen CurrentState = { SCREEN_MENU };
@@ -103,7 +106,10 @@ static UIData* UIDataGameIntro = NULL;
 
 // game state
 static GameData* gameData = NULL;
-static UIData* UIDataGame = NULL; 
+static UIData* UIDataGame = NULL;
+
+// game victory state
+static UIData* UIDataGameVictory = NULL;
 
 static Texture2D BladeSaw;
 
@@ -128,7 +134,7 @@ void OnPlayButtonClicked(void* context) {
     CurrentState = SCREEN_GAMEPLAY_INTRO;
     IntroSubState = INTRO_SLIDE_1;
     CurrentStateTimer = 0.0f;
-    CurrentLevel = 0; 
+    CurrentLevel = STARTING_LEVEL - 1;
     DoIntroSlide = true;
 
     go_to_next_level();
@@ -170,6 +176,13 @@ void OnInGameInstructionButtonClicked(void* context) {
     DoIntroSlide = false;
 
     ui_remove_all(UIDataGameIntro);
+}
+
+void OnInGameVictoryButtonClicked(void* context) {
+    (void)context;
+
+    CurrentState = SCREEN_MENU;
+    CurrentStateTimer = 0.0f;
 }
 
 //------------------------------------------------------------------------------------
@@ -258,6 +271,11 @@ int main(void)
         levelData        = RL_CALLOC(1, sizeof(LevelData));
         levelData->Tiles = RL_CALLOC(1, 11 * 500 * sizeof(uint16_t)); // Totally assuming a max level size here
 
+        // game victory state
+        UIDataGameVictory = RL_CALLOC(1, sizeof(GameData));
+        ui_add_rectangle_with_text(UIDataGameVictory, screenWidth / 2 - 300, screenHeight / 2 - 155, 600, 260, 4, "You did it! You did it!\n\nThat was sick! This definitely gives you bragging rights!\n\n..mm what? Yes, you also united them.\nGood job on that too, I suppose.\n..yes, they also lived happily ever after.\nPlease stop asking questions now.", UIStyleTextInGameVictory);
+        ui_add_button(UIDataGameVictory, screenWidth / 2 - buttonWidth / 2, screenHeight - 110, buttonWidth, buttonHeight, "back", UIStyleButtonGame, OnInGameVictoryButtonClicked, NULL, true);
+
         MainTheme = LoadSound("resources/music/relax_and_chill.mp3");
     }
     
@@ -296,6 +314,7 @@ int main(void)
     ui_exit(UIDataMenu);
     ui_exit(UIDataMenuInstructions);
     ui_exit(UIDataMenuCredits);
+    ui_exit(UIDataGameVictory);
 
     RL_FREE(levelData);
     RL_FREE(gameData);
@@ -304,6 +323,7 @@ int main(void)
     RL_FREE(UIDataMenu);
     RL_FREE(UIDataMenuInstructions);
     RL_FREE(UIDataMenuCredits);
+    RL_FREE(UIDataGameVictory);
 
     CloseAudioDevice();
     CloseWindow();        // Close window and OpenGL context
@@ -462,6 +482,14 @@ void app_loop(void) {
         }
 
     } break;
+    case SCREEN_GAMEPLAY_VICTORY: {
+        ui_tick(UIDataGameVictory);
+
+        BeginDrawing();
+        ClearBackground(gameColors[0]);
+        ui_draw(UIDataGameVictory, gameColors);
+        EndDrawing();
+    } break;
     default:
         assert(false); // Should probably implement this state
         break;
@@ -504,7 +532,7 @@ void draw_parallax(void) {
 void go_to_next_level(void) {
     CurrentLevel += 1;
 
-    if (CurrentLevel > 3) {
+    if (CurrentLevel > MAX_LEVELS) {
         CurrentState = SCREEN_GAMEPLAY_VICTORY;
         CurrentStateTimer = 0.0f;
 

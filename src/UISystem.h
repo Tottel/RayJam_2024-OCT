@@ -113,6 +113,13 @@ static struct UIStyleText UIStyleTextInstructions = {
     4
 };
 
+static struct UIStyleText UIStyleTextInGameVictory = {
+    ALIGN_HOR_LEFT,
+    ALIGN_VER_TOP,
+    20,
+    0
+};
+
 static struct UIStyleText UIStyleTextInGameInstructions = {
     ALIGN_HOR_CENTER,
     ALIGN_VER_CENTER,
@@ -126,6 +133,18 @@ static struct UIStyleButton UIStyleButtonMainMenu = {
     1,
     2,
     3,
+
+    5,
+    6,
+    7,
+};
+
+static struct UIStyleButton UIStyleButtonGame = {
+    { ALIGN_HOR_CENTER, ALIGN_VER_CENTER, 20, 4 },
+    1,
+    2,
+    3,
+    4,
 
     5,
     6,
